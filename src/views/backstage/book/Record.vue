@@ -1,19 +1,19 @@
 <template>
-  <div class="">
-    <div style="margin:23px ">
+  <div class>
+    <div style="margin:23px 0">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">借阅记录</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div>
-      <span>项目</span>
+      <span class="text">项目</span>
       <el-select v-model="selected" placeholder="请选择">
         <el-option label="书籍名称" value="bookName"></el-option>
         <el-option label="借书人用户名" value="memberId"></el-option>
         <el-option label="借书人姓名" value="memberName"></el-option>
         <el-option label="0 全部，1 已归还，2 未归还" value="flag"></el-option>
       </el-select>
-      <span>值</span>
+      <span class="text">值</span>
       <el-input v-model="value" placeholder="请输入内容" class="size"></el-input>
       <el-button
         type="primary"
@@ -24,15 +24,59 @@
       >查询</el-button>
       <el-divider></el-divider>
       <div class="menu">
-        <el-table :data="bookData" style="width: 100%">
-          <el-table-column prop="outdate" label="借出日期" width="150" align="center"></el-table-column>
-          <el-table-column prop="outtime" label="借出时间" width="120" align="center"></el-table-column>
-          <el-table-column prop="indate" label="应还日期" width="150" align="center"></el-table-column>
+        <el-table
+          :data="bookData"
+          style="width: 100%"
+          :default-sort="{prop: 'bdate', order: 'descending'}"
+        >
+          <el-table-column type="expand" fixed="left">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="书籍名称:">
+                  <span>{{ props.row.book.bookName}}</span>
+                </el-form-item>
+                <el-form-item label="书籍类型:">
+                  <span>{{ props.row.book.bookCategory.bookCategoryName }}</span>
+                </el-form-item>
+                <el-form-item label="书籍条码:">
+                  <span>{{ props.row.book.id }}</span>
+                </el-form-item>
+                <el-form-item label="作者:">
+                  <span>{{ props.row.book.author }}</span>
+                </el-form-item>
+                <el-form-item label="入库日期:">
+                  <span>{{ props.row.book.inDate }}</span>
+                </el-form-item>
+                <el-form-item label="ISBN:">
+                  <span>{{ props.row.book.isbn }}</span>
+                </el-form-item>
+                <el-form-item label="价格:">
+                  <span>{{ props.row.book.price }}</span>
+                </el-form-item>
+                <el-form-item label="剩余册数:">
+                  <span>{{ props.row.book.count }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column prop="bdate" label="借出日期" width="150" align="center" sortable></el-table-column>
+          <el-table-column prop="dueDate" label="应还日期" width="150" align="center"></el-table-column>
           <el-table-column prop="rdate" label="归还日期" width="150" align="center"></el-table-column>
           <el-table-column prop="overday" label="逾期天数" width="100" align="center"></el-table-column>
-          <el-table-column prop="bookName" label="书刊名称" width="170" align="center"></el-table-column>
-          <el-table-column prop="bookId" label="书刊条码" width="120" align="center"></el-table-column>
-          <el-table-column prop="remark" label="备注" align="center"></el-table-column>
+          <el-table-column prop="book.bookName" label="书刊名称" width="170" align="center"></el-table-column>
+          <el-table-column prop="book.id" label="书刊条码" width="120" align="center"></el-table-column>
+          <el-table-column prop="member.memberName" label="借书人姓名" width="120" align="center"></el-table-column>
+          <el-table-column prop="member.id" label="借书人用户名" width="120" align="center"></el-table-column>
+          <el-table-column label="操作" width="100" align="center" fixed="right">
+            <template slot-scope="scope">
+              <el-button
+                @click.native.prevent="retrunRow(scope.row.id)"
+                type="text"
+                size="small"
+                :disabled="scope.row.rdate=='未归还'?false:true"
+              >还书</el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           @size-change="handleSizeChange"
@@ -48,7 +92,12 @@
   </div>
 </template>
 <script>
+import { timeDate } from "../../../tools/transformationDate";
 export default {
+  created() {
+    this.getToken();
+    this.getData();
+  },
   data() {
     return {
       selected: "",
@@ -61,43 +110,254 @@ export default {
       pagesize: 10,
       total: 10,
       bookData: [],
-      book: {
-        outdate: "",
-        outtime: "",
-        indate: "",
-        overday: -15,
-        bookName: "",
-        bookId: 0,
-        memberName: "",
-        memberID: "",
-        remark: ""
-      }
+      token: {}
     };
   },
   methods: {
+    getToken() {
+      //获取登录时存储在localStorage中的header-Token，作为上传凭证
+      this.token["HEADER-TOKEN"] = localStorage.getItem("HEADER_TOKEN");
+    },
     async query() {
       console.log(this.selected + "  " + this.value);
       const { data: res } = await this.$http.get(
-        "bookborrow/search" + "?" + this.selected + "=" + this.value
+        "bookborrow/search" + "?" + this.selected + "=" + this.value,
+        {
+          headers: this.token
+        }
       );
       if (res.code == 200) {
+        if(res.data.records==null||res.data.records==""||res.data.records==[]){
+          this.$message.error("没有查询出任何数据")
+          return
+        }
+        
         this.bookData = res.data.records;
         this.selected = "";
         this.value = "";
         this.pagenum = res.data.current;
         this.total = res.data.total;
+        this.bookData.forEach(i => {
+          let date1 = new Date(i.bdate * 1000);
+          i.bdate = timeDate(i.bdate * 1000).dateTime;
+          i.book.inDate = timeDate(i.book.inDate * 1000).date;
+          date1.setDate(date1.getDate() + 15);
+
+          let y = date1.getFullYear();
+          let m =
+            date1.getMonth() < 9
+              ? "0" + (date1.getMonth() + 1)
+              : date1.getMonth() + 1;
+          let d =
+            date1.getDate() < 10 ? "0" + date1.getDate() : date1.getDate();
+          i.dueDate = y + "-" + m + "-" + d;
+          if (i.rdate == "" || i.rdate == null) {
+            i.rdate = "未归还";
+            if (
+              Math.round((date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+          } else {
+            if (
+              Math.round(
+                (date1 - new Date(i.rdate)) / (1 * 24 * 60 * 60 * 1000)
+              ) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+            i.rdate = timeDate(i.rdate * 1000).date;
+          }
+        });
         this.$message.success("查询记录成功");
       }
     },
-    handleSizeChange(val) {
+    async handleSizeChange(val) {
       this.pagesize = val;
+      const { data: res } = await this.$http.get("bookborrow/search", {
+        headers: this.token,
+        params: { size: val }
+      });
+      if (res.code != 200) {
+        console.log("查询失败");
+      } else {
+        this.pagenum = res.data.current;
+        this.bookData = res.data.records;
+        this.bookData.forEach(i => {
+          let date1 = new Date(i.bdate * 1000);
+          i.bdate = timeDate(i.bdate * 1000).dateTime;
+          i.book.inDate = timeDate(i.book.inDate * 1000).date;
+          date1.setDate(date1.getDate() + 15);
+
+          let y = date1.getFullYear();
+          let m =
+            date1.getMonth() < 9
+              ? "0" + (date1.getMonth() + 1)
+              : date1.getMonth() + 1;
+          let d =
+            date1.getDate() < 10 ? "0" + date1.getDate() : date1.getDate();
+          i.dueDate = y + "-" + m + "-" + d;
+          if (i.rdate == "" || i.rdate == null) {
+            i.rdate = "未归还";
+            if (
+              Math.round((date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+          } else {
+            if (
+              Math.round(
+                (date1 - new Date(i.rdate)) / (1 * 24 * 60 * 60 * 1000)
+              ) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+            i.rdate = timeDate(i.rdate * 1000).date;
+          }
+        });
+      }
     },
     async handleCurrentChange(val) {
       const { data: res } = await this.$http.get("bookborrow/search", {
-        params: { pageNum: val }
+        headers: this.token,
+        params: { curPage: val }
       });
-      this.bookData = res.data.records;
-      this.pagenum = res.data.current;
+      if (res.code != 200) {
+        console.log("查询失败");
+      } else {
+        this.pagenum = res.data.current;
+        this.bookData = res.data.records;
+
+        this.bookData.forEach(i => {
+          let date1 = new Date(i.bdate * 1000);
+          i.bdate = timeDate(i.bdate * 1000).dateTime;
+          i.book.inDate = timeDate(i.book.inDate * 1000).date;
+          date1.setDate(date1.getDate() + 15);
+
+          let y = date1.getFullYear();
+          let m =
+            date1.getMonth() < 9
+              ? "0" + (date1.getMonth() + 1)
+              : date1.getMonth() + 1;
+          let d =
+            date1.getDate() < 10 ? "0" + date1.getDate() : date1.getDate();
+          i.dueDate = y + "-" + m + "-" + d;
+          if (i.rdate == "" || i.rdate == null) {
+            i.rdate = "未归还";
+            if (
+              Math.round((date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+          } else {
+            if (
+              Math.round(
+                (date1 - new Date(i.rdate)) / (1 * 24 * 60 * 60 * 1000)
+              ) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+            i.rdate = timeDate(i.rdate * 1000).date;
+          }
+        });
+      }
+    },
+    async getData() {
+      const { data: res } = await this.$http.get("bookborrow/search", {
+        headers: this.token
+      });
+      if (res.code == 200) {
+        this.pagenum = res.data.current;
+        this.total = res.data.total;
+        this.bookData = res.data.records;
+        this.bookData.forEach(i => {
+          let date1 = new Date(i.bdate * 1000);
+          i.bdate = timeDate(i.bdate * 1000).dateTime;
+          i.book.inDate = timeDate(i.book.inDate * 1000).date;
+          date1.setDate(date1.getDate() + 15);
+
+          let y = date1.getFullYear();
+          let m =
+            date1.getMonth() < 9
+              ? "0" + (date1.getMonth() + 1)
+              : date1.getMonth() + 1;
+          let d =
+            date1.getDate() < 10 ? "0" + date1.getDate() : date1.getDate();
+          i.dueDate = y + "-" + m + "-" + d;
+          if (i.rdate == "" || i.rdate == null) {
+            i.rdate = "未归还";
+            if (
+              Math.round((date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+          } else {
+            if (
+              Math.round(
+                (date1 - new Date(i.rdate)) / (1 * 24 * 60 * 60 * 1000)
+              ) >= 0
+            ) {
+              i.overday = 0;
+            } else {
+              i.overday = -Math.round(
+                (date1 - new Date()) / (1 * 24 * 60 * 60 * 1000)
+              );
+            }
+            i.rdate = timeDate(i.rdate * 1000).date;
+          }
+        });
+      }
+    },
+    async retrunRow(id) {
+      const confirmresult = await this.$confirm("是否归还此书籍?", "还书", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err);
+      if (confirmresult == "confirm") {
+        const { data: res } = await this.$http.post(
+          "bookborrow/return" + "?" + "id=" + id,
+          {
+            headers: this.token
+          }
+        );
+        if (res.code != 200) {
+          this.$message.error("还书失败");
+        } else {
+          this.$message.success("还书成功");
+          this.getData();
+        }
+      } else {
+        this.$message.info("已取消");
+      }
     }
   }
 };
@@ -117,14 +377,16 @@ export default {
 .right {
   float: right;
 }
-span {
+.text {
   margin-left: 1%;
   margin-right: 1%;
 }
-.el-form {
+/* .el-form {
   width: 80%;
+} */
+.el-form-item {
+  width: 30%;
 }
-
 .menu {
   margin-top: 5px;
 }

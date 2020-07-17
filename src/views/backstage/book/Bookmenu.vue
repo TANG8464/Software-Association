@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    <div style="margin:23px">
+  <div>
+    <div style="margin:23px 0;">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">书刊目录</el-breadcrumb-item>
       </el-breadcrumb>
@@ -38,7 +38,7 @@
 
       <el-dialog title="多条件查询" :visible.sync="dialogFormVisible" width="40%">
         <el-alert title="不填写默认显示全部书籍" type="info" :closable="false"></el-alert>
-        <el-form ref="form" pxlabel-width="100px" :model="form" :label-position="'top'">
+        <el-form ref="form" label-width="200px" :model="form" label-position="right">
           <el-form-item label="书籍名称" prop="bookName">
             <el-input v-model="form.bookName" autocomplete="off"></el-input>
           </el-form-item>
@@ -95,6 +95,11 @@
               </svg>
             </template>
           </el-table-column>
+          <el-table-column label="书籍封面" width="150" align="center">
+            <template slot-scope="scope">
+              <img :src="scope.row.imageUrl" width="55" height="70">
+            </template>
+          </el-table-column>
           <el-table-column prop="isbn" label="ISBN" width="180" align="center" sortable></el-table-column>
           <el-table-column prop="id" label="书刊条码" width="120" align="center" sortable></el-table-column>
           <el-table-column prop="bookName" label="书刊名称" width="180" align="center" sortable></el-table-column>
@@ -112,7 +117,12 @@
           <el-table-column prop="inDate" label="入库日期" width="180" align="center" sortable></el-table-column>
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
-              <el-button @click.native.prevent="borrowRow(scope.row.id)" type="text" size="small">借书</el-button>
+              <el-button
+                @click.native.prevent="borrowRow(scope.row.id)"
+                type="text"
+                size="small"
+                :disabled="scope.row.count>0?false:true"
+              >借书</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -130,6 +140,26 @@
         :total="total"
       ></el-pagination>
       <!-- 分页 -->
+
+      <!-- 借书 -->
+      <div class="borrow">
+        <el-dialog title="借书" :visible.sync="dialogBorrowVisible">
+          <el-form ref="BorrowForm" label-width="100px" :model="BorrowForm" label-position="right">
+            <el-form-item label="借书人用户名" prop="memberID">
+              <el-input v-model="BorrowForm.memberID" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="BorrowForm.remark" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="cansolBorrow('BorrowForm')">取 消</el-button>
+            <el-button type="primary" @click="confirmBorrow('BorrowForm')">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+
+      <!-- 借书 -->
     </div>
   </div>
 </template>
@@ -185,7 +215,7 @@ export default {
     // 条件查询
 
     // 删除书籍
-    async deleteRow(id, index,table) {
+    async deleteRow(id, index, table) {
       let resData = [id];
       const confirmresult = await this.$confirm(
         "此操作将永久删除该书籍, 是否继续?",
@@ -209,7 +239,7 @@ export default {
           this.$message.error("删除失败!");
         } else {
           this.$message.success("删除成功!");
-          table.splice(index, 1)
+          table.splice(index, 1);
         }
       } else {
         this.$message.info("已取消删除");
@@ -217,21 +247,72 @@ export default {
     },
     // 删除书籍
 
+    //借书
     borrowRow(id) {
-      console.log(id);
+      console.log(typeof id);
+      this.dialogBorrowVisible = true;
+      this.currentId = id;
     },
+    cansolBorrow(fromName) {
+      this.$refs[formName].resetFields();
+      this.dialogBorrowVisible = false;
+    },
+    async confirmBorrow(fromName) {
+      let resData = {
+        bookID: this.currentId,
+        memberID: this.BorrowForm.memberID,
+        remark: this.BorrowForm.remark
+      };
+      const { data: res } = await this.$http.post(
+        "bookborrow/borrow",
+        resData,
+        {
+          headers: this.token
+        }
+      );
+      if (res.code != 200) {
+        this.$message.error(res.message);
+      } else {
+        this.$message.success("借书成功");
+        this.getList();
+        this.dialogBorrowVisible = false;
+      }
+    },
+    //借书
 
     // 分页
-    handleSizeChange(val) {
+    async handleSizeChange(val) {
       this.pagesize = val;
-      console.log(`每页 ${val} 条`);
+      const { data: res } = await this.$http.get("book/search", {
+        params: { size: val }
+      });
+      if (res.code != 200) {
+        console.log("查询失败");
+      } else {
+        this.tableData = res.data.records;
+        for (let i = 0; i < this.tableData.length; i++) {
+          this.tableData[i].inDate = timeDate(
+            this.tableData[i].inDate * 1000
+          ).dateTime;
+        }
+        this.pagenum = res.data.current;
+      }
     },
     async handleCurrentChange(val) {
       const { data: res } = await this.$http.get("book/search", {
-        params: { pageNum: val }
+        params: { curPage: val }
       });
-      this.tableData = res.data.records;
-      this.pagenum = res.data.current;
+      if (res.code != 200) {
+        console.log("查询失败");
+      } else {
+        this.tableData = res.data.records;
+        for (let i = 0; i < this.tableData.length; i++) {
+          this.tableData[i].inDate = timeDate(
+            this.tableData[i].inDate * 1000
+          ).dateTime;
+        }
+        this.pagenum = res.data.current;
+      }
     },
     // 分页
 
@@ -249,7 +330,7 @@ export default {
         this.tableData = res.data.records;
         for (let i = 0; i < this.tableData.length; i++) {
           this.tableData[i].inDate = timeDate(
-            this.tableData[i].inDate
+            this.tableData[i].inDate * 1000
           ).dateTime;
         }
         this.pagenum = res.data.current;
@@ -261,18 +342,17 @@ export default {
     //多选
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      
     },
     //多选
 
     //删除选中的书籍
-   async deleteBook() {
+    async deleteBook() {
       let resData = [];
       this.multipleSelection.forEach(item => {
-        console.log(item)
-        resData.push(item.id)
+        console.log(item);
+        resData.push(item.id);
       });
-       
+
       const confirmresult = await this.$confirm(
         "此操作将永久删除选中书籍, 是否继续?",
         "删除",
@@ -300,11 +380,17 @@ export default {
       } else {
         this.$message.info("已取消删除");
       }
-    }
+    },
     //删除选中的书籍
+
+    getToken: function() {
+      //获取登录时存储在localStorage中的header-Token，作为上传凭证
+      this.token["HEADER-TOKEN"] = localStorage.getItem("HEADER_TOKEN");
+    }
   },
   created() {
     this.getList();
+    this.getToken();
   },
   data() {
     // 判断数字是是否大于0
@@ -361,17 +447,23 @@ export default {
       },
       //规则
 
-      multipleSelection: [] //多选
+      multipleSelection: [], //多选
+
+      //借书
+      dialogBorrowVisible: false, //借书对话框
+      BorrowForm: {
+        memberID: "",
+        remark: ""
+      },
+      currentId: "",
+      //借书
+
+      token: {}
     };
   }
 };
 </script>
 <style scoped>
-.main {
-  padding: 40px 80px;
-}
-.menu {
-}
 .size {
   width: 250px;
 }
@@ -388,10 +480,17 @@ span {
   margin-left: 15px;
   margin-right: 15px;
 }
+
 .el-dialog .el-input {
-  width: 70%;
+  width: 60%;
 }
 .el-form {
   margin-top: 1%;
+}
+.el-pagination {
+  margin-top: 20px;
+}
+.borrow .el-dialog {
+  width: 200px;
 }
 </style>
