@@ -107,6 +107,7 @@
         </el-table-column>
       </el-table>
     </div>
+     <!--增加修改共用菜单-->
     <el-dialog
       :title="dialogTitle"
       v-if="isOpenDialog"
@@ -308,6 +309,8 @@ export default {
       this.menuType = menu;
       this.dialogTitle = title;
       this.isOpenDialog = true;
+      console.log(this.menu);
+      
     },
     confirm() {
       if (this.menuType === 3) {
@@ -326,9 +329,8 @@ export default {
               message: "添加成功"
             });
             this.menu = {};
-            setTimeout(() => {
-              window.location.reload();
-            }, 200);
+            this.$parent.$parent.$refs.asidel.allNav()
+            this.setAllMenu();
           } else {
             this.$message.error({
               message: res.data.message
@@ -359,9 +361,8 @@ export default {
             });
             this.isOpenDialog = false;
             this.menu = {};
-            setTimeout(() => {
-              window.location.reload();
-            }, 200);
+            this.$parent.$parent.$refs.asidel.allNav()
+            this.setAllMenu();
           } else {
             this.$message.error({
               message: res.data.message
@@ -402,7 +403,7 @@ export default {
             this.$message.success({
               message: "删除成功!"
             });
-            window.location.reload();
+            this.$parent.$parent.$refs.asidel.allNav()
           } else {
             this.$message.error({
               message: res.data.message

@@ -79,22 +79,19 @@
             :isVertical="isVertical"
             :lastSpan="lastSpan"
           ></sort-data>
-          <ul>
-            <li style="padding:5px 25px;float:left;">
-              <span style="font-size:14px;color:#999999;">添加分类</span>
-            </li>
-            <li style="padding:5px 25px;">
-              <el-pagination
-                style="float:right;"
-                :hide-on-single-page="false"
-                @current-change="setAllSort"
-                :current-page.sync="allSort.current"
-                :page-size="allSort.size"
-                :total="allSort.total"
-                layout="total, prev, pager, next"
-              ></el-pagination>
-            </li>
-          </ul>
+          <div style="text-align:right;padding:0 15px;">
+            <el-pagination
+              :hide-on-single-page="true"
+              @current-change="setAllSort"
+              :current-page.sync="allSort.current"
+              :page-size="allSort.size"
+              :total="allSort.total"
+              layout="total, prev, pager, next"
+            ></el-pagination>
+          </div>
+          <div style="text-align:left;padding:0 30px;">
+            <span style="font-size:14px;color:#999999;">添加分类</span>
+          </div>
           <ul style="text-align:left;">
             <li class="sortArr" style="height: 1.6em;width:95%;border: 1px solid #e0e0e0;">
               <el-row :gutter="24" style="width:100%;text-align:center;">
@@ -125,7 +122,7 @@
   </div>
 </template>
 <script>
-import sortData from "@/components/backstage/notice/sort/sortData.vue";
+import sortData from "@/views/backstage/notice/components/sort/sortData.vue";
 export default {
   data() {
     return {
@@ -150,16 +147,16 @@ export default {
     this.init();
   },
   watch: {
-    allSort: function(newVal) {
+    allSort: function (newVal) {
       this.$refs.sortData.allSort = newVal.records;
     },
     isCheckAll(newVal) {
       this.$refs.sortData.isCheckAll = newVal;
     },
-    "$parent.$data.maxH": function(newVal) {
+    "$parent.$data.maxH": function (newVal) {
       this.maxH = newVal;
     },
-    "$parent.$data.maxW": function(newVal) {
+    "$parent.$data.maxW": function (newVal) {
       this.maxW = newVal;
       this.init();
     }
@@ -280,6 +277,7 @@ ul {
 .del-span:hover .del {
   fill: #f56c6c;
 }
+/*
 .el-input--suffix .el-input__inner {
   text-align: center;
 }
@@ -294,6 +292,8 @@ ul {
 .el-checkbox__inner:hover {
   border-color: #f56c6c;
 }
+*/
+
 .noChecked {
   background-color: white;
   color: #666666;

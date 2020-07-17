@@ -46,7 +46,7 @@
 export default {
     data() {
         return {
-            head: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+            head: require("@/assets/img/headImg.gif"),
             isShow: {
                 backstage: true
             }

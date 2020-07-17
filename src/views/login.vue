@@ -2,15 +2,20 @@
   <div class="login">
     <el-container :style="{backgroundImage:'url('+backs[backIndex]+')'}" ref="loginCon">
       <div class="loginBack" :style="{'max-width':maxW+'px','max-height':maxH+'px'}">
-        <login-content :logo="logo"></login-content>
+        <login-content :logo="logo" data-active="登录框"></login-content>
       </div>
-      <login-change-back ref="changeBack" :backs="backs" @changeBack="changeBack"></login-change-back>
+      <login-change-back
+        ref="changeBack"
+        :backs="backs"
+        @changeBack="changeBack"
+        data-active="设置登录页背景"
+      ></login-change-back>
     </el-container>
   </div>
 </template>
 <script>
-import loginContent from "@/components/login/content.vue";
-import loginChangeBack from "@/components/login/changeBack.vue";
+import loginContent from "@/views/login/content.vue";
+import loginChangeBack from "@/views/login/changeBack.vue";
 
 export default {
   data() {
@@ -33,6 +38,7 @@ export default {
   },
   created() {
     if (!localStorage.getItem("backIndex"))
+      //如果没有则加上背景
       localStorage.setItem("backIndex", 0);
     this.backIndex = localStorage.getItem("backIndex");
   },
@@ -93,10 +99,10 @@ export default {
   left: 0;
   right: 0;
   width: 318px;
-  height: 400px;
+  height: 450px;
   margin: auto auto;
   background-color: rgba(255, 255, 255, 0.93);
   padding: 30px;
-  box-shadow: 0px 0px 10px 1px #e0e0e0;
+  border-radius: 10px;
 }
 </style>

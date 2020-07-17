@@ -1,7 +1,7 @@
 <template>
   <div class="HomePage">
     <div class="aside-l-box" ref="asideLBox">
-      <backAside ref="asidel" id="asidel" :isOpenAL="isOpenAL" :align="align" :maxH="maxH"></backAside>
+      <backAside ref="asidel" id="asidel" :isCollapse="isCollapseAside" :align="align" :maxH="maxH"></backAside>
     </div>
     <div class="main" ref="main">
       <div class="header" ref="header">
@@ -9,14 +9,14 @@
       </div>
       <div class="outer" ref="outer">
         <div class="within">
-        <transition name="component" mode="out-in">
-          <router-view />
-        </transition>
+          <transition name="component" mode="out-in">
+            <router-view />
+          </transition>
         </div>
       </div>
     </div>
     <div class="aside-r-box" ref="asideRBox">
-      <asideRight ref="asidel" :maxH="maxH"></asideRight>
+      <asideRight ref="asider" :maxH="maxH"></asideRight>
     </div>
     <div class="loading-back" v-if="isLoading">
       <div class="loading">
@@ -31,15 +31,15 @@
 </template>
 
 <script>
-import backAside from "@/components/backstage/aside.vue";
-import asideRight from "@/components/backstage/aside-right.vue";
-import backHeader from "@/components/backstage/back-header.vue";
+import backAside from "@/components/backstage/BackNavMenu.vue";
+import asideRight from "@/components/backstage/BackSidebar.vue";
+import backHeader from "@/components/backstage/BackPhoneHeader.vue";
 
 export default {
   name: "Home",
   data() {
     return {
-      isOpenAL: false,
+      isCollapseAside: false,
       isLoading: false,
       align: "left",
       isShowHeader: false,
@@ -54,6 +54,7 @@ export default {
   },
   created() {
     this.load();
+    this.setActiveUser();
   },
   mounted() {
     this.init();
@@ -83,14 +84,34 @@ export default {
         this.isLoading = false;
       }, 1000);
     },
+    allNav(){
+
+    },
+    async setActiveUser() {
+      try {
+        let res = await this.$axios.get("member/info");
+        if (res.data.code === 200) {
+          this.$cookies.set(
+            "activeUser",
+            res.data.data.id + "&" + res.data.data.memberName
+          );
+        } else {
+          this.$message.error({
+            message: res.data.message
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
     resize() {
-      this.maxW = window.outerWidth;//获取网页外部窗体宽
-      this.maxH = window.outerHeight;//获取网页外部窗体高
-      
+      this.maxW = window.outerWidth; //获取网页外部窗体宽
+      this.maxH = window.outerHeight; //获取网页外部窗体高
+
       let fs = 16;
       let pad = 45;
       if (this.maxW <= 1000) {
-        this.isOpenAL = true;
+        this.isCollapseAside = true;
         this.alb.style.width = "65px";
         this.m.style.left = "65px";
         fs = this.maxW * 0.02;
@@ -98,7 +119,7 @@ export default {
         this.align = "center";
       } else {
         this.isShowHeader = false;
-        this.isOpenAL = false;
+        this.isCollapseAside = false;
         this.alb.style.width = "15%";
         this.m.style.left = "15%";
         this.align = "left";
@@ -150,7 +171,6 @@ export default {
 }
 </style>
 <style scoped>
-
 .component-enter,
 .component-leave-to {
   opacity: 0;

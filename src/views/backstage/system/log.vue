@@ -12,8 +12,19 @@
     </el-row>
     <el-link type="primary" style="float:right;" @click="downLoadLog('')">下载操作日志</el-link>
 
-    <ul class="log-box" style="list-style:none;" ref="logBox" :style="{'font-size':(7+maxW*0.005)+'px'}">
-      <li class="log" v-for="item in allLog" :key="item.id" :style="{'margin':`${maxW*0.01}px 0`}" style="clear:both;">
+    <ul
+      class="log-box"
+      style="list-style:none;"
+      ref="logBox"
+      :style="{'font-size':(7+maxW*0.005)+'px'}"
+    >
+      <li
+        class="log"
+        v-for="item in allLog"
+        :key="item.id"
+        :style="{'margin':`${maxW*0.01}px 0`}"
+        style="clear:both;"
+      >
         <el-divider
           content-position="left"
           v-if="item.isDateTitle"
@@ -131,9 +142,7 @@ export default {
           });
         }
       } catch (err) {
-        this.$message.error({
-          message: err
-        });
+        console.log(err);
       }
     },
     async downLoadLog(userName) {
@@ -160,9 +169,7 @@ export default {
           });
         }
       } catch (err) {
-        this.$message.error({
-          message: err
-        });
+        console.log(err);
       }
     }
   },

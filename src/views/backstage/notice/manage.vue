@@ -26,14 +26,14 @@
           ></el-input>
         </el-col>
       </el-row>
-      <div class="badge">{{draftBadge}}</div>
+      <div class="badge" v-if="draftBadge!=0">{{draftBadge}}</div>
       <el-row :gutter="24">
         <el-col :span="24">
           <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="已发布" name="0"></el-tab-pane>
             <el-tab-pane label="定时发布" name="2"></el-tab-pane>
             <el-tab-pane label="草稿箱" name="1"></el-tab-pane>
-            <newsData ref="newsData" :isMedium="isMedium" :isSmall="isSmall"></newsData>
+            <newsData ref="newsData" @setDraftBadge="setDraftBadge" :isMedium="isMedium" :isSmall="isSmall"></newsData>
           </el-tabs>
         </el-col>
       </el-row>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import newsData from "@/components/backstage/notice/manage/newsData.vue";
+import newsData from "@/views/backstage/notice/components/manage/newsData.vue";
 export default {
   data() {
     return {
@@ -70,14 +70,17 @@ export default {
     this.init();
   },
   watch: {
-    state: function(newsVal) {
-      this.title = newsVal;
+    state: function (newVal) {
+      this.title = newVal;
       this.setNotice(this.activeFlag);
     },
-    "$parent.$data.maxH": function(newVal) {
+    activeName: function (newVal) {
+
+    },
+    "$parent.$data.maxH": function (newVal) {
       this.maxH = newVal;
     },
-    "$parent.$data.maxW": function(newVal) {
+    "$parent.$data.maxW": function (newVal) {
       this.maxW = newVal;
       this.init();
     }
@@ -98,7 +101,6 @@ export default {
     setNotice(index) {
       this.$refs.newsData.newsFlag = index;
       this.$refs.newsData.title = this.title;
-      this.$refs.newsData.timingFlag = this.timingFlag;
       this.$refs.newsData.setNotice();
     },
     setAllSort() {
@@ -108,34 +110,38 @@ export default {
         this.allSort = res.data.data.records;
       });
     },
-    setDraftBadge() {
-      //设置草稿总条数
-      let _this = this;
-      this.$axios("news/", {
-        method: "get",
-        credentials: "include",
-        params: {
-          newsFlag: 1,
-          pageNo: 1,
-          title: ""
+    //设置草稿总条数
+    async setDraftBadge() {
+      try {
+        let res = await this.$axios.get('news/', {
+          credentials: "include",
+          params: {
+            newsFlag: 1,
+            pageNo: 1,
+            title: ""
+          }
+        })
+        console.log(res);
+        if (res.data.code === 200) {
+          this.draftBadge = res.data.data.total;
+          console.log(this.draftBadge);
+
+          if (this.draftBadge > 99) this.draftBadge = "99+";
+        } else {
+          this.$message.error({
+            message: res.data.message
+          })
         }
-      }).then(res => {
-        _this.draftBadge = res.data.data.total;
-        if (_this.draftBadge > 999) _this.draftBadge = "999+";
-      });
+      } catch (err) {
+        console.log(err);
+      }
     },
     openEdit() {
       this.$parent.openEdit();
     },
-    handleClick(tab, event) {
+    handleClick(tab) {
       console.log(Number(tab.name));
-      if (Number(tab.name) < 2) {
-        this.activeFlag = Number(tab.name);
-        this.timingFlag = 0;
-      } else {
-        this.activeFlag = 0;
-        this.timingFlag = 1;
-      }
+      this.activeFlag = Number(tab.name);
       this.setNotice(this.activeFlag);
     },
     createStateFilter(queryString) {
@@ -145,7 +151,7 @@ export default {
         );
       };
     },
-    handleSelect(item) {}
+    handleSelect(item) { }
   },
 
   components: {

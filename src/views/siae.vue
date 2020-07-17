@@ -1,15 +1,15 @@
 <template>
-  <div class="siae">
+  <div class="siae" ref="siae" id="siae">
+    <div id="universe-box">
+      <img src="@/assets/img/back/1.gif" alt width="260px" />
+    </div>
     <pageHeader :activeIndex="Index"></pageHeader>
     <router-view />
-     <!--<div id="universe-box">
-      <img  src="@/assets/img/back/1.gif" alt width="260px" />
-    </div>-->
   </div>
 </template>
 <script>
 import pageHeader from "@/components/siae/header.vue";
-// import "@/assets/js/background.js";
+import { back } from "@/assets/js/background.js";
 export default {
   name: "siae",
   data() {
@@ -17,17 +17,18 @@ export default {
       Index: "/homePage"
     };
   },
+  mounted() {
+    back(this.$refs.siae);
+  },
   components: {
     pageHeader
   }
 };
 </script>
 <style scoped>
- /*
 #universe-box {
   position: fixed;
   bottom: 0;
   right: 0;
 }
-*/
 </style>
