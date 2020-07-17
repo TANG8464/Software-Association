@@ -21,8 +21,13 @@ Vue.use(ElementUI)
 Vue.use(VueFroala)
 Vue.prototype.$axios = http;
 
+<<<<<<< HEAD
 Vue.prototype.$http = http
 Vue.component('chart', ECharts)
+=======
+
+Vue.prototype.$http = http
+>>>>>>> af233d6e5efa2e4d15f8593d2e1e863bb5c4f0ab
 
 Vue.config.productionTip = false
 

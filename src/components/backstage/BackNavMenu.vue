@@ -13,8 +13,12 @@
       :collapse="isCollapse"
       style="overflow: auto;"
       :style="{'height':maxH-200+'px'}"
+<<<<<<< HEAD:src/components/backstage/BackNavMenu.vue
       unique-opened
+=======
+>>>>>>> af233d6e5efa2e4d15f8593d2e1e863bb5c4f0ab:src/components/backstage/aside.vue
       ref="menu"
+      unique-opened="true"
     >
       <!--菜单-->
       <el-submenu
