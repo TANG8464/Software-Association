@@ -2,7 +2,7 @@
     <imgCar :imgCars="imgCars"></imgCar>
 </template>
 <script>
-import imgCar from '@/components/siae/imageCarousel.vue'
+import imgCar from '@/components/siae/ImageCarousel'
 export default {
     name:'HomePage',
    data(){

@@ -1,32 +1,38 @@
-import backstage from '@/views/backstage'
+import Backstage from '@/layouts/Backstage'
+import Main from '@/components/backstage/BackMain'
 const backstageRouter = {
     path: '/backstage',
     name: 'backstage',
     redirect: '/backstage/homePage',
-    component: backstage,
+    component: Backstage,
     children: [{
             path: 'homePage',
             name: 'homePage',
-            component: () =>
-                import ('@/views/backstage/homePage.vue')
+            redirect: '/backstage/homePage/imageCarousel',
+            component: Main,
+            children: [{
+                path: 'imageCarousel',
+                name: 'imageCarousel',
+                component: () =>
+                    import ('@/views/backstage/homePage/ImageCarousel.vue'),
+            }, ]
         },
         {
             path: 'menu',
             name: 'menu',
             redirect: '/backstage/menu/nav',
-            component: () =>
-                import ('@/views/backstage/menu.vue'),
+            component: Main,
             children: [{
                     path: 'nav',
                     name: 'nav',
                     component: () =>
-                        import ('@/views/backstage/menu/nav.vue'),
+                        import ('@/views/backstage/menu/MenuNav.vue'),
                 },
                 {
                     path: 'authority',
                     name: 'authority',
                     component: () =>
-                        import ('@/views/backstage/menu/authority.vue'),
+                        import ('@/views/backstage/menu/MenuAuthority.vue'),
                 },
 
             ]
@@ -34,25 +40,24 @@ const backstageRouter = {
         {
             path: 'notice',
             name: 'notice',
-            redirect: '/backstage/notice/manager',
-            component: () =>
-                import ('@/views/backstage/notice.vue'),
+            redirect: '/backstage/notice/manage',
+            component: Main,
             children: [{
-                    path: 'manager',
-                    name: 'manager',
+                    path: 'manage',
+                    name: 'manage',
                     component: () =>
-                        import ('@/views/backstage/notice/manage.vue')
+                        import ('@/views/backstage/notice/NoticeManage')
                 }, {
                     path: 'edit',
                     name: 'edit',
                     component: () =>
-                        import ('@/views/backstage/notice/edit.vue')
+                        import ('@/views/backstage/notice/NoticeEdit')
                 },
                 {
                     path: 'sort',
                     name: 'sort',
                     component: () =>
-                        import ('@/views/backstage/notice/sort.vue')
+                        import ('@/views/backstage/notice/NoticeSort')
                 }
             ]
         },
@@ -60,45 +65,42 @@ const backstageRouter = {
             path: 'system',
             name: 'system',
             redirect: 'system/log',
-            component: () =>
-                import ('@/views/backstage/system.vue'),
+            component: Main,
             children: [{
                 path: 'log',
                 name: 'log',
                 component: () =>
-                    import ('@/views/backstage/system/log.vue'),
+                    import ('@/views/backstage/system/SystemLog.vue'),
             }]
         },
         {
             path: 'resource',
             name: 'resource',
             redirect: 'resource/upload',
-            component: () =>
-                import ('@/views/backstage/resource.vue'),
+            component: Main,
             children: [{
                     path: 'secretKey',
                     name: 'secretKey',
                     component: () =>
-                        import ('@/views/backstage/resource/secretKey.vue'),
+                        import ('@/views/backstage/resource/SecretKey.vue'),
                 },
                 {
                     path: 'upload',
                     name: 'upload',
                     component: () =>
-                        import ('@/views/backstage/resource/upload.vue'),
+                        import ('@/views/backstage/resource/ResourceUpload.vue'),
                 },
                 {
                     path: 'sort',
                     name: 'sort',
                     component: () =>
-                        import ('@/views/backstage/resource/sort.vue'),
+                        import ('@/views/backstage/resource/ResourceSort.vue'),
                 },
             ]
         },
         {
             path: 'book',
-            component: () =>
-                import ("@/views/backstage/book.vue"),
+            component: Main,
             redirect: 'book/bookMenu',
             children: [{
                     path: 'statistics',
@@ -108,7 +110,7 @@ const backstageRouter = {
                 {
                     path: 'bookMenu',
                     component: () =>
-                        import ('@/views/backstage/book/Bookmenu.vue')
+                        import ('@/views/backstage/book/BookMenu.vue')
                 },
                 {
                     path: 'category',
@@ -132,19 +134,18 @@ const backstageRouter = {
             path: 'user',
             name: 'user',
             redirect: 'user/memberManagement',
-            component: () =>
-                import ('@/views/backstage/user.vue'),
+            component: Main,
             children: [{
                     path: 'memberManagement',
                     name: 'memberManagement',
                     component: () =>
-                        import ('@/views/backstage/user/memberManagement.vue')
+                        import ('@/views/backstage/user/MemberManagement.vue')
                 },
                 {
                     path: 'collegeManagement',
                     name: 'collegeManagement',
                     component: () =>
-                        import ('@/views/backstage/user/collegeManagement.vue')
+                        import ('@/views/backstage/user/CollegeManagement.vue')
                 }
             ]
         }

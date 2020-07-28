@@ -1,5 +1,5 @@
 <template>
-  <div class="aside">
+  <div class="nav-menu">
     <div class="logo-box" v-if="isShowLogo">
       <img src="../../assets/img/logo.png" class="logo" />
       <h2 v-if="!isCollapse" class="logo-title">软件协会</h2>
@@ -14,7 +14,7 @@
       style="overflow: auto;"
       :style="{'height':maxH-200+'px'}"
       ref="menu"
-      unique-opened="true"
+      unique-opened
     >
       <!--菜单-->
       <el-submenu
@@ -33,6 +33,7 @@
           v-for="children in item.menuNodeList"
           :key="children.menuId"
           :index="'/backstage/'+children.url"
+          @click="setActiveIndex(item,children)"
         >
           <span v-html="children.icon" style="position:relative;top:-3px;margin:0 2px;"></span>&nbsp;
           <span class="menu_text">{{children.name}}</span>
@@ -44,77 +45,92 @@
 
 <script>
 export default {
-  name: "Aside",
-  data() {
-    return {
-      nav: [], //左侧导航栏所有值
-      index: "" //当前选中菜单项
-    };
-  },
+  name: 'Aside',
   props: {
     isCollapse: {
       //是否折叠左导航栏
       type: Boolean,
-      default: false
+      default: false,
     },
     align: {
       //导航栏文字对齐方式
       type: String,
-      default: "left"
+      default: 'left',
     },
     isShowLogo: {
       //是否展示logo，maxW小于800时不展示
       type: Boolean,
-      default: true
+      default: true,
     },
     maxH: {
       //页面最大高
       type: Number,
-      default: 500
+      default: 500,
+    },
+  },
+  data() {
+    return {
+      nav: [], //左侧导航栏所有值
+      index: '', //当前选中菜单项
     }
   },
   created() {
     //页面进入时，设置默认index为当前路由
-    this.index = this.$route.fullPath;
-    this.allNav();
+    this.index = this.$route.fullPath
+    const url = this.index.substring(11)
+    this.allNav(url)
   },
   watch: {
     //监听路由,设置当前选中的index为当前路由
-    "$route.fullPath": function(newVal) {
-      this.index = newVal;
-    }
+    '$route.fullPath': function (newVal) {
+      this.index = newVal
+    },
   },
   methods: {
+    setActiveIndex(item, children) {
+      this.$store.commit('setBreadcrumb', [
+        { id: 1, name: item.name, path: '/backstage/' + item.url },
+        { id: 2, name: children.name, path: '' },
+      ])
+    },
     //获取所有导航菜单
-    async allNav() {
-      try {
-        let res = await this.$axios.get("sys/menu/nav");
-        if (res.data.code === 200) {
-          this.nav = res.data.data;
-        } else {
-          this.$message.error({
-            message: "请求错误"
-          });
-        }
-      } catch (err) {
-        console.log(err);
+    async allNav(url) {
+      let { data } = await this.$axios.get('sys/menu/nav')
+      if (data.code === 200) {
+        this.nav = data.data
+        //设置初始面包屑内容
+        this.nav.forEach((item) => {
+          item.menuNodeList.forEach((children) => {
+            if (children.url === url) {
+              this.$store.commit('setBreadcrumb', [
+                { id: 1, name: item.name, path: '/backstage/' + item.url },
+                { id: 2, name: children.name, path: '' },
+              ])
+            }
+          })
+        })
+      } else {
+        this.$message.error({
+          message: '请求错误',
+        })
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style scoped>
-.aside {
+.nav-menu {
   user-select: none;
 }
 /*
  logo
 */
-.logo-box {
+.nav-menu .logo-box {
   padding: 10px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 /*
  清除el-menu右侧边框线

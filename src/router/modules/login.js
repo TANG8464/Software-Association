@@ -1,4 +1,4 @@
-import login from '@/views/login'
+import login from '@/layouts/login'
 const loginRouter = {
     path: '/',
     name: 'login',

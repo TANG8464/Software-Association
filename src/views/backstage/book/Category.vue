@@ -1,23 +1,17 @@
 <template>
   <div class>
-    <div style="margin:23px 0px">
-      <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
-        <el-breadcrumb-item style="font-size:18px;">书刊类别</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div class="category">
       <el-table
         :data="categoryData"
-        style="width: 45%"
+        style="width: 100%"
         row-key="id"
-        border
         lazy
         :load="load"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
         <el-table-column prop="id" label="id" width="100" header-align="center"></el-table-column>
-        <el-table-column prop="bookCategoryName" label="类型名称" width="180" align="center"></el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column prop="bookCategoryName" label="类型名称"  align="center"></el-table-column>
+        <el-table-column width="180" label="操作" align="center">
           <template slot="header">
             <div
               style="text-align:center;display: flex;align-items: center;width:150px"

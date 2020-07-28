@@ -4,11 +4,9 @@
 
 npm install
 
-
 ### 运行项目
 
 npm run serve
-
 
 ### 关联远程仓库
 
@@ -18,3 +16,5 @@ git remote add origin https://github.com/lnt20000516/Software-Association.git
 
 git push origin master
 
+### icon 插件
+npm install vue2-svg-icon --save-dev

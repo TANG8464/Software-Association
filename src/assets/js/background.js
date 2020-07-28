@@ -118,16 +118,19 @@ function move() {
     }
     requestAnimationFrame(move); //不断重新请求
 }
+
 window.onresize = function() {
     maxW = window.outerWidth; //获取网页外部窗体宽
     maxH = window.outerHeight; //获取网页外部窗体高
     let sc = document.getElementById("star");
     let mc = document.getElementById("meteor");
-    sc.height = maxH;
-    sc.width = maxW;
-    mc.height = maxH;
-    mc.width = maxW;
-    mc.style = "position: fixed;background:rgb(41,42,52);left:0;";
+    if (sc && mc) {
+        sc.height = maxH;
+        sc.width = maxW;
+        mc.height = maxH;
+        mc.width = maxW;
+        mc.style = "position: fixed;background:rgb(41,42,52);left:0;";
+    }
 }
 
 function back(el) {

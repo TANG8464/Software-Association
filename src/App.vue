@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-     <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
+import resizeMixin from '@/layouts/windowResize'
 export default {
-  name: 'App'
+  name: 'App',
+  mixins: [resizeMixin]
 }
 </script>
 
@@ -15,7 +17,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
@@ -31,20 +32,23 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
- 
+
 .component-enter,
 .component-leave-to {
-    opacity: 0;
-    transform: translateX(50px);
+  opacity: 0;
+  transform: translateX(50px);
 }
 /* v-enter-active 入场动画时间段 */
 /* v-leave-active 离场动画时间段 */
 
 .component-enter-active,
 .component-leave-active {
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
-span:hover,h2:hover,svg:hover,img:hover {
-    cursor: pointer;
+span:hover,
+h2:hover,
+svg:hover,
+img:hover {
+  cursor: pointer;
 }
 </style>

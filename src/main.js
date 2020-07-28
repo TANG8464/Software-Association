@@ -1,32 +1,45 @@
+import http from '@/utils/request'; //此处问http文件的路径
 import 'echarts/lib/chart/bar';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import 'font-awesome/css/font-awesome.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'froala-editor/css/froala_style.min.css';
-
-import 'froala-editor/js/languages/zh_cn.js';
 import 'froala-editor/js/froala_editor.pkgd.min.js';
-import 'froala-editor/js/plugins.pkgd.min.js';
-import Velocity from 'velocity-animate';
+import 'froala-editor/js/languages/zh_cn.js';
+import jQuery from 'jquery';
+// import Velocity from 'velocity-animate';
 import Vue from 'vue';
 import cookies from 'vue-cookies';
 import ECharts from 'vue-echarts';
 import VueFroala from 'vue-froala-wysiwyg';
+import Icon from 'vue2-svg-icon/Icon';
+import Vuex from 'vuex';
 import App from './App.vue';
-import http from './http'; //此处问http文件的路径
 import router from './router';
+import store from './store';
 import './tools/dialogDrag.js';
+import '@/styles/index.css'
+// import huakuai from 'huakuai-vue'
+// Vue.use(huakuai)
+Vue.component('icon', Icon);
+window.jQuery = jQuery
+window.$ = jQuery
+Vue.use(Vuex)
 Vue.use(cookies)
 Vue.use(ElementUI)
 Vue.use(VueFroala)
+    // Vue.use(Velocity)
 Vue.prototype.$axios = http;
 
 Vue.prototype.$http = http
 Vue.component('chart', ECharts)
+    // Vue.component('icon', Icon)
 
 Vue.config.productionTip = false
 
 new Vue({
     router,
+    store,
     render: h => h(App)
 }).$mount('#app')
