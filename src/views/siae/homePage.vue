@@ -2,7 +2,7 @@
     <imgCar :imgCars="imgCars"></imgCar>
 </template>
 <script>
-import imgCar from '@/components/siae/ImageCarousel'
+import imgCar from '@/components/SIAEImageCarousel'
 export default {
     name:'HomePage',
    data(){

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import store from '@/store'
 export function getActiveUserInfo() {
     return request({
         url: 'member/info',

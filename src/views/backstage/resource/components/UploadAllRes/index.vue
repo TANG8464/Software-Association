@@ -50,24 +50,6 @@ export default {
   created() {
     this.setAllRes()
   },
-  mounted() {
-    //当滚动或点击其他地方时不显示MoreMenu
-    let allResData = this.$refs.allResData //所有数据子组件
-    let search = this.$refs.queryCondition.$refs.search //查询条件子组件
-    document.body.onclick = function (e) {
-      let id = e.target.id
-      allResData.moreOpacity = 0 //将所有数据子组件中的更多菜单透明度设为0
-      if (id !== 'icon-search' && id !== 'searchInput') search.inputInit() //当非搜索图标和搜索框点击时，将搜索框隐藏
-    }
-    window.addEventListener(
-      //滚动监听
-      'scroll',
-      function () {
-        allResData.moreOpacity = 0 //将所有数据子组件中的更多菜单透明度设为0
-      },
-      true
-    )
-  },
   methods: {
     async setAllRes() {
       //设置所有资源数据

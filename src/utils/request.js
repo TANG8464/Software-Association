@@ -27,6 +27,24 @@ let i = 0;
 // // http response 拦截器
 request.interceptors.response.use(
     response => {
+        const headerToken = token.getHeaderToken()
+        const currentRoute = router.currentRoute.fullPath.split('?')[0]
+        if (i < 1 && !headerToken && currentRoute !== '/') {
+            ElementUI.Notification({
+                title: "错误",
+                message: "身份已过期请重新登录",
+                type: "error",
+                duration: 1000,
+                showClose: false
+            });
+            setTimeout(() => {
+                router.replace({
+                    path: '/',
+                    query: { redirect: router.currentRoute.fullPath }
+                })
+            }, 1000)
+            i++
+        }
         return response;
     },
     error => {
@@ -49,7 +67,7 @@ request.interceptors.response.use(
                     message = error.response.data.message;
                 }
             } else {
-                message = "服务器正在部署，请稍后...";
+                message = "服务器访问错误，请稍后...";
             }
             ElementUI.Notification({
                 title: "错误",

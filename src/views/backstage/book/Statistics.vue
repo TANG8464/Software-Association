@@ -40,7 +40,13 @@
         <el-table-column prop="overday" label="逾期天数" width="100" align="center"></el-table-column>
         <el-table-column prop="book.bookName" label="书刊名称" width="170" align="center"></el-table-column>
         <el-table-column prop="book.id" label="书刊条码" width="120" align="center"></el-table-column>
-        <el-table-column prop="member.memberName" fixed="right" label="借书人姓名" width="120" align="center"></el-table-column>
+        <el-table-column
+          prop="member.memberName"
+          fixed="right"
+          label="借书人姓名"
+          width="120"
+          align="center"
+        ></el-table-column>
         <el-table-column prop="member.id" label="借书人用户名" width="120" align="center"></el-table-column>
       </el-table>
       <el-pagination
@@ -57,6 +63,7 @@
 </template>
 <script>
 import { timeDate } from '../../../tools/transformationDate'
+import token from '@/utils/token'
 let echarts = require('echarts')
 let myChart
 export default {
@@ -180,13 +187,16 @@ export default {
     }
   },
   watch: {
-    size(newVal) {
+    isSmallSize() {
       this.init()
     },
   },
   computed: {
     size() {
       return this.$store.state.resize
+    },
+    isSmallSize() {
+      return this.size.isSmallSize
     },
   },
   methods: {
@@ -231,7 +241,7 @@ export default {
     },
     getToken() {
       //获取登录时存储在localStorage中的header-Token，作为上传凭证
-      this.token['HEADER-TOKEN'] = localStorage.getItem('HEADER_TOKEN')
+      this.token['HEADER-TOKEN'] = token.getHeaderToken()
     },
     async query() {
       let name = []
@@ -367,7 +377,7 @@ export default {
 .book-statistics .date * {
   margin: 5px;
 }
-.book-statistics .date .el-input__inner{
+.book-statistics .date .el-input__inner {
   width: 100%;
   max-width: 400px;
 }

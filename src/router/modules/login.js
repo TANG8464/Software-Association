@@ -1,4 +1,4 @@
-import login from '@/layouts/login'
+import login from '@/layouts/Login'
 const loginRouter = {
     path: '/',
     name: 'login',

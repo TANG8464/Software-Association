@@ -1,5 +1,5 @@
 <template>
-  <div class="newsData" ref="newsData">
+  <div class="newsData remove" ref="newsData">
     <el-table
       :data="noticeData"
       style="width: 100%;min-height:500px;"
@@ -305,25 +305,19 @@ export default {
     //定时发布的发布样式
     timeFormat(val, flag) {
       if (flag === 2) {
-        let date = new Date(val)
-        month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-        date = date.getDate() < 9 ? '0' + date.getDate() : date.getDate()
-        hours = date.getHours() < 9 ? '0' + date.getHours() : date.getHours()
-        minutes = date.getMinutes() < 9 ? '0' + date.getMinutes() : date.getMinutes()
-        seconds = date.getSeconds() < 9 ? '0' + date.getSeconds() : date.getSeconds()
-        return `预计${date.getFullYear()}-${month}-${date} ${hours}:${minutes}:${seconds}发送`
+        const date = new Date(val)
+        const month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+        const day = date.getDate() < 9 ? '0' + date.getDate() : date.getDate()
+        const hours = date.getHours() < 9 ? '0' + date.getHours() : date.getHours()
+        const minutes = date.getMinutes() < 9 ? '0' + date.getMinutes() : date.getMinutes()
+        const seconds = date.getSeconds() < 9 ? '0' + date.getSeconds() : date.getSeconds()
+        return `预计${date.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}发送`
       } else return val
     },
   },
 }
 </script>
 <style>
-.newsData .el-checkbox__input.is-checked .el-checkbox__inner,
-.newsData .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-  background-color: #f56c6c;
-  border-color: #f56c6c;
-}
-
 .newsData {
   margin: 0 10px;
   transition: all 0.5s;

@@ -1,3 +1,4 @@
+import '@/styles/index.css';
 import http from '@/utils/request'; //此处问http文件的路径
 import 'echarts/lib/chart/bar';
 import ElementUI from 'element-ui';
@@ -8,20 +9,20 @@ import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/js/froala_editor.pkgd.min.js';
 import 'froala-editor/js/languages/zh_cn.js';
 import jQuery from 'jquery';
-// import Velocity from 'velocity-animate';
+import Velocity from 'velocity-animate';
 import Vue from 'vue';
 import cookies from 'vue-cookies';
 import ECharts from 'vue-echarts';
 import VueFroala from 'vue-froala-wysiwyg';
+// import SlideVerify from 'vue-monoplasty-slide-verify';
 import Icon from 'vue2-svg-icon/Icon';
 import Vuex from 'vuex';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import './tools/dialogDrag.js';
-import '@/styles/index.css'
-// import huakuai from 'huakuai-vue'
-// Vue.use(huakuai)
+import './directive/dialogDrag.js';
+
+// Vue.use(SlideVerify);
 Vue.component('icon', Icon);
 window.jQuery = jQuery
 window.$ = jQuery

@@ -10,7 +10,7 @@ npm run serve
 
 ### 关联远程仓库
 
-git remote add origin https://github.com/lnt20000516/Software-Association.git
+git remote add origin git@github.com:TANG8464/Software-Association.git
 
 ### 推送到主分支
 

@@ -23,14 +23,21 @@ export default {
       isOpenInput: false,
     }
   },
+  // beforeMounted() {
+  //   //当滚动或点击其他地方时不显示MoreMenu
+  //   document.body.onclick = (e) => {
+  //     let id = e.target.id
+  //     if (id !== 'icon-search' && id !== 'searchInput') this.inputInit() //当非搜索图标和搜索框点击时，将搜索框隐藏
+  //   }
+  // },
   methods: {
-    inputInit() {
-      if (this.isOpenInput) {
-        this.searchInputWidth = 0
-        this.searchInputPadding = 0
-        this.isOpenInput = false
-      }
-    },
+    // inputInit() {
+    //   if (this.isOpenInput) {
+    //     this.searchInputWidth = 0
+    //     this.searchInputPadding = 0
+    //     this.isOpenInput = false
+    //   }
+    // },
     search() {
       //点击查询按钮
       if (!this.isOpenInput) {

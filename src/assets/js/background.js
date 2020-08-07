@@ -32,10 +32,17 @@ class Meteor {
     }
     draw() {
         //绘制流星
-        this.ct.rotate((-40 * Math.PI) / 180); //将画布旋转-40°
-        this.ct.fillStyle = "rgba(255, 255, 255,1)"; //设置流星前面的圆的填充色
-        this.ct.fillRect(this.x, this.y, this.r, this.r);
-        this.ct.rotate((40 * Math.PI) / 180); //将画布旋转回去
+        this.ct.beginPath();
+        let tra = this.ct.createLinearGradient(this.x - 100, this.y - 100, this.x, this.y);
+        tra.addColorStop(0, 'rgba(0,0,0,0)');
+        tra.addColorStop(1, 'rgba(255,255,255,1)');
+        this.ct.strokeStyle = tra;
+        this.ct.moveTo(this.x, this.y);
+        this.ct.lineTo(this.x - 100, this.y - 100);
+        this.ct.fill();
+        this.ct.stroke();
+        this.ct.closePath();
+
     }
     move(mX, mY, maxW, maxH) {
         if (this.x > maxW * 2 || this.y > maxH * 2) {
@@ -57,8 +64,6 @@ let b1;
 function html(el) {
     maxW = window.outerWidth; //获取网页外部窗体宽
     maxH = window.outerHeight; //获取网页外部窗体高
-    // maxW = document.body.scrollWidth;
-    // maxH = document.body.scrollHeight > 0 ? document.body.scrollHeight : 791;
     el.style = " margin: 0;padding: 0;position: fixed;top: 0;bottom: 0;left: 0;right: 0;";
     let sc = document.createElement("canvas");
     sc.id = "star";
@@ -100,7 +105,7 @@ function star() {
 }
 
 function meteor() {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
         meteors[i] = new Meteor(Math.floor(Math.random() * maxW + 1), 0, Math.random() + 2, mCt);
         meteors[i].draw();
     }
@@ -111,10 +116,10 @@ function move() {
     for (let star in stars) {
         stars[star].move(0.2, maxW);
     }
-    mCt.fillStyle = "rgba(41,42,52,0.4)";
+    mCt.fillStyle = "rgba(41,42,52,0.6)";
     mCt.fillRect(0, 0, maxW, maxH);
     for (let meteor in meteors) {
-        meteors[meteor].move(3, 6, maxW, maxH);
+        meteors[meteor].move(20, 20, maxW, maxH);
     }
     requestAnimationFrame(move); //不断重新请求
 }

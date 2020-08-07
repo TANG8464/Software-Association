@@ -57,12 +57,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--右击弹出更多设置-->
-    <ul class="contentMenu" ref="contentMenu" :style="{opacity:moreOpacity}">
-      <li class="contentMenu_item" @click="openDetails()">详细信息</li>
-      <li class="contentMenu_item" @click="openUpdate()">修改</li>
-      <li class="contentMenu_item" @click="openAffirm()">删除</li>
-    </ul>
+
     <res-details :Details.sync="Details" :isOpenDetails.sync="isOpenDetails"></res-details>
     <update-res
       :update.sync="update"
@@ -71,17 +66,20 @@
       @setLogo="setLogo"
       @updateRes="updateRes"
     ></update-res>
+    <!--右击弹出更多设置-->
+    <right-click-box :menu="menuItem" @open="open" ref="menuBox"></right-click-box>
   </div>
 </template>
 <script>
 import ResDetails from './ResDetails'
 import UpdateRes from './UpdateRes'
-
+import RightClickBox from '@/components/RightClickBox'
 export default {
   name: 'allResData',
   components: {
     ResDetails,
     UpdateRes,
+    RightClickBox,
   },
   props: {
     allRes: {
@@ -97,25 +95,14 @@ export default {
   },
   data() {
     return {
-      moreOpacity: 0, //更多设置框透明度
       isOpenDetails: false,
       isOpenUpdate: false,
       Details: {}, //当前选择项的详细信息
       update: {}, //当前选择项的修改信息
       selected: {}, //当前选中项
       fileType: null,
+      menuItem: ['详细信息', '修改', '删除'],
     }
-  },
-  watch: {
-    moreOpacity: function (newVal) {
-      //将contentMenu消除以防误触
-      let _this = this
-      if (newVal == 0) {
-        setTimeout(function () {
-          _this.$refs.contentMenu.style.display = 'none'
-        }, 1000)
-      }
-    },
   },
   computed: {
     size() {
@@ -129,15 +116,21 @@ export default {
     more(row, column, event) {
       //打开更多选项设置
       event.preventDefault() //阻止弹出默认窗
-      this.$refs.contentMenu.style.display = 'inline-block' //先将其展示防止动画无效
-      setTimeout(() => {
-        //再将透明度变为1
-        this.moreOpacity = 1
-      }, 100)
-      this.$refs.contentMenu.style.top = event.clientY + 'px'
-      this.$refs.contentMenu.style.left = event.clientX + 'px'
-      this.isOpenMenu = true
+      this.$refs.menuBox.more(event)
       this.selected = row
+    },
+    open(index) {
+      switch (index) {
+        case 0:
+          this.openDetails()
+          break
+        case 1:
+          this.openUpdate()
+          break
+        case 2:
+          this.openAffirm()
+          break
+      }
     },
     async openDetails() {
       //打开详细信息

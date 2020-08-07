@@ -6,9 +6,15 @@
 
 <script>
 import resizeMixin from '@/layouts/windowResize'
+import { getActiveUserInfo } from '@/api/active-user'
 export default {
   name: 'App',
-  mixins: [resizeMixin]
+  mixins: [resizeMixin],
+  beforeCreate() {
+    getActiveUserInfo().then((res) => {
+      this.$store.commit('setActiveUserInfo', res.data.data)
+    })
+  },
 }
 </script>
 

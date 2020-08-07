@@ -17,30 +17,6 @@
 右击弹出框
 */
 
-.contentMenu {
-    list-style: none;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    display: inline-block;
-    box-shadow: 0px 0px 10px 1px #e0e0e0;
-    position: fixed;
-    z-index: 9999;
-    transition: all 0.3s;
-    padding: 10px 0;
-}
-
-.contentMenu_item {
-    padding: 10px 15px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.contentMenu_item:hover {
-    background-color: rgb(221, 243, 255);
-    color: rgb(81, 193, 253);
-}
-
 .right-click-box {
     list-style: none;
     background-color: white;
@@ -63,4 +39,27 @@
 .right-click-box_item:hover {
     background-color: rgb(221, 243, 255);
     color: rgb(81, 193, 253);
+}
+
+
+/*
+需要删除项的checkbox样式
+*/
+
+.remove .el-checkbox__input.is-checked .el-checkbox__inner,
+.remove .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #f56c6c;
+    border-color: #f56c6c;
+}
+
+.remove .el-checkbox__input.is-checked+.el-checkbox__label {
+    color: #f56c6c;
+}
+
+.remove .el-checkbox__inner:hover {
+    border-color: #f56c6c;
+}
+
+.not-choose-text {
+    user-select: none;
 }

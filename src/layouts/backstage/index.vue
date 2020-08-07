@@ -13,7 +13,7 @@
           <router-view />
         </div>
       </div>
-      <back-page-loading :isLoading="isLoading"></back-page-loading>
+      <page-loading :isLoading="isLoading"></page-loading>
     </div>
     <div class="back-sidebar-box" ref="sidebarBox">
       <back-sidebar ref="sidebar" :maxH="size.maxH"></back-sidebar>
@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import BackNavMenu from '@/components/backstage/BackNavMenu'
-import BackSidebar from '@/components/backstage/BackSidebar'
-import BackPhoneHeader from '@/components/backstage/BackPhoneHeader'
-import BreadcrumbNav from '@/components/backstage/BreadcrumbNav'
-import BackPageLoading from '@/components/backstage/BackPageLoading'
+import BackNavMenu from './components/BackNavMenu'
+import BackSidebar from './components/BackSidebar'
+import BackPhoneHeader from './components/BackPhoneHeader'
+import BreadcrumbNav from '@/components/BreadcrumbNav'
+import PageLoading from '@/components/PageLoading'
 export default {
   name: 'backstage',
   components: {
@@ -34,7 +34,7 @@ export default {
     BackSidebar,
     BackPhoneHeader,
     BreadcrumbNav,
-    BackPageLoading
+    PageLoading,
   },
   data() {
     return {
@@ -46,7 +46,7 @@ export default {
       backSidebar: null,
       main: null,
       out: null,
-      header: null
+      header: null,
     }
   },
   created() {
@@ -63,12 +63,12 @@ export default {
     },
     size() {
       this.resize()
-    }
+    },
   },
   computed: {
     size() {
       return this.$store.state.resize
-    }
+    },
   },
   methods: {
     init() {
@@ -107,8 +107,8 @@ export default {
       this.out.style.boxShadow = isSmallSize ? '' : '0px 0px 20px 5px #eeeeee'
       this.out.style.background = isSmallSize ? 'none' : 'white'
       this.$refs.within.style.padding = isSmallSize ? '10px 15px' : '20px 50px'
-    }
-  }
+    },
+  },
 }
 </script>
 <style>
@@ -138,7 +138,7 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 99999;
+  z-index: 2502;
 }
 .main {
   color: #333;

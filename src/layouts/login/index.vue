@@ -18,8 +18,8 @@
   </div>
 </template>
 <script>
-import LoginContent from '@/views/login/LoginContent.vue'
-import LoginChangeBack from '@/views/login/LoginChangeBack.vue'
+import LoginContent from './components/Content'
+import LoginChangeBack from './components/ChangeBack'
 export default {
   components: {
     LoginContent,

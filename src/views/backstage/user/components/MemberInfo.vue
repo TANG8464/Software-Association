@@ -4,16 +4,16 @@
       <el-row :gutter="24">
         <el-col :xs="24">
           <el-form-item label="学院:">
-            <span>{{ memberInfo.institute.institute_name }}</span>
+            <span>{{ memberInfo.institute?memberInfo.institute.institute_name:'-' }}</span>
           </el-form-item>
           <el-form-item label="专业:">
-            <span>{{ memberInfo.specialty.specialty_name }}</span>
+            <span>{{ memberInfo.specialty?memberInfo.specialty.specialty_name:'-' }}</span>
           </el-form-item>
           <el-form-item label="班级:">
-            <span>{{ memberInfo.iclass.class_name }}</span>
+            <span>{{ memberInfo.iclass?memberInfo.iclass.class_name:'-' }}</span>
           </el-form-item>
           <el-form-item label="职位:">
-            <span>{{ memberInfo.position.positionName }}</span>
+            <span>{{ memberInfo.position?memberInfo.position.positionName:'-' }}</span>
           </el-form-item>
           <el-form-item label="学号:">
             <span>{{ memberInfo.stu_num }}</span>

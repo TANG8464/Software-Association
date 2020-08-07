@@ -45,7 +45,7 @@
   </div>
 </template>
 <script>
-import UploadCover from '@/components/backstage/UploadCover'
+import UploadCover from '@/components/UploadResourceCover'
 export default {
   components: {
     UploadCover,

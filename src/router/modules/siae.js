@@ -1,4 +1,4 @@
-import siae from '@/layouts/siae'
+import siae from '@/layouts/SIAE'
 
 const siaeRouter = {
     path: '/siae',

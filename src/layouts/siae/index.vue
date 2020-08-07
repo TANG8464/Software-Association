@@ -4,22 +4,22 @@
       <img src="@/assets/img/back/1.gif" alt width="260px" />
     </div>
 
-    <siae-phone-header v-if="size.isSmallSize" :activeIndex="Index"></siae-phone-header>
-    <siae-header v-else :activeIndex="Index"></siae-header>
+    <small-header v-if="size.isSmallSize" :activeIndex="Index"></small-header>
+    <large-header v-else :activeIndex="Index"></large-header>
     <transition name="component" mode="out-in">
       <router-view />
     </transition>
   </div>
 </template>
 <script>
-import SiaeHeader from '@/components/siae/SiaeHeader.vue'
-import SiaePhoneHeader from '@/components/siae/SiaePhoneHeader.vue'
+import LargeHeader from '@/components/SIAEHeader/LargeSizeScreen'
+import SmallHeader from '@/components/SIAEHeader/SmallSizeScreen'
 import { back } from '@/assets/js/background.js'
 export default {
   name: 'siae',
   components: {
-    SiaeHeader,
-    SiaePhoneHeader,
+    LargeHeader,
+    SmallHeader,
   },
   data() {
     return {
