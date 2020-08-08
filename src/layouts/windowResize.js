@@ -14,8 +14,12 @@ export default {
     methods: {
         $_resizeHandler() {
             if (!document.hidden) {
-                const maxW = window.outerWidth //获取网页外部窗体宽
-                const maxH = window.outerHeight //获取网页外部窗体高
+                const maxW = window.innerWidth //获取网页外部窗体宽
+                const maxH = window.innerHeight //获取网页外部窗体高
+
+                // const maxW = document.body.scrollWidth //获取网页外部窗体宽
+                // const maxH = document.body.scrollHeight //获取网页外部窗体高
+
                 store.commit('setResize', {
                     maxW,
                     maxH,

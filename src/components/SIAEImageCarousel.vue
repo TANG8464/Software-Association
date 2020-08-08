@@ -1,6 +1,6 @@
 <template>
   <div class="imgCar">
-    <el-carousel :interval="5000" :type="size.isSmallSize?'':'card'" :height="size.isSmallSize?'200px':'400px'" style="width:100%">
+    <el-carousel trigger="click" style="width:100%" :height="height">
       <el-carousel-item v-for="item in imgCars" :key="item" style="{backgroundImage:item}">
         <img :src="item" />
       </el-carousel-item>
@@ -12,10 +12,9 @@ export default {
   name: 'imgCar',
   props: {
     imgCars: Array,
-  },
-  computed: {
-    size() {
-      return this.$store.state.resize
+    height: {
+      type: String,
+      require: true,
     },
   },
 }

@@ -20,7 +20,7 @@
         to="/siae/dataDownload"
         data-index="/siae/dataDownload"
       >资料下载</router-link>
-      <router-link class="siae-menu-item" tag="li" to="/siae/notice" data-index="/siae/notice">在线咨询</router-link>
+      <router-link class="siae-menu-item" tag="li" to="/siae/books-borrow" data-index="/siae/books-borrow">图书借阅</router-link>
       <li class="siae-menu-item" style="float:right;" data-not-choose="true">
         <header-account ref="account"></header-account>
       </li>
@@ -124,19 +124,21 @@ export default {
   height: 60px;
   display: flex;
   align-items: center;
+  margin: 0;
 }
 .siae-menu-item {
   display: inline-block;
   min-width: 90px;
-  color: white;
   cursor: pointer;
   padding: 10px 0;
+  color: #999999;
+  font-size: 14px;
 }
 .siae-menu-item:last-child {
   position: absolute;
   right: 10px;
 }
 .siae-menu-active {
-  border-bottom: 2px solid white;
+  color: white;
 }
 </style>

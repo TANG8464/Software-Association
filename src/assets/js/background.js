@@ -99,7 +99,7 @@ function init() {
 
 function star() {
     for (let i = 1; i <= 70; i++) {
-        stars[i] = new Star(Math.floor(Math.random() * maxW + 1), Math.floor(Math.random() * maxH + 1), Math.random() * 2 + 0.5, sCt);
+        stars[i] = new Star(Math.floor(Math.random() * maxW + 1), Math.floor(Math.random() * maxH + 1), Math.random() * 1 + 0.5, sCt);
         stars[i].draw();
     }
 }
@@ -114,9 +114,9 @@ function meteor() {
 function move() {
     sCt.clearRect(0, 0, maxW, maxH);
     for (let star in stars) {
-        stars[star].move(0.2, maxW);
+        stars[star].move(0.1, maxW);
     }
-    mCt.fillStyle = "rgba(41,42,52,0.6)";
+    mCt.fillStyle = "rgba(41,42,52,1)";
     mCt.fillRect(0, 0, maxW, maxH);
     for (let meteor in meteors) {
         meteors[meteor].move(20, 20, maxW, maxH);

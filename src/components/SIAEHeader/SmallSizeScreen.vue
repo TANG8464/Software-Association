@@ -1,9 +1,9 @@
 <template>
   <ul class="siae-phone-header">
-    <li class="logo-box" style="display:block;">
+    <li class="logo-box">
       <img src="@/assets/img/newLogo.png" alt class="logo" />
     </li>
-    <li class="right">
+    <li>
       <el-dropdown trigger="click" @command="handleCommand">
         <span class="el-dropdown-link" style="color:white;">
           <icon name="menu-nav" scale="25" width="25"></icon>
@@ -13,11 +13,11 @@
           <el-dropdown-item command="/siae/joinIn">申请入会</el-dropdown-item>
           <el-dropdown-item command="/siae/notice">协会公告</el-dropdown-item>
           <el-dropdown-item command="/siae/dataDownload">资料下载</el-dropdown-item>
-          <el-dropdown-item command="/siae/notice">在线咨询</el-dropdown-item>
+          <el-dropdown-item command="/siae/books-borrow">在线咨询</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </li>
-    <li class="right">
+    <li>
       <header-account ref="account"></header-account>
     </li>
   </ul>
@@ -61,16 +61,19 @@ export default {
 .siae-phone-header {
   width: 100%;
   text-align: right;
-  margin: 0;
+  margin:5px 0;
 }
 .siae-phone-header li {
   display: inline;
   vertical-align: middle;
-  height: 1px;
   margin: 8px;
 }
+.siae-phone-header .logo-box {
+  position: fixed;
+  display: block;
+  margin: 0;
+}
 .siae-phone-header .logo {
-  height: 60px;
-  float: left;
+  height: 50px;
 }
 </style>

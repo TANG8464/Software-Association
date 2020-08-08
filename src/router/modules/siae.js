@@ -21,7 +21,7 @@ const siaeRouter = {
             path: 'notice',
             name: 'notice',
             component: () =>
-                import ('@/views/siae/notice.vue'),
+                import ('@/views/siae/notice/index.vue'),
         },
         {
             path: 'dataDownload',
@@ -29,6 +29,12 @@ const siaeRouter = {
             component: () =>
                 import ('@/views/siae/dataDownload.vue'),
         },
+        {
+            path: 'books-borrow',
+            name: 'books-borrow',
+            component: () =>
+                import ('@/views/siae/books-borrow.vue'),
+        }
     ]
 }
 export default siaeRouter
