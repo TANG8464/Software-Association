@@ -46,7 +46,7 @@
         <el-tag
           style=" margin: 3px;"
           :key="tag"
-          v-for="tag in operation.newsLabels"
+          v-for="tag in operation.newsLabel"
           closable
           :disable-transitions="false"
           @close="handleClose(tag)"
@@ -87,7 +87,7 @@ export default {
         isTiming: false,
         top: 0,
         categoryId: '',
-        newsLabels: [],
+        newsLabel: [],
         date: '',
       },
       categoryData: [], //分类数据
@@ -154,7 +154,7 @@ export default {
     },
     //添加标签
     handleClose(tag) {
-      this.operation.newsLabels.splice(this.operation.newsLabels.indexOf(tag), 1)
+      this.operation.newsLabel.splice(this.operation.newsLabel.indexOf(tag), 1)
     },
     //展示输入标签框
     showInput() {
@@ -165,7 +165,7 @@ export default {
     },
     //添加标签提示
     handleInputConfirm() {
-      let label = this.operation.newsLabels
+      let label = this.operation.newsLabel
       if (label.length >= 6) {
         this.$message.error('标签最多只能有六个')
       } else {

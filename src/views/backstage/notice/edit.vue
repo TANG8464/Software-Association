@@ -50,7 +50,7 @@ export default {
       operation: {
         top: 0,
         categoryId: null,
-        newsLabels: [],
+        newsLabel: [],
       },
       isTiming: false,
       isReEdit: false,
@@ -96,7 +96,7 @@ export default {
           isTiming: data.data.flag === 2,
           date: data.data.publishTime,
           categoryId: data.data.newsCategory.id,
-          newsLabels: data.data.newsLabel ? data.data.newsLabel.split(',') : [],
+          newsLabel: data.data.newsLabel ? data.data.newsLabel.split(',') : [],
         }
         this.$refs.sidebar.operation = operation
       } else {
@@ -131,6 +131,7 @@ export default {
       }
     },
     async uploadNotice(flag, publishTime) {
+      this.operation.newsLabel = this.operation.newsLabel.join(',')
       const uploadData = Object.assign(
         this.operation,
         this.news,

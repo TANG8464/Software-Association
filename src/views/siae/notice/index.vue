@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div class="content" :style="{width}">
-          <span style="font-size:18px" @click="upOneLevel()">协会公告</span>
+          <span style="font-size:25px" @click="upOneLevel()">协会公告</span>
           <span v-if="isLoadingDetails" style="margin:0 5px">>&nbsp;{{details.title}}</span>
           <div v-else class="search" ref="search" :style="{width:(searchWidth+25)+'px'}">
             <input
@@ -21,15 +21,20 @@
         <span></span>
       </el-header>
       <div class="el-main" style="padding:0">
-        <line-loading :isLoading="isLoadingDetails"></line-loading>
+        <line-loading :isLoading.sync="isOpenPageLoading"></line-loading>
       </div>
       <el-main>
         <div class="content" ref="main-content" :style="{'height':size.maxH-150+'px',width}">
-          <notice-details v-if="isLoadingDetails" :notice="details"></notice-details>
+          <div v-if="isLoadingDetails">
+            <notice-details :notice="details"></notice-details>
+            <notice-cut :otherNotice="otherNotice" :otherArr="indexArr" @toOther="noticeDetails"></notice-cut>
+          </div>
+
           <div v-else>
-            <p>
-              <span v-if="isSearch">"{{searchData}}",</span>
-              <span>共查询到{{total}}条公告</span>
+            <p class="search-data_box">
+              <span class="search-text" v-if="isSearch">{{searchData}}</span>
+              <span class="search-text">{{total}}</span>
+              <span class="search-text">NOTICE</span>
             </p>
             <notice-list :notice="allNotice" @itemClick="noticeDetails"></notice-list>
             <p class="tip" style="text-align:center">
@@ -37,21 +42,41 @@
               <span v-if="isAllLoad">{{total!==0?'已全部加载':'没有相关公告'}}</span>
             </p>
           </div>
+          <div
+            class="share"
+            v-if="isOpenShare"
+            :style="{'position': size.isSmallSize?'relative':'absolute','top': size.isSmallSize?0:'150px','left': size.isSmallSize?0:'150px'}"
+          >
+            <share-other :title="details.title" :pics="details.oneImg"></share-other>
+          </div>
+          <div
+            class="aside"
+            :style="{'position': size.isSmallSize?'relative':'absolute','right': size.isSmallSize?0:'100px','bottom': size.isSmallSize?0:'100px'}"
+          >
+            <span style="margin:5px" class="top" v-if="isOpenToTop" @click="toTop()">
+              <span class="cloud" v-if="isClickTop">
+                <icon name="cloud1" scale="20" width="20"></icon>
+                <icon name="cloud2" scale="20" width="20"></icon>
+              </span>
+              <span class="plane">
+                <icon name="top" scale="50" width="50"></icon>
+              </span>
+            </span>
+          </div>
         </div>
       </el-main>
     </el-container>
-    <div class="top" v-if="isOpenToTop" @click="toTop()">
-      <icon name="top" scale="20" width="20"></icon>
-    </div>
   </div>
 </template>
 <script>
 import NoticeList from '@/components/NoticeList'
-import { searchAllNotice } from '@/api/notice'
+import { searchAllNotice, searchNoticeById } from '@/api/notice'
 import LineLoading from '@/components/PageLoading/LineLoading'
 import NoticeDetails from './components/NoticeDetails'
+import NoticeCut from './components/NoticeCut'
+import ShareOther from '@/components/ShareOther'
 export default {
-  components: { NoticeList, LineLoading, NoticeDetails },
+  components: { NoticeList, LineLoading, NoticeDetails, NoticeCut, ShareOther },
   data() {
     return {
       allNotice: [],
@@ -66,8 +91,13 @@ export default {
       isAllLoad: false, //是否加载完所有数据
       searchData: null, //用于展示的搜索内容
       details: {},
+      currentIndex: 0,
       isLoadingDetails: false,
+      isOpenPageLoading: false,
       isOpenToTop: false,
+      isClickTop: false,
+      otherNotice: [],
+      indexArr: [],
     }
   },
   computed: {
@@ -75,13 +105,19 @@ export default {
       return this.$store.state.resize
     },
     width() {
-      return this.size.isSmallSize ? '100%' : '70%'
+      return this.size.isSmallSize ? '100%' : '65%'
     },
     searchWidth() {
       return this.size.isSmallSize ? 130 : 415
     },
+    isOpenShare() {
+      return this.$route.query.id
+    },
   },
   watch: {
+    $router(newVal) {
+      console.log(newVal)
+    },
     title(newVal) {
       //取消搜索时需要init的项
       if (!newVal) {
@@ -97,9 +133,12 @@ export default {
     this.setAllNotice()
   },
   mounted() {
+    this.isOpenToTop = false
     //添加到达底部触发事件
     const elM = this.$refs['main-content']
-    elM.onmousewheel = () => {
+    elM.touchmove = elM.onmousewheel = () => {
+      if (elM.scrollTop !== 0) this.isOpenToTop = true
+      else this.isOpenToTop = false
       if (this.isAllLoad) {
         return
       }
@@ -110,8 +149,6 @@ export default {
         this.setAllNotice()
         this.time = newDateTime
       } else this.scrollTop = elM.scrollTop
-      if (elM.scrollTop !== 0) this.isOpenToTop = true
-      else this.isOpenToTop = false
     }
   },
   methods: {
@@ -129,33 +166,62 @@ export default {
       const data = await searchAllNotice(this.currPage, this.limit, this.title)
       if (data.code === 200) {
         const moreData = data.data.records
-        //延迟加载，更好的展示正在加载
-        setTimeout(() => {
-          let arr
-          if (this.title) arr = moreData
-          else arr = this.allNotice.concat(moreData)
-          //判断是否全部加载
-          if (arr.length >= data.data.total) this.isAllLoad = true
-          if (arr.length <= data.data.total) this.allNotice = arr
-          this.total = data.data.total
-          this.isLoading = false
-        }, 800)
+        let arr
+        if (this.title) arr = moreData
+        else arr = this.allNotice.concat(moreData)
+        //判断是否全部加载
+        if (arr.length >= data.data.total) this.isAllLoad = true
+        if (arr.length <= data.data.total) this.allNotice = arr
+        this.total = data.data.total
+        this.isLoading = false
+        //加载其他
+        const id = this.$route.query.id
+        const index = this.$route.query.index
+        if (id) this.noticeDetails(id, index)
       } else this.$message.error(data.message)
     },
-    noticeDetails(notice) {
-      this.details = notice
+    async searchNoticeById(id) {
+      const data = await searchNoticeById(id)
+      if (data.code === 200) {
+        this.details = data.data
+      } else this.$message.error(data.message)
+    },
+    noticeDetails(id, index) {
+      index = Number(index)
+      this.toTop()
+      this.searchNoticeById(id)
       this.isLoadingDetails = true
-      console.log(notice)
+      this.isOpenPageLoading = true
+
+      this.$router.push({
+        path: '/siae/notice',
+        query: { id, index },
+      })
+      if (this.allNotice.length > 2) {
+        this.indexArr = [
+          index - 1 >= 0 ? index - 1 : this.allNotice.length - 1,
+          index + 1 < this.allNotice.length ? index + 1 : 0,
+        ]
+        this.otherNotice = [this.allNotice[this.indexArr[0]], this.allNotice[this.indexArr[1]]]
+      } else this.otherNotice = null
+      this.currentIndex = index
     },
     upOneLevel() {
       this.details = {}
       this.isLoadingDetails = false
+      this.$router.push('/siae/notice')
     },
+    //回到顶部
     toTop() {
+      this.isClickTop = true
       const elM = this.$refs['main-content']
       const toTop = setInterval(() => {
         elM.scrollTop -= 600
-        if (elM.scrollTop === 0) clearInterval(toTop)
+        if (elM.scrollTop === 0) {
+          clearInterval(toTop)
+          this.isOpenToTop = false
+          this.isClickTop = false
+        }
       }, 50)
     },
   },
@@ -191,8 +257,39 @@ export default {
   color: #999999;
 }
 .siae-notice .top {
+}
+.siae-notice .top .plane .icon-top {
+  transform: rotate(180deg);
+}
+.siae-notice .top .icon-cloud2 {
+  position: relative;
+  top: 10px;
+  left: 5px;
+}
+.siae-notice .top .cloud {
   position: absolute;
-  right: 100px;
-  bottom: 100px;
+  animation: slide 1s infinite;
+}
+@keyframes slide {
+  0% {
+    top: 30px;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    top: 80px;
+  }
+}
+
+.siae-notice .search-data_box {
+  border-bottom: 1.2px solid #e0e0e0;
+  text-align: center;
+  padding: 10px 0;
+}
+.siae-notice .search-text {
+  padding: 3px 10px;
 }
 </style>

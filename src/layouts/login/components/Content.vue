@@ -97,7 +97,7 @@ export default {
 
       const headerToken = token.getHeaderToken()
       if (headerToken) {
-        this.$router.push('/backstage')
+        this.$router.push('/siae')
       }
     },
     //获取验证码
@@ -117,10 +117,6 @@ export default {
       const form = this.form
       form.rememberMe = Number(rememberMe)
       delete form.verifyImg
-
-      let title = null,
-        msg = null,
-        type = null
       if (form.username && form.password) {
         let { data } = await this.$axios.post('login', form)
         if (data.code === 200) {
@@ -134,34 +130,20 @@ export default {
             localStorage.removeItem('user')
           }
           let url = this.$route.query.redirect
-          console.log(url);
-          
+
           if (!url) {
-            url = '/backstage'
+            url = '/siae'
           }
           this.$router.push(url)
-          title = '成功'
-          msg = '登录成功'
-          type = 'success'
+          this.$notify.success({ title: '成功', message: '登录成功' })
         } else {
-          this.getVertifyCode() //更新验证码
           this.loading = false
-          title = '失败'
-          msg = data.error
-          type = 'error'
+          this.$notify.error({ title: '失败', message: data.error })
         }
+        this.getVertifyCode() //更新验证码
       } else {
-        title = '失败'
-        msg = '用户名密码不能为空'
-        type = 'error'
+        this.$notify.error({ title: '失败', message: '用户名密码不能为空' })
       }
-      this.$notify({
-        title: title,
-        message: msg,
-        type: type,
-        duration: 2000,
-        showClose: false,
-      })
     },
   },
 }

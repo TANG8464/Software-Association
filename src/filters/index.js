@@ -19,17 +19,29 @@
 
  export function dataFormatter(val) {
      const date = new Date(val)
+
      const newDate = new Date()
+     const difference = newDate.getTime() - date.getTime()
+     const timeMap = [
+         { plus: 60, num: 1000, value: '秒' },
+         { plus: 60, num: 60 * 1000, value: '分钟' },
+         { plus: 24, num: 60 * 60 * 1000, value: '小时' },
+     ]
+     for (let item of timeMap) {
+         if (difference < item.num * item.plus) {
+             return Math.floor(difference / item.num) + item.value + '前'
+         }
+     }
+
      const YearAreEqual = date.getFullYear() === newDate.getFullYear()
      const MonthAreEqual = date.getMonth() === newDate.getMonth()
      const dateDay = date.getDate()
      const newDateDay = newDate.getDate()
-     const week = ['日', '一', '二', '三', '四', '五', '六']
-     const day = `星期${week[date.getDay()]}`
+     const day = date.toLocaleTimeString()
      if (YearAreEqual && MonthAreEqual && dateDay === newDateDay) {
          return `今天  ${day}`
      } else if (YearAreEqual && MonthAreEqual && dateDay + 1 === newDateDay) {
          return `昨天  ${day}`
      }
-     return `${val}  ${day}`
+     return `${date.toLocaleDateString()}  ${day}`
  }

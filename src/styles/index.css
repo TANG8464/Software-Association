@@ -2,9 +2,38 @@
     outline: none;
 }
 
-.noChecked {
-    background-color: white;
+
+/* 槽 */
+
+ ::-webkit-scrollbar {
+    width: 0px;
+    height: 8px;
+}
+
+ ::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    /* -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08); */
+}
+
+
+/* 滚动条滑块 */
+
+ ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.08);
+    /* background-color: rgba(255, 255, 255, 1); */
+    /* -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); */
+}
+
+.siae {
+    font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
     color: #666666;
+}
+
+.noChecked {
+    background-color: white!important;
+    color: #666666!important;
 }
 
 .v-modal {

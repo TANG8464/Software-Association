@@ -231,7 +231,7 @@ export default {
       }
       if (ids.length <= 0) {
         this.$message({
-          type: 'warinning',
+          type: 'warnning',
           message: '您还没有选择删除项哦',
           customClass: 'noChecked',
         })
