@@ -1,269 +1,279 @@
 <template>
-  <div class="main">
-    <div class="table remove">
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-        @row-contextmenu="more"
-        @row-dblclick="more"
-        :cell-class-name="cellClassName"
-        @cell-mouse-enter="onCellMouseEnter"
-        @cell-mouse-leave="onCellMouseLeave"
-      >
-        <el-table-column type="selection" width="30" v-if="isShowDels"></el-table-column>
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <member-info :memberInfo="props.row"></member-info>
-          </template>
-        </el-table-column>
-        <el-table-column label="姓名" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <span style="color:red;">
-              <icon name="admin" scale="20" width="20" v-if="scope.row.isAdmin"></icon>
-            </span>
-            <span>{{scope.row.memberName}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="!size.isSmallSize" prop="id" label="成员号" width="100"></el-table-column>
-        <el-table-column v-if="!size.isSmallSize" label="学院">
-          <template slot-scope="scope">
-            <span>{{scope.row.institute?scope.row.institute.institute_name:'-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="!size.isSmallSize" label="专业">
-          <template slot-scope="scope">
-            <span>{{scope.row.specialty?scope.row.specialty.specialty_name:'-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="!size.isSmallSize" label="班级">
-          <template slot-scope="scope">
-            <span>{{scope.row.iclass?scope.row.iclass.class_name:'-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="!size.isSmallSize" prop="position.positionName" label="职位">
-          <template slot-scope="scope">
-            <span>{{scope.row.position?scope.row.position.positionName:'-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="150">
-          <template slot="header">
-            <div style="text-align:right;">
-              <el-button
-                type="danger"
-                size="mini"
-                round
-                plain
-                v-if="!isShowDels"
-                @click="isShowDels=true"
-              >
-                <i class="el-icon-delete"></i>
-                批量删除
-              </el-button>
-            </div>
-            <div v-if="isShowDels">
-              <el-button type="danger" size="mini" round plain @click="removeMember()">确认</el-button>
-              <el-button type size="mini" round plain @click="isShowDels=false">取消</el-button>
-            </div>
-          </template>
-          <template slot-scope="scope">
-            <div style="text-align:right;">
-              <el-button
-                v-if="scope.row.isAdmin"
-                size="mini"
-                type="danger"
-                @click="changeAdmin(scope.row.id, 2)"
-              >取消管理</el-button>
-              <el-button v-else size="mini" @click="changeAdmin(scope.row.id,3)">设为管理</el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div style="text-align:right;">
-        <el-pagination
-          @current-change="initTable"
-          :current-page="pagenum"
-          :page-sizes="[10,15,20,25,30]"
-          :page-size="10"
-          layout="total, prev, pager, next, jumper"
-          :total="total"
-        ></el-pagination>
-      </div>
+<div class="main">
+    <div class="header" style="text-align:right;">
+        <el-link type="primary" @click="downloadMemberInfo">导出成员表</el-link>
     </div>
-    <update-memberInfo
-      :isOpenUpdateInfo.sync="isOpenUpdateInfo"
-      :memberInfo.sync="memberInfo"
-      @updateMemberInfo="updateMemberInfo"
-    ></update-memberInfo>
+    <div class="table remove">
+        <div style="width:100%;text-align:right;">
+            <el-select v-model="condition.flag" placeholder="请选择" style="width:100px;float:left;margin:10px 0" size="small" @change="initTable()">
+                <el-option label="所有" :value="-1"></el-option>
+                <el-option label="协会内" :value="0"></el-option>
+                <el-option label="协会外" :value="1"></el-option>
+                <el-option label="黑名单" :value="2"></el-option>
+            </el-select>
+            <el-select v-model="selectSearch" placeholder="请选择" style="width:100px" size="small">
+                <el-option label="姓名" value="memberName"></el-option>
+                <el-option label="成员号" value="id"></el-option>
+            </el-select>
+            <el-input v-if="selectSearch==='memberName'" style="min-width:200px;width:25%;margin:10px;" v-model="condition.memberName" size="small" placeholder="请输入姓名搜索"></el-input>
+            <el-input v-if="selectSearch==='id'" style="min-width:200px;width:25%;margin:10px;" v-model="condition.id" size="small" placeholder="请输入成员号搜索"></el-input>
+            <condition-query :condition.sync="condition" @queryCondition="initTable"></condition-query>
+        </div>
+        <div>
+            <member-table :tableData="tableData" :selectPosition="selectPosition" :loading="loading" @handleSelectionChange="handleSelectionChange" @more="more" @changePosition="changePosition" @removeMember="removeMember" @changeAdmin="changeAdmin"></member-table>
+            <div style="text-align:right">
+                <el-pagination style="width:300px;display:inline-block;padding:0" @current-change="initTable" :current-page="pagenum" :page-sizes="[10,15,20,25,30]" :page-size="condition.size" layout="total, prev, pager, next" :total="total" :hide-on-single-page="true"></el-pagination>
+                <el-select style="width:80px;margin:0 10px;position:relative;top:5px" v-model="condition.size" placeholder="请选择" size="mini" @change="initTable(1)">
+                    <el-option :label="(item-1)*(item-1)*10+10" :value="(item-1)*(item-1)*10+10" v-for="item in 8" :key="item"></el-option>
+                </el-select>
+            </div>
+        </div>
+    </div>
+    <update-memberInfo :isOpenUpdateInfo.sync="isOpenUpdateInfo" :memberInfo.sync="memberInfo" @updateMemberInfo="updateMemberInfo"></update-memberInfo>
     <right-click-box :menu="menuItem" @open="open" ref="menuBox"></right-click-box>
-  </div>
+    <a ref="downloadMemberInfo"></a>
+</div>
 </template>
+
 <script>
-import MemberInfo from './components/MemberInfo'
+import MemberTable from './components/MemberTable'
+import ConditionQuery from './components/ConditionQuery'
 import UpdateMemberInfo from './components/UpdateMemberInfo'
 import RightClickBox from '@/components/RightClickBox'
+import {
+    updateMemberInfo,
+    conditionSearch,
+    downloadMemberInfo
+} from '@/api/user'
 export default {
-  name: 'memberManage',
-  components: {
-    MemberInfo,
-    UpdateMemberInfo,
-    RightClickBox,
-  },
-  data() {
-    return {
-      tableData: [],
-      pagenum: 1,
-      pagesize: 10,
-      total: 10,
-      checkeds: 0,
-      isOpenUpdateInfo: false,
-      memberInfo: null,
-      selected: [],
-      isShowDels: false,
-      menuItem: ['修改', '移出协会', '加入黑名单', '永久删除'],
-      selectedRow: null,
-    }
-  },
-  computed: {
-    size() {
-      return this.$store.state.resize
+    name: 'memberManage',
+    components: {
+        MemberTable,
+        UpdateMemberInfo,
+        RightClickBox,
+        ConditionQuery,
     },
-  },
-  created() {
-    this.initTable(1)
-  },
-  methods: {
-    more(row, column, event) {
-      //打开更多选项设置
-      event.preventDefault() //阻止弹出默认窗
-      this.$refs.menuBox.more(event)
-      this.selectedRow = row
+    data() {
+        return {
+            loading: false,
+            tableData: [],
+            position: [],
+            selectPosition: [],
+            pagenum: 1,
+            pagesize: 10,
+            total: 10,
+            checkeds: 0,
+            isOpenUpdateInfo: false,
+            memberInfo: null,
+            selected: [],
+            menuItem: [],
+            selectedRow: null,
+            //搜索
+            selectSearch: 'memberName',
+            condition: {
+                memberName: null,
+                id: null,
+                flag: 0,
+                curPage: 1,
+                classID: null,
+                instituteID: null,
+                specialtyID: null,
+                size: 10,
+            },
+        }
     },
-    open(index) {
-      switch (index) {
-        case 0:
-          this.openEditDialog(this.selectedRow)
-          break
-        case 1:
-          this.updateMemberFlag(this.selectedRow.id, 1)
-          break
-        case 2:
-          this.updateMemberFlag(this.selectedRow.id, 2)
-          break
-        case 3:
-          this.removeMember(this.selectedRow.id)
-      }
-    },
-    async initTable(val) {
-      const { data: res } = await this.$http.get('member/search', {
-        params: {
-          flag: 0,
-          curPage: val,
+    computed: {
+        size() {
+            return this.$store.state.resize
         },
-      })
-      if (res.code != 200) {
-        this.$message.error(res.message)
-      } else {
-        this.tableData = res.data.records
-        this.pagenum = res.data.current
-        this.total = res.data.total
-        this.pagesize = res.data.size
-        this.tableData.forEach((item) => {
-          item.isAdmin = item.roles.some((i) => {
-            if (i.roleId === 3) return true
-          })
-          item.isHover = false
-        })
-      }
     },
-    cellClassName({ row, column, rowIndex, columnIndex }) {
-      row.index = rowIndex
-      column.index = columnIndex
+    watch: {
+        'condition.memberName'() {
+            this.initTable(1)
+        },
+        'condition.id'() {
+            this.initTable(1)
+        },
+        'condition.size'() {
+            this.initTable(1)
+        },
     },
-    onCellMouseEnter(row, column, cell, event) {
-      this.tableData[row.index].isHover = true
+    created() {
+        this.initTable(1)
     },
-    onCellMouseLeave(row, column, cell, event) {
-      this.tableData[row.index].isHover = false
+    methods: {
+        more(row, column, event) {
+            const menuMap = [
+                ['修改', '移出协会', '加入黑名单', '永久删除'],
+                ['修改', '加入协会', '加入黑名单', '永久删除'],
+                ['修改', '永久删除'],
+            ]
+            this.menuItem = menuMap[row.flag]
+            //打开更多选项设置
+            event.preventDefault() //阻止弹出默认窗
+            this.$refs.menuBox.more(event)
+            this.selectedRow = row
+        },
+        //右击菜单点击后的关联操作
+        open(index) {
+            switch (index) {
+                case 0:
+                    this.openEditDialog(this.selectedRow)
+                    break
+                case 1:
+                    const flag = this.selectedRow.flag
+                    if (flag === 2) {
+                        this.removeMember(this.selectedRow.id)
+                    } else if (flag <= 1) {
+                        const changeFlag = flag === 0 ? 1 : 0
+                        this.updateMemberFlag(this.selectedRow.id, 1)
+                    }
+                    break
+                case 2:
+                    this.updateMemberFlag(this.selectedRow.id, 2)
+                    break
+                case 3:
+                    this.removeMember(this.selectedRow.id)
+            }
+        },
+        //初始化表格数据，
+        async initTable(val) {
+            this.loading = true
+            this.condition.curPage = val
+            const data = await conditionSearch(this.condition)
+            if (data.code != 200) {
+                this.$message.error(data.message)
+            } else {
+                this.tableData = data.data.records
+                this.pagenum = data.data.current
+                this.total = data.data.total
+                this.pagesize = data.data.size
+
+                this.tableData.forEach((item) => {
+                    if (item.position != null) this.selectPosition.push(item.position.id)
+                    else this.selectPosition.push('无')
+                    item.isAdmin = item.roles.some((i) => {
+                        if (i.roleId === 3) return true
+                    })
+                    item.isHover = false
+                })
+                setTimeout(() => {
+                    this.loading = false
+                }, 500)
+            }
+        },
+
+        //更改职位
+        async changePosition(row, index) {
+            const data = await updateMemberInfo(row.id, {
+                positionID: this.selectPosition[index],
+            })
+            if (data.code !== 200) {
+                this.$message.error(data.message)
+            }
+        },
+        //打开修改
+        openEditDialog(row) {
+            this.memberInfo = row
+            console.log(row)
+
+            this.isOpenUpdateInfo = true
+        },
+        //全选后
+        handleSelectionChange(val) {
+            this.checkeds = val.length
+            val.forEach((item) => {
+                this.selected.push(item.id)
+            })
+        },
+        //修改
+        async updateMemberInfo() {
+            const {
+                data
+            } = await this.$axios.put(`member/${this.memberInfo.id}`, this.memberInfo)
+            if (data.code === 200) {
+                this.$message.success('修改成功')
+                this.initTable(this.pagenum)
+            } else {
+                this.$message.error(data.message)
+            }
+        },
+        //删除
+        async removeMember(id) {
+            let resData = []
+            if (id) resData.push(id)
+            else if (this.selected.length === 0) {
+                this.$message.warning('请先选择成员!')
+                return
+            } else {
+                resData = this.selected
+            }
+            const confirmresult = await this.$confirm(
+                `此操作将永久删除${id ? '该成员' : '这' + resData.length + '名成员'}`,
+                '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }
+            ).catch((err) => err)
+            if (confirmresult == 'confirm') {
+                const {
+                    data: res
+                } = await this.$http.delete('member/', {
+                    data: resData,
+                })
+                if (res.code !== 200) {
+                    this.$message.error('删除失败!')
+                } else {
+                    this.$message.success('删除成功!')
+                    this.initTable(this.pagenum)
+                }
+            } else {
+                this.$message.info('已取消删除')
+            }
+        },
+        //修改协会状态
+        async updateMemberFlag(id, status) {
+            const {
+                data
+            } = await this.$axios.put(`/member/${id}/flag/${status}`)
+            console.log(data)
+            if (data.code === 200) {
+                this.initTable(this.pagenum)
+            } else this.$message.error(data.message)
+        },
+        //设置管理或取消管理
+        async changeAdmin(id, role) {
+            const putData = [role]
+            const {
+                data
+            } = await this.$axios.put(`member/authority/${id}`, putData)
+            if (data.code === 200) {
+                this.initTable(this.pagenum)
+            } else {
+                this.$message.error(data.message)
+            }
+        },
+        async downloadMemberInfo() {
+            const data = await downloadMemberInfo(this.condition)
+            console.log(data)
+            const a = this.$refs.downloadMemberInfo
+            a.href = window.URL.createObjectURL(data)
+            a.download = '成员信息'
+            a.click()
+        },
     },
-    openEditDialog(row) {
-      this.memberInfo = row
-      this.isOpenUpdateInfo = true
-    },
-    handleSelectionChange(val) {
-      this.checkeds = val.length
-      val.forEach((item) => {
-        this.selected.push(item.id)
-      })
-    },
-    async updateMemberInfo() {
-      const { data } = await this.$axios.put(`member/${this.memberInfo.id}`, this.memberInfo)
-      if (data.code === 200) {
-        this.$message.success('修改成功')
-        this.initTable(this.pagenum)
-      } else {
-        this.$message.error(data.message)
-      }
-    },
-    async removeMember(id) {
-      let resData = []
-      if (id) resData.push(id)
-      else if (this.selected.length === 0) {
-        this.$message.warning('请先选择成员!')
-        return
-      } else {
-        resData = this.selected
-      }
-      const confirmresult = await this.$confirm(
-        `此操作将永久删除${id ? '该成员' : '这' + resData.length + '名成员'}`,
-        '删除',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      ).catch((err) => err)
-      if (confirmresult == 'confirm') {
-        const { data: res } = await this.$http.delete('member/', {
-          data: resData,
-        })
-        if (res.code !== 200) {
-          this.$message.error('删除失败!')
-        } else {
-          this.$message.success('删除成功!')
-          this.initTable(this.pagenum)
-        }
-      } else {
-        this.$message.info('已取消删除')
-      }
-    },
-    async updateMemberFlag(id, status) {
-      const { data } = await this.$axios.put(`/member/${id}/flag/${status}`)
-      console.log(data)
-      if (data.code === 200) {
-        this.initTable(this.pagenum)
-      } else this.$message.error(data.message)
-    },
-    async changeAdmin(id, role) {
-      const putData = [role]
-      const { data } = await this.$axios.put(`member/authority/${id}`, putData)
-      if (data.code === 200) {
-        this.initTable(this.pagenum)
-      } else {
-        this.$message.error(data.message)
-      }
-    },
-  },
 }
 </script>
+
 <style scoped>
 .el-pagination {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 .operation span {
-  display: inline-block;
-  margin: 0 5px;
-  color: #909399;
+    display: inline-block;
+    margin: 0 5px;
+    color: #909399;
 }
 </style>

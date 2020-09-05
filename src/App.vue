@@ -9,6 +9,7 @@ import resizeMixin from '@/layouts/windowResize'
 import { getActiveUserInfo } from '@/api/active-user'
 export default {
   name: 'App',
+
   mixins: [resizeMixin],
   beforeCreate() {
     getActiveUserInfo().then((res) => {
@@ -39,18 +40,6 @@ export default {
   color: #42b983;
 }
 
-.component-enter,
-.component-leave-to {
-  opacity: 0;
-  transform: translateX(50px);
-}
-/* v-enter-active 入场动画时间段 */
-/* v-leave-active 离场动画时间段 */
-
-.component-enter-active,
-.component-leave-active {
-  transition: all 0.3s ease;
-}
 span:hover,
 h2:hover,
 svg:hover,

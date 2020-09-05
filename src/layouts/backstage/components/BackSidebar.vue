@@ -4,14 +4,14 @@
       <personal-avatar></personal-avatar>
     </div>
     <el-tooltip class="item" effect="dark" content="返回首页" placement="left-end">
-      <router-link to="/siae" tag="div" style="font-size:18px;">
+      <router-link to="/" tag="div" style="font-size:18px;">
         <button class="button">
           <icon name="homepage" scale="25" width="25"></icon>
         </button>
       </router-link>
     </el-tooltip>
     <el-tooltip class="item" effect="dark" content="个人中心" placement="left-end">
-      <router-link to="/personalCenter" tag="div" style="font-size:18px;">
+      <router-link to="/personal-center" tag="div" style="font-size:18px;">
         <button class="button">
           <icon name="personal-center" scale="25" width="25"></icon>
         </button>
@@ -67,28 +67,31 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 .back-sidebar {
   text-align: center;
-}
-.back-sidebar .svg-icon {
-  color: rgb(55, 185, 233);
-  transition: all 1s;
-}
-.back-sidebar .button {
-  background: none;
-  border: none;
-  border-radius: 5px;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  margin: 5px 0;
-  transition: all 1s;
-}
-.back-sidebar .button:hover {
-  background-color: rgb(98, 213, 255);
-}
-.back-sidebar .button:hover .svg-icon {
-  color: #fff;
+  .svg-icon {
+    color: #666666;
+    transition: all 1s;
+  }
+  .button {
+    background: none;
+    border: none;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    margin: 5px 0;
+    transition: all 1s;
+  }
+  .button:hover {
+    background-color: #666666;
+  }
+  .button:hover .svg-icon {
+    color: #fff;
+  }
+  .el-avatar {
+    box-shadow: rgb(217, 217, 217) 0px 0px 5px 1px;
+  }
 }
 </style>

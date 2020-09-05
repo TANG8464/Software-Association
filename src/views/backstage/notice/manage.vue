@@ -11,7 +11,7 @@
         <el-input
           style="min-width:200px;width:35%; float:left;margin:10px 0;"
           v-model="state"
-          size="mini"
+          size="small"
           placeholder="请输入标题搜索"
         ></el-input>
       </div>

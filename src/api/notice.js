@@ -1,6 +1,9 @@
 import request from "@/utils/request";
 const link = 'https://siaestudio.cn-bj.ufileos.com/2d42533f-2bc8-4929-89d5-7b6a2d03bb62.png?UCloudPublicKey=TOKEN_58848898-b11e-4125-946f-2167992f8714&Signature=UZB50yqAUVhYZf6UyNwuXxkOhsk%3D&Expires=2858405930'
-
+    /**
+     * 根据文章获取第一张图片
+     * @param {String} content 文章内容 
+     */
 function formatImg(content) {
     let data
     content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/, function(match, capture) {
@@ -8,6 +11,10 @@ function formatImg(content) {
     })
     return data || link
 }
+/**
+ * 根据文章的html内容 获取所有文字
+ * @param {String} content 文章内容
+ */
 
 function formatHtml(content) {
     return content
@@ -44,6 +51,10 @@ export async function searchAllNotice(currPage, limit, title) {
     })
     return data
 }
+/**
+ * 通过id查找公告
+ * @param {Number} id 
+ */
 export async function searchNoticeById(id) {
     let { data } = await request({
         url: `news/${id}`,
@@ -51,6 +62,23 @@ export async function searchNoticeById(id) {
     })
     let notice = data.data
     notice.label = notice.newsLabel ? notice.newsLabel.split(',') : []
+    return data
+
+}
+
+
+export async function searchNewestNotice() {
+    let { data } = await request({
+        url: `news/newest`,
+        method: 'get'
+    })
+    let notice = data.data
+
+    notice.forEach(item => {
+        item.cover = formatImg(item.content)
+        item.text = formatHtml(item.content)
+        item.label = notice.newsLabel ? notice.newsLabel.split(',') : []
+    })
     return data
 
 }

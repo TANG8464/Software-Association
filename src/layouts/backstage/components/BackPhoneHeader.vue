@@ -1,24 +1,25 @@
 <template>
   <div class="back-phone-header" v-if="isShow">
-    <div class="logo-box" style>
-      <img src="@/assets/img/logo.png" class="logo" />
-      <p class="logo-title" style="font-size:14px;">软件协会</p>
+    <div class="header">
+      <div class="logo-box" style>
+        <img src="@/assets/img/logo.png" class="logo" />
+      </div>
+      <ul class="header-btn" id="header-btn" style="list-style:none;padding:0;">
+        <li>
+          <i @click="person = true">
+            <icon name="sidebar" scale="20" width="20"></icon>
+          </i>
+        </li>
+        <li>
+          <span @click="menu = true" v-show="!menu">
+            <icon name="menu-nav" scale="20" width="20"></icon>
+          </span>
+          <span @click="menu = false" v-show="menu">
+            <icon name="close" scale="20" width="20"></icon>
+          </span>
+        </li>
+      </ul>
     </div>
-    <ul class="header-btn" id="header-btn" style="list-style:none;padding:0;">
-      <li>
-        <i @click="person = true">
-          <icon name="sidebar" scale="20" width="20"></icon>
-        </i>
-      </li>
-      <li>
-        <span @click="menu = true" v-show="!menu">
-          <icon name="menu-nav" scale="20" width="20"></icon>
-        </span>
-        <span @click="menu = false" v-show="menu">
-          <icon name="close" scale="20" width="20"></icon>
-        </span>
-      </li>
-    </ul>
     <el-drawer class="drawer" :visible.sync="person">
       <div style="overflow:auto;" :style="{'height':maxH+'px'}">
         <back-sidebar id="nav-sidebar"></back-sidebar>
@@ -112,29 +113,34 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 .back-phone-header {
-  z-index: 999;
-}
-.back-phone-header .el-drawer {
-  width: 20% !important;
-}
-.back-phone-header .logo-box {
-  margin: auto 5px;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 0;
-}
-.back-phone-header .header-btn {
-  float: right;
-  margin-right: 15px;
-}
-.back-phone-header li {
-  display: inline;
-  margin: 0 10px;
-}
-.back-phone-header .back-aside {
-  width: 100%;
+  .header {
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    text-align: right;
+  }
+  .el-drawer {
+    width: 20% !important;
+  }
+  .logo-box {
+    margin: auto 5px;
+
+    top: 0;
+  }
+  .logo {
+    height: 30px;
+  }
+  .header-btn {
+    width: 100%;
+  }
+  li {
+    display: inline;
+    margin: 0 10px;
+  }
+  .back-aside {
+    width: 100%;
+  }
 }
 </style>

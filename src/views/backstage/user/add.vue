@@ -4,20 +4,28 @@
       <el-link type="primary" @click="isBulk=!isBulk">{{isBulk?'单个添加':'批量导入'}}</el-link>
     </div>
     <div v-if="isBulk">
-      <bulk-import></bulk-import>
+      <bulk-import-member></bulk-import-member>
     </div>
     <div v-else>
-      <member-info-form :personalInfo.sync="memberData" @submitForm="addMember" :col="3"></member-info-form>
+      <member-info-form
+        :personalInfo.sync="memberData"
+        @submitForm="addMember"
+        :col="3"
+        :colW="350"
+        :show="[
+        'memberName','gender','startYear','cascadeClass','stu_num','phoneNum','nation','nativePlace','address','education','politicalOutlook','cardID','email','description'
+      ]"
+      ></member-info-form>
     </div>
   </div>
 </template>
 <script>
 import MemberInfoForm from '@/components/MemberInfoForm'
-import BulkImport from './components/BulkImport'
+import BulkImportMember from './components/BulkImport/ImportMember'
 export default {
   components: {
     MemberInfoForm,
-    BulkImport,
+    BulkImportMember,
   },
   data() {
     return {

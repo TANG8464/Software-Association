@@ -1,144 +1,206 @@
 <template>
-  <div class="header">
-    <ul class="siae-menu" style="list-style:none;" ref="menu" @click="choose">
-      <li class="siae-menu-item" data-not-choose="true">
-        <div class="logo-box">
-          <img src="@/assets/img/newLogo.png" alt class="logo" />
-        </div>
-      </li>
-      <router-link
-        class="siae-menu-item"
-        tag="li"
-        to="/siae/homePage"
-        data-index="/siae/homePage"
-      >首页</router-link>
-      <router-link class="siae-menu-item" tag="li" to="/siae/joinIn" data-index="/siae/joinIn">申请入会</router-link>
-      <router-link class="siae-menu-item" tag="li" to="/siae/notice" data-index="/siae/notice">协会公告</router-link>
-      <router-link
-        class="siae-menu-item"
-        tag="li"
-        to="/siae/dataDownload"
-        data-index="/siae/dataDownload"
-      >资料下载</router-link>
-      <router-link class="siae-menu-item" tag="li" to="/siae/books-borrow" data-index="/siae/books-borrow">图书借阅</router-link>
-      <li class="siae-menu-item" style="float:right;" data-not-choose="true">
-        <header-account ref="account"></header-account>
-      </li>
-    </ul>
-  </div>
+<div class="header" :class="{'open-msg':isOpenMsg}">
+    <menu-nav :menu="size.isSmallSize?[]:menu" :parent="size.isSmallSize?'':parent">
+        <span class="siae-menu-item" data-not-choose="true" slot="logo">
+            <img src="@/assets/img/newLogo.png" alt class="logo" />
+        </span>
+        <span v-if="isLogin" class="siae-menu-item" data-not-choose="true" slot="actions">
+            <span :class="{'message-icon':sysNoticeCount>0}" style="color:white;" @click="isOpenMsg=true">
+                <icon name="message" scale="20" width="20"></icon>
+                <span>{{sysNoticeCount>99?'99+':sysNoticeCount}}</span>
+                <web-socket :sysNoticeCount.sync="sysNoticeCount" :isLogin="isLogin"></web-socket>
+            </span>
+            <span style="color:white;margin-right: 5px;" @click="isOpenMsg=false">
+                <change-back ref="changeBack" data-active="设置登录页背景"></change-back>
+            </span>
+            <header-account ref="account" :account="account" :accountName="accountName"></header-account>
+        </span>
+        <router-link to="/login" tag="span" class="siae-menu-item" data-not-choose="true" slot="actions" v-else>登录</router-link>
+    </menu-nav>
+    <menu-nav v-if="size.isSmallSize" :menu="menu" :parent="parent"></menu-nav>
+    <div class="message-box" ref="msg-box" :style="{'top':size.isSmallSize?'100px': '60px'}">
+        <message :isOpenMsg.sync="isOpenMsg" :isLogin="isLogin" :sysNoticeCount.sync="sysNoticeCount"></message>
+    </div>
+</div>
 </template>
 
 <script>
 import HeaderAccount from './RightAccount'
+import MenuNav from './MenuNav'
+import ChangeBack from './ChangeBack'
+import Message from './Message'
+import WebSocket from './WebSocket'
+import {
+    getActiveUserInfo
+} from '@/api/active-user'
+import token from '@/utils/token'
 export default {
-  name: 'Header',
-  components: {
-    HeaderAccount,
-  },
-  data() {
-    return {
-      loginShow: true,
-      accountName: '',
-      index: '',
-    }
-  },
-  created() {
-    this.index = this.$router.currentRoute.path
-  },
-  watch: {
-    '$route.fullPath': function (newVal, oldVal) {
-      this.index = newVal
+    name: 'Header',
+    components: {
+        HeaderAccount,
+        MenuNav,
+        ChangeBack,
+        Message,
+        WebSocket,
     },
-  },
-  computed: {
-    size() {
-      return this.$store.state.resize
-    },
-  },
-  mounted() {
-    this.activeMenu()
-  },
-  methods: {
-    open() {
-      this.$refs.login.dialog = true
-    },
-    activeMenu() {
-      const allMenu = this.$refs.menu.children
-      const currentRoute = this.$route.fullPath
-      allMenu.forEach((item) => {
-        if (item.dataset.index === currentRoute) {
-          item.classList.add('siae-menu-active')
+    data() {
+        return {
+            menu: null,
+            account: [{
+                    name: '个人中心',
+                    url: '/personal-center',
+                    icon: 'personal-center',
+                },
+                {
+                    name: '管理中心',
+                    url: '/Backstage',
+                    icon: 'manage',
+                },
+            ],
+            parent: '/',
+            accountName: null,
+            isLogin: false,
+            isOpenMsg: false,
+            sysNoticeCount: 0,
         }
-      })
     },
-    choose(e) {
-      const allMenu = this.$refs.menu.children
-      e.path.forEach((item) => {
-        const className = item.className
-        const isNotChoose = item.dataset && item.dataset.notChoose
-        if (className && className.indexOf('siae-menu-item') >= 0 && !isNotChoose) {
-          allMenu.forEach((item) => {
-            if (item.className.indexOf('siae-menu-active') >= 0) {
-              item.classList.remove('siae-menu-active')
+    computed: {
+        size() {
+            return this.$store.state.resize
+        },
+        isChangeMyInfo() {
+            return this.$store.state.myInfo
+        },
+    },
+    watch: {
+        isChangeMyInfo() {
+            this.init()
+        },
+        isOpenMsg(newVal) {
+            const el = this.$refs['msg-box']
+            if (newVal) {
+                el.style.display = 'block'
+                setTimeout(() => {
+                    el.style.opacity = 1
+                    el.style.bottom = 0
+                }, 1)
+            } else {
+                el.style.opacity = 0
+                setTimeout(() => {
+                    el.style.display = 'none'
+                }, 500)
             }
-          })
-          setTimeout(() => {
-            item.classList.add('siae-menu-active')
-          }, 200)
-        }
-      })
+            this.$store.commit('changeMsg', newVal)
+        },
+        $route() {
+            this.isOpenMsg = false
+        },
     },
-  },
+    created() {
+        this.init()
+    },
+    methods: {
+        async init() {
+            const {
+                data
+            } = await getActiveUserInfo()
+            this.isLogin = data.code === 200
+            if (this.isLogin) this.accountName = data.data.memberName
+            if (token.getHeaderToken()) {
+                this.menu = [{
+                        name: '首页',
+                        url: 'homePage',
+                    },
+                    {
+                        name: '申请入会',
+                        url: 'joinIn',
+                    },
+                    {
+                        name: '协会公告',
+                        url: 'notice',
+                    },
+                    {
+                        name: '资料下载',
+                        url: 'data-download',
+                    },
+                    {
+                        name: '图书借阅',
+                        url: 'books-borrow',
+                    },
+                ]
+            } else {
+                this.menu = [{
+                        name: '首页',
+                        url: 'homePage',
+                    },
+                    {
+                        name: '申请入会',
+                        url: 'joinIn',
+                    },
+                    {
+                        name: '协会公告',
+                        url: 'notice',
+                    },
+                ]
+            }
+        },
+    },
 }
 </script>
 
-<style scoped>
+<style>
 .header {
-  min-width: 700px;
-  text-align: center;
-}
-.logo-box {
-}
-.logo {
-  height: 60px;
+    overflow: hidden;
+
 }
 
-.menu-right {
-  float: right;
+.logo {
+    height: 60px;
 }
-.el-menu,
-.el-menu-item {
-  border: none;
+
+.message-icon {
+    animation: shake 1s infinite;
 }
-.el-menu-item:hover {
-  background-color: white !important;
+
+@keyframes shake {
+    0% {
+        transform: rotate(10deg);
+    }
+
+    10% {
+        transform: rotate(-10deg);
+    }
+
+    20% {
+        transform: rotate(10deg);
+    }
+
+    30% {
+        transform: rotate(-10deg);
+    }
+
+    40% {
+        transform: rotate(10deg);
+    }
+
+    100% {
+        transform: rotate(10deg);
+    }
 }
-.el-menu.el-menu--horizontal {
-  border-bottom: none;
+
+.open-msg {
+    background-color: rgba(41, 42, 52, 0.8);
 }
-.siae-menu {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  margin: 0;
-}
-.siae-menu-item {
-  display: inline-block;
-  min-width: 90px;
-  cursor: pointer;
-  padding: 10px 0;
-  color: #999999;
-  font-size: 14px;
-}
-.siae-menu-item:last-child {
-  position: absolute;
-  right: 10px;
-}
-.siae-menu-active {
-  color: white;
+
+.message-box {
+    position: fixed;
+
+    z-index: 100;
+    background-color: rgba(41, 42, 52, 0.8);
+    width: 100%;
+    opacity: 0;
+    display: none;
+    transition: all 0.5s;
+    overflow: hidden;
 }
 </style>

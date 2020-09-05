@@ -7,6 +7,7 @@
       placeholder="请输入文件名"
       style="transition: all 1s;"
       :style="{width:searchInputWidth+'px',padding:'0 '+searchInputPadding+'px'}"
+      @keypress.enter="search()"
     />
     <span @click="search()">
       <icon id="icon-search" name="search" scale="23" width="23"></icon>

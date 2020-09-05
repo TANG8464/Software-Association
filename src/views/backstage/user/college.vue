@@ -31,7 +31,12 @@
       <el-table-column :label="typeMap[currentData.type]">
         <template slot-scope="scope">
           <div v-if="scope.row.isEdit">
-            <el-input style="width:70%" v-model="scope.row.name" placeholder="请输入内容"></el-input>
+            <el-input
+              style="width:70%"
+              @keypress.enter.native="updateName(scope.row,scope.$index)"
+              v-model="scope.row.name"
+              placeholder="请输入内容"
+            ></el-input>
             <div
               style="display:inline-block;color:#33ce33;"
               @click="updateName(scope.row,scope.$index)"
@@ -71,7 +76,7 @@
   </div>
 </template>
 <script>
-import { searchCollegeTree } from '@/api/searchData'
+import { searchCollegeTree } from '@/api/institutes'
 export default {
   data() {
     return {
@@ -155,9 +160,22 @@ export default {
         this.$message.error(data.message)
       }
     },
-    async updateName({ type, id, name }, index) {
-      this.collegeTree[index].isEdit = false
-      this.$message.warning('暂未实现修改功能')
+    async updateName({ type, id, name, parentId }, index) {
+      const updateMap = [
+        { institute_name: name, id },
+        { specialty_name: name, id,instituteID:parentId },
+        { class_name: name, id ,specialtyID:parentId},
+      ]
+      const urlMap = ['college/institute', 'college/specialty', 'college/class']
+      const updateData = updateMap[type]
+      const { data } = await this.$axios.put(`${urlMap[type]}`, updateData)
+      if (data.code === 200) {
+        this.$message.success('修改成功')
+        this.collegeTree[index].isEdit = false
+        this.setCollegeTree()
+      } else {
+        this.$message.error(data.message)
+      }
     },
     removeTip({ type, id, child }) {
       const typeMap = this.typeMap

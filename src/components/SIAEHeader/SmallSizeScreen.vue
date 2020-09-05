@@ -1,79 +1,208 @@
 <template>
-  <ul class="siae-phone-header">
-    <li class="logo-box">
-      <img src="@/assets/img/newLogo.png" alt class="logo" />
-    </li>
-    <li>
-      <el-dropdown trigger="click" @command="handleCommand">
-        <span class="el-dropdown-link" style="color:white;">
-          <icon name="menu-nav" scale="25" width="25"></icon>
+<div class="siae-phone-header">
+    <span class="logo-box">
+        <img src="@/assets/img/newLogo.png" alt class="logo" />
+    </span>
+    <span>
+        <span class="actions-icon" style="color:white;">
+            <span>
+                <change-back ref="changeBack"></change-back>
+            </span>
+            <span style=" padding: 10px 14px;" @click="isShowNav=!isShowNav">
+                <icon v-show="!isShowNav" name="menu-nav" scale="25" width="25"></icon>
+                <icon v-show="isShowNav" name="close" scale="25" width="25"></icon>
+            </span>
         </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="/siae/homePage">首页</el-dropdown-item>
-          <el-dropdown-item command="/siae/joinIn">申请入会</el-dropdown-item>
-          <el-dropdown-item command="/siae/notice">协会公告</el-dropdown-item>
-          <el-dropdown-item command="/siae/dataDownload">资料下载</el-dropdown-item>
-          <el-dropdown-item command="/siae/books-borrow">在线咨询</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </li>
-    <li>
-      <header-account ref="account"></header-account>
-    </li>
-  </ul>
+        <div class="menu" ref="menu">
+            <menu-nav :menu="menu" :parent="parent">
+                <span v-if="isLogin" class="siae-menu-item" data-not-choose="true" slot="actions">
+                    <header-account ref="account" :account="account"></header-account>
+                </span>
+                <router-link to="/login" tag="span" class="siae-menu-item" data-not-choose="true" slot="actions" v-else>登录</router-link>
+            </menu-nav>
+        </div>
+    </span>
+</div>
 </template>
 
 <script>
 import HeaderAccount from './RightAccount'
+import MenuNav from './MenuNav'
+import ChangeBack from './ChangeBack'
+import {
+    getActiveUserInfo
+} from '@/api/active-user'
+import token from '@/utils/token'
 export default {
-  name: 'phoneHeader',
-  components: {
-    HeaderAccount,
-  },
-  data() {
-    return {
-      accountName: '',
-      index: '',
-    }
-  },
-  watch: {
-    '$route.fullPath': function (newVal, oldVal) {
-      this.index = newVal
+    name: 'phoneHeader',
+    components: {
+        HeaderAccount,
+        MenuNav,
+        ChangeBack,
     },
-  },
-  computed: {
-    size() {
-      return this.$store.state.resize
+    data() {
+        return {
+            menu: null,
+            account: [{
+                    name: '个人中心',
+                    url: '/personal-center',
+                    icon: 'personal-center',
+                },
+                {
+                    name: '管理中心',
+                    url: '/Backstage',
+                    icon: 'manage',
+                },
+            ],
+            parent: '/',
+            accountName: null,
+            isLogin: false,
+            isShowNav: false,
+        }
     },
-  },
-  created() {
-    this.index = this.$router.currentRoute.path
-  },
-  methods: {
-    handleCommand(index) {
-      this.$router.push(index)
+    computed: {
+        isChangeMyInfo() {
+            return this.$store.state.myInfo
+        },
     },
-  },
+    watch: {
+        isChangeMyInfo() {
+            this.init()
+        },
+        isShowNav(newVal) {
+            const el = this.$refs.menu
+            if (newVal) {
+                el.style.display = 'block'
+                setTimeout(() => {
+                    ;
+                    (el.style.opacity = 1), (el.style.height = '80px')
+                }, 1)
+            } else {
+                el.style.opacity = 0
+                setTimeout(() => {
+                    el.style.display = 'none'
+                }, 500)
+            }
+        },
+    },
+    created() {
+        this.init()
+    },
+    methods: {
+        async init() {
+            const {
+                data
+            } = await getActiveUserInfo()
+            this.isLogin = data.code === 200
+            if (this.isLogin) this.accountName = data.data.memberName
+            if (token.getHeaderToken()) {
+                this.menu = [{
+                        name: '首页',
+                        url: 'homePage',
+                    },
+                    {
+                        name: '申请入会',
+                        url: 'joinIn',
+                    },
+                    {
+                        name: '协会公告',
+                        url: 'notice',
+                    },
+                    {
+                        name: '资料下载',
+                        url: 'data-download',
+                    },
+                    {
+                        name: '图书借阅',
+                        url: 'books-borrow',
+                    },
+                ]
+            } else {
+                this.menu = [{
+                        name: '首页',
+                        url: 'homePage',
+                    },
+                    {
+                        name: '申请入会',
+                        url: 'joinIn',
+                    },
+                    {
+                        name: '协会公告',
+                        url: 'notice',
+                    },
+                ]
+            }
+        },
+    },
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .siae-phone-header {
-  width: 100%;
-  text-align: right;
-  margin:5px 0;
-}
-.siae-phone-header li {
-  display: inline;
-  vertical-align: middle;
-  margin: 8px;
-}
-.siae-phone-header .logo-box {
-  position: fixed;
-  display: block;
-  margin: 0;
-}
-.siae-phone-header .logo {
-  height: 50px;
+    width: 100%;
+    text-align: right;
+    margin: 5px 0;
+    position: relative;
+    height: 45px;
+
+    li {
+        display: inline;
+        margin: 8px;
+    }
+
+    .logo-box {
+        position: fixed;
+        display: block;
+        margin: 0;
+    }
+
+    .logo {
+        height: 50px;
+    }
+
+    .menu {
+        position: absolute;
+        top: 50px;
+        z-index: 100;
+        background-color: rgba(41, 42, 52, 0.7);
+        padding: 10px;
+        width: 100%;
+        text-align: left;
+        opacity: 0;
+        display: none;
+        height: 0;
+        transition: all 0.3s;
+
+        span {
+            margin: auto 5px;
+            height: 10px;
+        }
+    }
+
+    .showNav {
+        opacity: 1;
+        height: 70px;
+    }
+
+    .siae-menu {
+        height: 70px;
+    }
+
+    .siae-menu-item {
+        margin: 0;
+        padding: 0;
+    }
+
+    .actions-icon {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
+
+        span {
+            float: left;
+        }
+    }
 }
 </style>

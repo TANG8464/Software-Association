@@ -25,9 +25,15 @@ export default {
     isChangeAvatar() {
       return this.$store.state.avatar
     },
+    isChangeMyInfo() {
+      return this.$store.state.myInfo
+    },
   },
   watch: {
     isChangeAvatar() {
+      this.setAvatar()
+    },
+    isChangeMyInfo() {
       this.setAvatar()
     },
   },
@@ -36,9 +42,10 @@ export default {
   },
   methods: {
     async setAvatar() {
-      getActiveUserInfo().then((res) => {
-        this.head = res.data.data.avatarUrl
-      })
+      const { data } = await getActiveUserInfo()
+      if (data.code === 200) {
+        this.head = data.data.avatarUrl || require('@/assets/img/headImg.png')
+      } else this.head = require('@/assets/img/headImg.png')
     },
   },
 }

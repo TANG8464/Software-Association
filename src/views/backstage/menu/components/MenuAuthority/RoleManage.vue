@@ -57,7 +57,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer" style="float:right;">
           <el-button @click="isOpenAdd = false">取 消</el-button>
-          <el-button type="primary" @click="addRole()">确 定</el-button>
+          <el-button type="primary" @click="addRole()" @keypress.enter.native="addRole()">确 定</el-button>
         </span>
       </div>
       <!--添加角色按钮-->

@@ -94,6 +94,7 @@
 </template>
 <script>
 import { timeDate } from '../../../tools/transformationDate'
+import token from '@/utils/token'
 export default {
   created() {
     this.getToken()
@@ -122,7 +123,7 @@ export default {
   methods: {
     getToken() {
       //获取登录时存储在localStorage中的header-Token，作为上传凭证
-      this.token['HEADER-TOKEN'] = localStorage.getItem('HEADER_TOKEN')
+      this.token['HEADER-TOKEN'] = token.getHeaderToken()
     },
     async query() {
       console.log(this.selected + '  ' + this.value)
@@ -293,9 +294,7 @@ export default {
         type: 'warning',
       }).catch((err) => err)
       if (confirmresult == 'confirm') {
-        const { data: res } = await this.$http.post('bookborrow/return' + '?' + 'id=' + id, {
-          headers: this.token,
-        })
+        const { data: res } = await this.$http.post('bookborrow/return' + '?' + 'id=' + id)
         if (res.code != 200) {
           this.$message.error('还书失败')
         } else {

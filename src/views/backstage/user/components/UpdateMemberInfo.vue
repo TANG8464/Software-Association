@@ -1,14 +1,21 @@
 <template>
   <div class="update-member-info">
     <el-dialog title="修改成员信息" :visible.sync="isOpen" width="45%" :fullscreen="size.isSmallSize">
-      <member-info-form :personalInfo.sync="info" @submitForm="update" :col="2"></member-info-form>
+      <member-info-form
+        :personalInfo.sync="info"
+        @submitForm="update"
+        :col="2"
+        :show="[
+        'memberName','gender','cascadeClass','stu_num','phoneNum','nation','nativePlace','address','education','politicalOutlook','cardID','email','description'
+      ]"
+      ></member-info-form>
     </el-dialog>
   </div>
 </template>
 <script>
 import MemberInfoForm from '@/components/MemberInfoForm'
 import memberInfo from '@/utils/memberInfo'
-import { searchCascadeClass } from '@/api/searchData'
+import { searchCascadeClass } from '@/api/institutes'
 export default {
   name: 'updateMemberInfo',
   props: {

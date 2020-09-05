@@ -1,72 +1,52 @@
 <template>
-  <el-dropdown @command="skip">
-    <span class="el-dropdown-link">
-      <personal-avatar></personal-avatar>
-    </span>
-    <el-dropdown-menu slot="dropdown">
-      <h4 style="color:#409EFF;text-align:center">{{accountName}}</h4>
-      <el-dropdown-item command="/personalCenter">
-        <icon name="personal-center" scale="18" width="18"></icon>
-        <span>个人中心</span>
-      </el-dropdown-item>
-      <el-dropdown-item command="/Backstage" v-show="isShow.backstage">
-        <icon name="manage" scale="18" width="18"></icon>
-        <span>管理中心</span>
-      </el-dropdown-item>
-      <div class="line"></div>
-      <el-dropdown-item command="exit">
-        <icon name="exit" scale="18" width="18"></icon>
-        <span>退出登录</span>
-      </el-dropdown-item>
-    </el-dropdown-menu>
-  </el-dropdown>
+  <div class="right-account">
+    <el-dropdown @command="skip">
+      <span class="el-dropdown-link">
+        <personal-avatar></personal-avatar>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <p class="username">{{accountName}}</p>
+        <el-dropdown-item v-for="item in account" :key="item.id" :command="item.url">
+          <icon :name="item.icon" scale="18" width="18"></icon>
+          <span>{{item.name}}</span>
+        </el-dropdown-item>
+        <el-dropdown-item command="exit">
+          <icon name="exit" scale="18" width="18"></icon>
+          <span>退出登录</span>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+  </div>
 </template>
 
 <script>
 import PersonalAvatar from '@/components/PersonalAvatar'
 import { logout } from '@/api/active-user'
 import token from '@/utils/token'
-import { getActiveUserInfo } from '@/api/active-user'
+
 export default {
   name: '',
   components: {
     PersonalAvatar,
   },
-  data() {
-    return {
-      isShow: {
-        backstage: true,
-      },
-      accountName: null,
-    }
-  },
-  computed: {
-    isChangeMyInfo() {
-      return this.$store.state.myInfo
+  props: {
+    account: {
+      type: Array,
+      require: true,
     },
-  },
-  watch: {
-    isChangeMyInfo() {
-      this.getUserName()
+    accountName: {
+      type: String,
+      require: true,
     },
-  },
-  created() {
-    this.getUserName()
   },
   methods: {
-    getUserName() {
-      getActiveUserInfo().then((res) => {
-        console.log(res)
-        this.accountName = res.data.data.memberName
-      })
-    },
     skip(url) {
       if (url == 'exit') this.exit()
       else this.$router.push(url)
     },
-    exit() {
-      this.$parent.isLogin()
-      logout().then((res) => {
+    async exit() {
+      const { data } = await logout()
+      if (data.code === 200) {
         token.removeHeaderToken()
         this.$notify({
           title: '退出登录',
@@ -75,9 +55,20 @@ export default {
           duration: 2000,
           showClose: false,
         })
-        this.$router.push('/')
-      })
+        // this.$router.push('/login')
+        this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
+      } else this.$message.error(data.message)
     },
   },
 }
 </script>
+<style lang="scss">
+.username {
+  margin: 10px;
+  color: #409eff;
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0 25px;
+}
+</style>

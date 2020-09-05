@@ -8,7 +8,6 @@
       @row-dblclick="more"
       v-loading="loading"
       element-loading-text="拼命加载中..."
-      element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.5)"
     >
       <el-table-column label="文件" show-overflow-tooltip style="display: flex;align-items: center;">

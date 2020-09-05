@@ -6,7 +6,6 @@
       @selection-change="handleSelectionChange"
       v-loading="loading"
       element-loading-text="拼命加载中"
-      element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.8)"
     >
       <el-table-column v-if="isShowDels" fill="#fbc4c4" type="selection" width="55"></el-table-column>

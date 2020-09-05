@@ -6,7 +6,7 @@
       :key="item.id"
       @click="toOther(item.id,otherArr[index])"
     >
-      <el-row :gutter="24">
+      <el-row :gutter="24" style="margin:0">
         <el-col :lg="5" :sm="24">
           <img class="cover" :src="item.cover" alt />
         </el-col>
@@ -78,8 +78,7 @@ export default {
   box-shadow: 0px 0px 5px 1px #e0e0e0;
 }
 .notice-cut .notice:hover .cover {
-  width: 100%;
-  height: 150px;
+  transform: scale(1.01);
 }
 .notice-cut .cover {
   width: 98%;

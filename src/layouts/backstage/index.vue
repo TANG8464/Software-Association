@@ -1,7 +1,11 @@
 <template>
   <div class="backstage">
+    <page-loading :isLoading="isLoading"></page-loading>
     <div class="back-nav-menu-bax" ref="navMenuBox">
       <back-nav-menu ref="navMenu" :isCollapse="isCollapseAside" :align="align" :maxH="size.maxH"></back-nav-menu>
+    </div>
+    <div class="back-sidebar-box" ref="sidebarBox">
+      <back-sidebar ref="sidebar" :maxH="size.maxH"></back-sidebar>
     </div>
     <div class="main" ref="main">
       <div class="header" ref="header" v-show="isShowHeader">
@@ -13,10 +17,6 @@
           <router-view />
         </div>
       </div>
-      <page-loading :isLoading="isLoading"></page-loading>
-    </div>
-    <div class="back-sidebar-box" ref="sidebarBox">
-      <back-sidebar ref="sidebar" :maxH="size.maxH"></back-sidebar>
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@ import BackNavMenu from './components/BackNavMenu'
 import BackSidebar from './components/BackSidebar'
 import BackPhoneHeader from './components/BackPhoneHeader'
 import BreadcrumbNav from '@/components/BreadcrumbNav'
-import PageLoading from '@/components/PageLoading'
+import PageLoading from '@/components/PageLoading/One'
 export default {
   name: 'backstage',
   components: {
@@ -58,7 +58,6 @@ export default {
   },
   watch: {
     $route(newVal) {
-      this.load()
       this.resize()
     },
     size() {
@@ -98,7 +97,7 @@ export default {
       this.header.style.opacity = isSmallSize ? 1 : 0
 
       this.main.style.right = isSmallSize ? 0 : '50px'
-      this.main.style.backgroundColor = isSmallSize ? 'white' : 'rgb(248, 250, 249)'
+      // this.main.style.backgroundColor = isSmallSize ? 'white' : 'rgb(248, 250, 249)'
 
       this.navMenu.style.width = isSmallSize ? 0 : this.navMenu.style.width
       this.backSidebar.style.width = isSmallSize ? 0 : '50px'
@@ -112,10 +111,6 @@ export default {
 }
 </script>
 <style>
-.logo {
-  height: 30px;
-}
-
 .logo-title {
   color: rgb(64, 171, 234);
   display: inline;
@@ -129,6 +124,7 @@ export default {
   height: 100%;
   width: 0;
   transition: all 1s;
+  
 }
 .header {
   background-color: white;
@@ -149,19 +145,21 @@ export default {
   bottom: 0;
   overflow-y: scroll;
   background-color: rgb(248, 250, 249);
+  /*
+  background-color: white;
+  */
   transition: all 1s;
+  border-right: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
 }
 .back-sidebar-box {
   position: fixed;
   right: 0;
-  top: 0;
-  bottom: 0;
-  background-color: white;
-  width: 0px;
-
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  /*
   background-color: #5b626b;
-  z-index: 1000;
-  transition: all 1s;
+  */
 }
 
 .el-container {
@@ -173,15 +171,17 @@ export default {
   background-color: white;
   padding: 0;
   box-shadow: 0px 0px 5px 0px #eeeeee;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
   z-index: 999;
 }
 .outer {
+  /*
   margin: 30px;
   border-radius: 10px;
+  */
 }
 .within {
   overflow: hidden !important;

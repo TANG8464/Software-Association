@@ -2,6 +2,10 @@
     outline: none;
 }
 
+img {
+    user-select: none;
+}
+
 
 /* 槽 */
 
@@ -29,6 +33,15 @@
 .siae {
     font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
     color: #666666;
+}
+
+.backstage {
+    color: #475F7B;
+}
+
+.siae-msg {
+    background-color: white!important;
+    color: #666666!important;
 }
 
 .noChecked {
@@ -95,4 +108,15 @@
 
 .not-choose-text {
     user-select: none;
+}
+
+.absolute-center-v {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.el-input {
+    background: none;
 }

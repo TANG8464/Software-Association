@@ -62,8 +62,8 @@ let sCt, mCt, bCt1;
 let b1;
 
 function html(el) {
-    maxW = window.outerWidth; //获取网页外部窗体宽
-    maxH = window.outerHeight; //获取网页外部窗体高
+    maxW = window.innerWidth; //获取网页外部窗体宽
+    maxH = window.innerHeight; //获取网页外部窗体高
     el.style = " margin: 0;padding: 0;position: fixed;top: 0;bottom: 0;left: 0;right: 0;";
     let sc = document.createElement("canvas");
     sc.id = "star";
@@ -125,8 +125,8 @@ function move() {
 }
 
 window.onresize = function() {
-    maxW = window.outerWidth; //获取网页外部窗体宽
-    maxH = window.outerHeight; //获取网页外部窗体高
+    maxW = window.innerWidth; //获取网页外部窗体宽
+    maxH = window.innerHeight; //获取网页外部窗体高
     let sc = document.getElementById("star");
     let mc = document.getElementById("meteor");
     if (sc && mc) {
@@ -142,6 +142,14 @@ function back(el) {
     html(el);
     init();
 }
+
+function close(el) {
+    const star = document.getElementById('star');
+    const meteor = document.getElementById('meteor')
+    if (star) el.removeChild(star)
+    if (meteor) el.removeChild(meteor)
+}
 export {
-    back
+    back,
+    close
 }

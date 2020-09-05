@@ -1,11 +1,21 @@
 export default function imgVerify(file, type, size, error) {
+    console.log(file, type, size, error)
     const TypeVerify = type.includes(file.type)
     const isLt2M = file.size / 1024 / 1024 < size
     if (!TypeVerify) {
-        return { state: false, type: 'error', message: error[0] || '' }
+        return { status: false, type: 'error', message: error[0] || '' }
     } else if (!isLt2M) {
-        return { state: false, type: 'error', message: error[1] || '' }
-    } else return { state: true }
+        return { status: false, type: 'error', message: error[1] || '' }
+    } else return { status: true }
+}
+export function excelVerify(file) {
+    const excel = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ]
+    const isExcel = excel.includes(file.type)
+
+    return isExcel
 }
 export function userNameVerify(userName) {
     const userNameTest = /^\S{4,10}$/
@@ -26,4 +36,8 @@ export function cardIdVerify(cardId) {
 export function stuNumVerify(stuNum) {
     const stuNumTest = /^\d{2,3}$/
     return stuNumTest.test(stuNum)
+}
+export function emailVerify(email) {
+    const emailTest = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return emailTest.test(email)
 }

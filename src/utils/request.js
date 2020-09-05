@@ -7,7 +7,7 @@ import token from '@/utils/token'
 // axios 配置
 const request = axios.create({
     baseURL: 'http://120.26.177.203/',
-    timeout: 8000
+    timeout: 100000
 })
 
 // http request 拦截器
@@ -29,7 +29,7 @@ request.interceptors.response.use(
     response => {
         const headerToken = token.getHeaderToken()
         const currentRoute = router.currentRoute.fullPath.split('?')[0]
-        if (i < 1 && !headerToken && currentRoute !== '/') {
+        if (i < 1 && !headerToken && currentRoute === '/Backstage') {
             ElementUI.Notification({
                 title: "错误",
                 message: "身份已过期请重新登录",
@@ -39,7 +39,7 @@ request.interceptors.response.use(
             });
             setTimeout(() => {
                 router.replace({
-                    path: '/',
+                    path: '/login',
                     query: { redirect: router.currentRoute.fullPath }
                 })
             }, 1000)

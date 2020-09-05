@@ -3,19 +3,34 @@ import Main from '@/layouts/Backstage/components/BackMain'
 const backstageRouter = {
     path: '/backstage',
     name: 'backstage',
-    redirect: '/backstage/homepage',
+    redirect: '/backstage/siae',
     component: Backstage,
     children: [{
-            path: 'homepage',
-            name: 'homepage',
-            redirect: '/backstage/homepage/image-carousel',
+            path: 'siae',
+            name: 'siae',
+            redirect: '/backstage/siae/image-carousel',
             component: Main,
             children: [{
-                path: 'image-carousel',
-                name: 'image-carousel',
-                component: () =>
-                    import ('@/views/backstage/homepage/image-carousel.vue'),
-            }, ]
+                    path: 'image-carousel',
+                    name: 'image-carousel',
+                    component: () =>
+                        import ('@/views/backstage/siae/image-carousel.vue'),
+                },
+                {
+
+                    path: 'background-image',
+                    name: 'background-image',
+                    component: () =>
+                        import ('@/views/backstage/siae/background-image.vue'),
+                },
+                {
+
+                    path: 'message',
+                    name: 'message',
+                    component: () =>
+                        import ('@/views/backstage/siae/message.vue'),
+                }
+            ]
         },
         {
             path: 'menu',
@@ -142,12 +157,6 @@ const backstageRouter = {
                         import ('@/views/backstage/user/member.vue')
                 },
                 {
-                    path: 'all-member',
-                    name: 'all-member',
-                    component: () =>
-                        import ('@/views/backstage/user/all-member.vue')
-                },
-                {
                     path: 'college',
                     name: 'college',
                     component: () =>
@@ -158,6 +167,12 @@ const backstageRouter = {
                     name: 'add',
                     component: () =>
                         import ('@/views/backstage/user/add.vue')
+                },
+                {
+                    path: 'test',
+                    name: 'test',
+                    component: () =>
+                        import ('@/views/backstage/user/test.vue')
                 }
             ]
         }

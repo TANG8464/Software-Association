@@ -20,6 +20,8 @@ export default {
   },
   mounted() {
     if (this.place) {
+      console.log(this.place);
+      
       let place = this.place.split(' ')
       const lastIndex = place.length - 1
       if (place[lastIndex] == '-') place[lastIndex] = '全部'

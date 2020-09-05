@@ -14,16 +14,18 @@ import Vue from 'vue';
 import cookies from 'vue-cookies';
 import ECharts from 'vue-echarts';
 import VueFroala from 'vue-froala-wysiwyg';
-// import SlideVerify from 'vue-monoplasty-slide-verify';
+import SlideVerify from 'vue-monoplasty-slide-verify';
 import Icon from 'vue2-svg-icon/Icon';
 import Vuex from 'vuex';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 import './directive/dialogDrag.js';
+import SiaeInput from '@/components/SiaeInput'
 
-// Vue.use(SlideVerify);
+Vue.use(SlideVerify);
 Vue.component('icon', Icon);
+Vue.component('siae-input', SiaeInput);
 window.jQuery = jQuery
 window.$ = jQuery
 Vue.use(Vuex)

@@ -1,8 +1,7 @@
 <template>
   <div class="nav-menu">
     <div class="logo-box" v-if="isShowLogo">
-      <img src="@/assets/img/logo.png" class="logo" />
-      <h2 v-if="!isCollapse" class="logo-title">软件协会</h2>
+      <img src="@/assets/img/squareLogo.png" class="logo" />
     </div>
     <!--左侧导航菜单，router开启路由，unique-opened只展开一个菜单项，collapse是否折叠菜单-->
     <el-menu
@@ -12,9 +11,8 @@
       router
       :collapse="isCollapse"
       style="overflow: auto;"
-      :style="{'height':maxH-200+'px'}"
+      :style="{'height':maxH-110+'px'}"
       ref="menu"
-      unique-opened
     >
       <!--菜单-->
       <el-submenu
@@ -75,18 +73,29 @@ export default {
       index: '', //当前选中菜单项
     }
   },
+  computed: {
+    isChangeNav() {
+      return this.$store.state.isChangeNav
+    },
+  },
+  watch: {
+    //监听路由,设置当前选中的index为当前路由
+    '$route.fullPath': function (newVal) {
+      this.index = newVal
+      const url = this.index.substring(11)
+      this.initBreadcrumb(url)
+    },
+    isChangeNav(newVal) {
+      this.allNav(this.index)
+    },
+  },
   created() {
     //页面进入时，设置默认index为当前路由
     this.index = this.$route.fullPath
     const url = this.index.substring(11)
     this.allNav(url)
   },
-  watch: {
-    //监听路由,设置当前选中的index为当前路由
-    '$route.fullPath': function (newVal) {
-      this.index = newVal
-    },
-  },
+
   methods: {
     setActiveIndex(item, children) {
       this.$store.commit('setBreadcrumb', [
@@ -99,48 +108,62 @@ export default {
       let { data } = await this.$axios.get('sys/menu/nav')
       if (data.code === 200) {
         this.nav = data.data
+        this.initBreadcrumb(url)
         //设置初始面包屑内容
-        this.nav.forEach((item) => {
-          item.menuNodeList.forEach((children) => {
-            if (children.url === url) {
-              this.$store.commit('setBreadcrumb', [
-                { id: 1, name: item.name, path: '/backstage/' + item.url },
-                { id: 2, name: children.name, path: '' },
-              ])
-            }
-          })
-        })
       } else {
         this.$message.error({
           message: '请求错误',
         })
       }
     },
+    initBreadcrumb(url) {
+      this.nav.forEach((item) => {
+        item.menuNodeList.forEach((children) => {
+          if (children.url === url) {
+            this.$store.commit('setBreadcrumb', [
+              { id: 1, name: item.name, path: '/backstage/' + item.url },
+              { id: 2, name: children.name, path: '' },
+            ])
+          }
+        })
+      })
+    },
   },
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .nav-menu {
   user-select: none;
-}
-/*
+  /*
  logo
 */
-.nav-menu .logo-box {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-/*
+  .el-menu {
+    background: none;
+    .el-submenu {
+      .el-menu-item {
+        display: block;
+      }
+    }
+  }
+  .logo-box {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .logo {
+    margin: auto;
+    height: 100px;
+  } /*
  清除el-menu右侧边框线
 */
-.el-menu {
-  border: none;
-}
-p {
-  margin: 0;
+  .el-menu {
+    border: none;
+  }
+  p {
+    margin: 0;
+  }
 }
 </style>
 <style>

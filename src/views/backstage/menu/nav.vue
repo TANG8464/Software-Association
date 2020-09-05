@@ -185,7 +185,8 @@ export default {
           message: '添加成功',
         })
         this.menu = {}
-        this.$parent.$parent.$refs.navMenu.allNav()
+        this.$store.commit('changeNav', !this.$store.state.isChangeNav)
+
         this.setAllMenu()
       } else {
         this.$message.error({
@@ -202,7 +203,7 @@ export default {
         })
         this.isOpenDialog = false
         this.menu = {}
-        this.$parent.$parent.$refs.navMenu.allNav()
+        this.$store.commit('changeNav', !this.$store.state.isChangeNav)
         this.setAllMenu()
       } else {
         this.$message.error({
@@ -232,7 +233,7 @@ export default {
         this.$message.success({
           message: '删除成功!',
         })
-        this.$parent.$parent.$refs.navMenu.allNav()
+        this.$store.commit('changeNav', !this.$store.state.isChangeNav)
         this.setAllMenu()
       } else {
         this.$message.error({

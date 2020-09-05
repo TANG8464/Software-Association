@@ -11,8 +11,10 @@ const store = new Vuex.Store({
         avatar: false, //是否修改头像
         changeImg: false, //上传头像后是否更改头像位置大小
         redrawImgFile: {}, //重绘上传的图片文件
-
-        myInfo: false
+        myInfo: false,
+        isChangeNav: false,
+        isChangeBack: false, //是否更换背景
+        isOpenMsg: false, //是否打开消息通知
     },
     mutations: { //同步变更
         setActiveUserInfo: (state, userInfo) => {
@@ -35,6 +37,15 @@ const store = new Vuex.Store({
         },
         changeMyInfo: (state, myInfo) => {
             state.myInfo = myInfo
+        },
+        changeNav: (state, flag) => {
+            state.isChangeNav = flag
+        },
+        changeBack: (state, flag) => {
+            state.isChangeBack = flag
+        },
+        changeMsg: (state, flag) => {
+            state.isOpenMsg = flag
         }
 
     },

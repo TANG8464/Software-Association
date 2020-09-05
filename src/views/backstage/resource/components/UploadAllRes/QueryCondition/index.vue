@@ -79,29 +79,29 @@
 </template>
 <script>
 import AllResSearch from './AllResSearch'
-import ConditionIcon from './ConditionIcon'
+import ConditionIcon from '@/components/ConditionIcon'
 export default {
   components: {
     AllResSearch,
-    ConditionIcon
+    ConditionIcon,
   },
   data() {
     return {
       resourceCategory: [], //分类数据
-      isOpenCondition: false //是否打开条件筛选框
+      isOpenCondition: false, //是否打开条件筛选框
     }
   },
   props: {
     searchData: {
       //查询条件数据
       type: Object,
-      default: {}
+      default: {},
     },
     total: {
       //文件总数
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   created() {
     this.setResSort()
@@ -112,20 +112,20 @@ export default {
       try {
         let res = await this.$axios.get('resocategory/page', {
           params: {
-            limit: 1000
-          }
+            limit: 1000,
+          },
         })
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.resourceCategory = res.data.data.records
           } else {
             this.$message.error({
-              message: res.data.message
+              message: res.data.message,
             })
           }
         } else {
           this.$message.error({
-            message: '请求错误'
+            message: '请求错误',
           })
         }
       } catch (err) {
@@ -140,8 +140,8 @@ export default {
     //条件查询
     queryCondition() {
       this.$emit('search')
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped>
