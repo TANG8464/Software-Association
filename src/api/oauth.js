@@ -12,10 +12,23 @@ export async function unbind(source) {
     return data
 
 }
-
+/**
+ * 账号绑定
+ * @param {String} source 
+ */
 export async function binding(source) {
     let { data } = await request({
-        url: `oauth/bind/callback/${source}`,
+        url: `oauth/bind/sender/${source}`,
+        method: 'get'
+    })
+    return data
+
+}
+
+
+export async function oauthLogin(source) {
+    let { data } = await request({
+        url: `oauth/sender/${source}`,
         method: 'get'
     })
     return data

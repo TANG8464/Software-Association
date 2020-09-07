@@ -77,8 +77,6 @@ export default {
 
 <style lang="scss">
 .siae {
-    background-color: rgba(0, 0, 0, 0.4);
-
     .back {
         position: fixed;
         top: 0;
@@ -86,10 +84,12 @@ export default {
         margin: 0;
         height: 100%;
         width: 100%;
+        z-index: 0;
     }
 
     .siae-content {
         background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
     }
 
     .container {
@@ -99,7 +99,6 @@ export default {
         margin: 0;
         height: 100%;
         width: 100%;
-
     }
 
     .header {
@@ -134,7 +133,6 @@ export default {
         position: relative;
         top: 8px;
         translate: all 1s;
-
     }
 
     .shift-dow {

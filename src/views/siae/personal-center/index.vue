@@ -75,7 +75,7 @@ export default {
         this.isOpenAnimation = true
         setTimeout(() => {
             this.isOpenAnimation = false
-        }, 3000)
+        }, 1000)
         this.setActiveUser()
         window.onmousewheel = () => {
             const el = this.$refs.content

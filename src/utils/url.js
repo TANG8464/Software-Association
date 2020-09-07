@@ -1,7 +1,11 @@
-function getSiae() {
+export function getSiae() {
     return '/'
 }
 
-function getBackstage() {
+export function getBackstage() {
     return '/Backstage'
+}
+
+export function getBaseURL() {
+    return 'http://120.26.177.203/'
 }

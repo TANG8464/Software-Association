@@ -148,59 +148,58 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .header {
     overflow: hidden;
 
-}
-
-.logo {
-    height: 60px;
-}
-
-.message-icon {
-    animation: shake 1s infinite;
-}
-
-@keyframes shake {
-    0% {
-        transform: rotate(10deg);
+    .logo {
+        height: 60px;
     }
 
-    10% {
-        transform: rotate(-10deg);
+    .message-icon {
+        animation: shake 1s infinite;
     }
 
-    20% {
-        transform: rotate(10deg);
+    @keyframes shake {
+        0% {
+            transform: rotate(10deg);
+        }
+
+        10% {
+            transform: rotate(-10deg);
+        }
+
+        20% {
+            transform: rotate(10deg);
+        }
+
+        30% {
+            transform: rotate(-10deg);
+        }
+
+        40% {
+            transform: rotate(10deg);
+        }
+
+        100% {
+            transform: rotate(10deg);
+        }
     }
 
-    30% {
-        transform: rotate(-10deg);
+    .open-msg {
+        background-color: rgba(41, 42, 52, 0.8);
     }
 
-    40% {
-        transform: rotate(10deg);
+    .message-box {
+        position: fixed;
+
+        z-index: 100;
+        background-color: rgba(41, 42, 52, 0.8);
+        width: 100%;
+        opacity: 0;
+        display: none;
+        transition: all 0.5s;
+        overflow: hidden;
     }
-
-    100% {
-        transform: rotate(10deg);
-    }
-}
-
-.open-msg {
-    background-color: rgba(41, 42, 52, 0.8);
-}
-
-.message-box {
-    position: fixed;
-
-    z-index: 100;
-    background-color: rgba(41, 42, 52, 0.8);
-    width: 100%;
-    opacity: 0;
-    display: none;
-    transition: all 0.5s;
-    overflow: hidden;
 }
 </style>

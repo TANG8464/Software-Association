@@ -44,6 +44,9 @@ import {
     binding,
     unbind
 } from '@/api/oauth'
+import {
+    getBaseURL
+} from '@/utils/url'
 export default {
     data() {
         return {
@@ -54,7 +57,7 @@ export default {
                 1: '#ed5a5a',
                 2: '#ffad4f',
                 3: '#f1d622',
-                4: '#a0ed2e',
+                4: '#9ad642',
                 5: '#05c212',
             },
         }
@@ -95,18 +98,25 @@ export default {
             }
         },
         async boundClick(source, status) {
-            let data, msg
             if (status) {
-                data = await binding(source)
-                msg = '绑定'
+                const data = await binding(source)
+                window.location.href = data.data
             } else {
-                data = await unbind(source)
-                msg = '解绑'
+                this.$confirm('解绑后将不能使用该账号登录', '解绑提醒', {
+                        confirmButtonText: '确认解绑',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                        center: true,
+                    })
+                    .then(async () => {
+                        const data = await unbind(source)
+                        if (data.code === 200) {
+                            this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
+                            this.$message.success('解绑成功')
+                        } else this.$message.error(data.message)
+                    })
+                    .catch(() => {})
             }
-            if (data.code === 200) {
-                this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
-                this.$message.success(msg + '成功')
-            } else this.$message.error(data.message)
         },
     },
 }
@@ -135,7 +145,7 @@ export default {
     }
 
     .tip-estate-4 {
-        color: #a0ed2e;
+        color: #9ad642;
     }
 
     .tip-estate-5 {
