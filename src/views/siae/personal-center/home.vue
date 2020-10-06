@@ -60,6 +60,8 @@ export default {
 
 <style lang="scss">
 .home {
+    display: block;
+
     .right {
         margin: 0 8px 0 auto;
         float: right;

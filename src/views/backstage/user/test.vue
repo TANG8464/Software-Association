@@ -51,7 +51,7 @@
                 <score-form ref="scoreForm" :key="isOpenUpdate" :scoreForm.sync="select" :datetime.sync="datetime"></score-form>
             </span>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="resetForm('scoreForm')">重 置</el-button>
+                <el-button @click="resetForm('scoreForm')">清 空</el-button>
                 <el-button type="primary" @click="update()">确 定</el-button>
             </span>
         </el-dialog>
@@ -138,8 +138,8 @@ export default {
     },
     watch: {
         date(newVal) {
-            this.searchData.beginTimeStamp = parseInt(newVal[0].getTime() / 1000)
-            this.searchData.endTimeStamp = parseInt(newVal[1].getTime() / 1000)
+            this.searchData.beginTimeStamp = newVal ? parseInt(newVal[0].getTime() / 1000) : null
+            this.searchData.endTimeStamp = newVal ? parseInt(newVal[1].getTime() / 1000) : null
             this.setAllScore(1)
         },
         searchItem(newVal) {
@@ -147,9 +147,6 @@ export default {
             this.searchData.memberName = null
             this.searchData.testName = null
             this.setAllScore(1)
-        },
-        select(newVal) {
-            console.log(newVal)
         },
     },
     mounted() {
@@ -193,10 +190,9 @@ export default {
             this.select = row
             this.datetime = new Date(this.select.testDateTimeStamp * 1000)
             this.isOpenUpdate = true
-            console.log(row)
         },
         resetForm(formName) {
-            this.$refs[formName].resetFields()
+            this.$refs[formName].resetForm()
         },
         async update() {
             this.select.testDateTimeStamp = this.datetime.getTime() / 1000
@@ -236,14 +232,17 @@ export default {
 
 <style lang="scss">
 .siae-test {
-    .date-picker {
-        max-width: 300px;
+    .el-date-editor--daterange.el-input__inner {
+        display: inline-flex;
+        width: 26.1% !important;
+        box-sizing: border-box;
     }
 
     .other {
         display: inline-block;
-        width: 73.9%;
+        width: 73%;
         text-align: right;
+        box-sizing: border-box;
     }
 
     .el-select {

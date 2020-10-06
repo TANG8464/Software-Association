@@ -1,5 +1,4 @@
-export default function imgVerify(file, type, size, error) {
-    console.log(file, type, size, error)
+export default  function imgVerify(file, type, size, error) {
     const TypeVerify = type.includes(file.type)
     const isLt2M = file.size / 1024 / 1024 < size
     if (!TypeVerify) {
@@ -17,8 +16,17 @@ export function excelVerify(file) {
 
     return isExcel
 }
+
+export function wordVerify(file) {
+    const word = [
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ]
+    const isWord = word.includes(file.type)
+    return isWord
+}
 export function userNameVerify(userName) {
-    const userNameTest = /^\S{4,10}$/
+    const userNameTest = /^\S{1,10}$/
     return userNameTest.test(userName)
 }
 export function pwdVerify(pwd) {

@@ -3,7 +3,7 @@
     <div class="content" :style="{'padding':`0 ${size.isSmallSize?10:300}px`,'padding-top':`${size.isSmallSize?30:0}px`}">
         <p class="header">
             <span>消息通知({{total>999?'999+':total}})</span>
-            <span class="icon" style="color: #fff;float:right">
+            <span v-if="total>0" class="icon" style="color: #fff;float:right">
                 <span v-if="!isOpenMenu" style="margin-left:8px;" @click="isOpenMenu=true">
                     <icon name="menu-nav" scale="25" width="25"></icon>
                 </span>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="msg-main">
                     <p class="msg-title">{{item.title}}</p>
-                    <p class="msg-content" :class="{'not-open-msg':!item.isOpenMsg}">{{item.content}}</p>
+                    <div class="msg-content" :class="{'not-open-msg':!item.isOpenMsg}" v-html="item.isOpenMsg?item.content:item.text">{{}}</div>
                     <p class="msg-action">
                         <span v-if="!item.isOpenMsg" @click="updateOpenMsg(index,true)">查看通知</span>
                         <span v-else @click="updateOpenMsg(index,false)">收起通知</span>
@@ -43,7 +43,7 @@
                 </span>
             </div>
             <div class="loading" v-if="isLoading">加载中...</div>
-            <div class="null" v-else-if="!msg||msg.length===0">暂无相关通知</div>
+            <div class="null" :style="{'line-height': height}" v-else-if="!msg||msg.length===0">暂无相关通知</div>
             <div class="loading-all" v-else-if="isAllLoad">已全部加载</div>
         </div>
         <div class="footer">
@@ -102,7 +102,7 @@ export default {
             return this.$store.state.resize
         },
         height() {
-            return this.size.isSmallSize ? this.size.maxH - 230 + 'px' : this.size.maxH - 160 + 'px'
+            return this.size.isSmallSize ? this.size.maxH - 230 + 'px' : this.size.maxH - 260 + 'px'
         },
     },
     watch: {
@@ -138,7 +138,6 @@ export default {
     },
     created() {
         this.searchMessage()
-        console.log(1)
     },
     mounted() {
         const elM = this.$refs['msg-list']
@@ -196,7 +195,6 @@ export default {
         },
         //更新消息为查看状态或者收起状态
         async updateOpenMsg(index, state) {
-            console.log(index)
             if (state) {
                 if (!this.currPageIndex.includes(index)) this.currPageIndex.push(index)
             } else {
@@ -392,7 +390,7 @@ export default {
             .null {
                 color: rgb(123, 123, 123);
                 width: 100%;
-                line-height: 500px;
+
                 vertical-align: middle;
                 text-align: center;
             }

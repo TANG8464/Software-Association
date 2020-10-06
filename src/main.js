@@ -23,6 +23,7 @@ import store from './store';
 import './directive/dialogDrag.js';
 import SiaeInput from '@/components/SiaeInput'
 
+
 Vue.use(SlideVerify);
 Vue.component('icon', Icon);
 Vue.component('siae-input', SiaeInput);
@@ -37,7 +38,6 @@ Vue.prototype.$axios = http;
 
 Vue.prototype.$http = http
 Vue.component('chart', ECharts)
-    // Vue.component('icon', Icon)
 
 Vue.config.productionTip = false
 

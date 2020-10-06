@@ -9,9 +9,9 @@
             <el-switch v-model="isOpenBack" :active-value="true" :inactive-value="false"></el-switch>
         </div>
         <div style="overflow:auto;" :style="{height:size.isSmallSize?size.maxH-200+'px':'350px'}">
-            <div class="backSmall" v-for="item in backs" :key="item.id" style="width:320px;height:180px;float:left;" @click="select=item">
+            <div class="backSmall" v-for="item in backs" :key="item.id" style="width:320px;height:180px;float:left;" @click="select=item.id">
                 <img :src="item.url" alt style="width:100%;height:100%;" />
-                <div style="float:right; position: relative;top:-180px;" v-if="select&&select.id&&select.id===item.id">
+                <div style="float:right; position: relative;top:-180px;" v-if="select===item.id">
                     <icon name="pitch-on" scale="25" width="25"></icon>
                 </div>
             </div>
@@ -28,6 +28,10 @@
 import {
     getAllBackgroundFrontDesk
 } from '@/api/siae'
+import {
+    detailedInformation,
+    updatePersonInfo
+} from '@/api/active-user'
 export default {
     data() {
         return {
@@ -42,34 +46,34 @@ export default {
         size() {
             return this.$store.state.resize
         },
+
     },
     created() {
-        const booMap = {
-            true: true,
-            false: false,
-        }
-        const activeBack = localStorage.getItem('activeBack')
-        const isOpenBack = localStorage.getItem('isOpenBack')
-        this.isOpenBack = booMap[isOpenBack]
-        this.select = this.activeBack
+        this.init()
     },
     mounted() {
         this.setBacks()
     },
     methods: {
-        setBack(isSet) {
+        async init() {
+            const {
+                data: res
+            } = await detailedInformation()
+            this.isOpenBack = Boolean(res.code === 200 && res.data && res.data.customBackground)
+            if (this.isOpenBack) {
+                this.select = res.data.customBackground
+            }
+        },
+        async setBack(isSet) {
             this.centerDialogVisible = false
             if (isSet) {
-                localStorage.setItem('isOpenBack', this.isOpenBack)
-                if (this.isOpenBack)
-                    localStorage.setItem(
-                        'activeBack',
-                        JSON.stringify({
-                            id: this.select.id,
-                            url: this.select.url,
-                        })
-                    )
-                this.$store.commit('changeBack', !this.$store.state.isChangeBack)
+                this.select = this.isOpenBack ? this.select : null
+                const data = await updatePersonInfo({
+                    customBackground: this.select
+                })
+                if (data.code === 200) {
+                    this.$store.commit('changeBack', !this.$store.state.isChangeBack)
+                } else this.$message.error(data.message)
             } else {
                 this.select = this.activeBack
             }

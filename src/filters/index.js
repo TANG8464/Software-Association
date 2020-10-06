@@ -45,3 +45,12 @@
      }
      return `${date.toLocaleDateString()}  ${day}`
  }
+ export function countFormatter(val) {
+     if (val < 1000) {
+         return val
+     } else if (val < 10000) {
+         return val > 1100 ? (val / 1000).toFixed(1) + 'k' : (val / 1000).toFixed(0) + 'k'
+     } else {
+         return val > 11000 ? (val / 10000).toFixed(1) + 'w' : (val / 10000).toFixed(0) + 'w'
+     }
+ }

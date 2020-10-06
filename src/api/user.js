@@ -54,8 +54,6 @@ export async function conditionSearch(params) {
  * @param {Object} params 条件查询
  */
 export async function downloadMemberInfo(params) {
-    console.log(params);
-
     const { data } = await request({
         url: 'member/downloadMemberInfo',
         method: 'get',

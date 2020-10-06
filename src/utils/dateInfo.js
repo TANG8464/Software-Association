@@ -30,7 +30,16 @@ function getPickerOptions() {
         ],
     }
 }
+
+function getNowDate() {
+    const nowDate = new Date()
+    const year = nowDate.getFullYear()
+    const month = nowDate.getMonth() + 1
+    const date = nowDate.getDate()
+    return `${year}年${month}月${date}日`
+}
 const dateInfo = {
     pickerOptions: getPickerOptions(),
+    nowDate: getNowDate()
 }
 export default dateInfo

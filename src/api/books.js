@@ -83,6 +83,5 @@ export async function borrowSearch(bookName, curPage, endDay, flag, memberId, me
             item.book.imageUrl = item.book.imageUrl || link
             item.book = Object.assign(item.book, tagMap[item.book.flag])
         })
-    console.log(data);
     return data
 }

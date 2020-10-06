@@ -37,9 +37,7 @@ export default {
     created() {
         this.initWebSocket()
     },
-    mounted() {},
     beforeDestroy() {
-        console.log('Destroy')
         this.closeSocket()
     },
 
@@ -56,10 +54,9 @@ export default {
         },
         websocketonopen() {
             //连接建立之后执行send方法发送数据
-            let actions = {
+            const actions = {
                 'HEADER-TOKEN': token.getHeaderToken(),
             }
-            console.log(actions)
 
             this.websocketsend(JSON.stringify(actions))
         },
@@ -73,14 +70,12 @@ export default {
             this.getUnreadCount()
         },
         websocketsend(Data) {
-            console.log(Data)
 
             //数据发送
             this.websock.send(Data)
         },
         websocketclose(e) {
-            //关闭
-            console.log('断开连接', e)
+            //断开连接
         },
         async closeSocket() {
             const data = await closeSocket()

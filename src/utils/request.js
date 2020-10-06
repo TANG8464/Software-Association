@@ -29,7 +29,7 @@ request.interceptors.response.use(
     response => {
         const headerToken = token.getHeaderToken()
         const currentRoute = router.currentRoute.fullPath.split('?')[0]
-        if (i < 1 && !headerToken && currentRoute === '/Backstage') {
+        if (i < 1 && !headerToken && currentRoute === '/backstage') {
             ElementUI.Notification({
                 title: "错误",
                 message: "身份已过期请重新登录",
@@ -39,7 +39,7 @@ request.interceptors.response.use(
             });
             setTimeout(() => {
                 router.replace({
-                    path: '/login',
+                    path: '/account/login',
                     query: { redirect: router.currentRoute.fullPath }
                 })
             }, 1000)
@@ -77,10 +77,11 @@ request.interceptors.response.use(
                 showClose: false
             });
             if (status === 5011) {
+                console.log(5011);
                 token.removeHeaderToken()
                 setTimeout(() => {
                     router.replace({
-                        path: '/',
+                        path: '/account/login',
                         query: { redirect: router.currentRoute.fullPath }
                     })
                 }, 1000)

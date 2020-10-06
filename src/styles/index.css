@@ -6,6 +6,10 @@ img {
     user-select: none;
 }
 
+*::selection {
+    background-color: rgb(190, 232, 255);
+}
+
 
 /* 槽 */
 
@@ -119,4 +123,21 @@ img {
 
 .el-input {
     background: none;
+}
+
+.error-tip {
+    color: #ed5a5a;
+    font-size: 13px;
+}
+
+.pop-up-box {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    display: flex;
+    align-items: center;
 }

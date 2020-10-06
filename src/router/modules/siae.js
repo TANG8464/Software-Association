@@ -12,16 +12,37 @@ const siaeRouter = {
                 import ('@/views/siae/homepage/index.vue'),
         },
         {
-            path: 'joinIn',
-            name: 'joinIn',
+            path: 'join',
+            name: 'join',
+            redirect: '/join/apply',
             component: () =>
-                import ('@/views/siae/joinIn.vue'),
+                import ('@/views/siae/join'),
+            children: [{
+                path: 'apply',
+                name: 'apply',
+                component: () =>
+                    import ('@/views/siae/join/apply'),
+            }, ]
         },
         {
             path: 'notice',
             name: 'notice',
+            redirect: 'notice/all',
             component: () =>
                 import ('@/views/siae/notice'),
+            children: [{
+                    path: 'all',
+                    name: 'all',
+                    component: () =>
+                        import ('@/views/siae/notice/all'),
+                },
+                {
+                    path: 'details',
+                    name: 'details',
+                    component: () =>
+                        import ('@/views/siae/notice/details'),
+                },
+            ]
         },
         {
             path: 'data-download',
@@ -62,17 +83,31 @@ const siaeRouter = {
             ]
         },
         {
-            path: 'login',
-            name: 'login',
+            path: 'account',
+            name: 'account',
+            redirect: 'account/',
             component: () =>
-                import ('@/views/siae/login'),
+                import ('@/views/siae/account'),
+            children: [{
+                    path: 'login',
+                    name: 'content',
+                    component: () =>
+                        import ('@/views/siae/account/login'),
+                },
+                {
+                    path: 'register',
+                    name: 'register',
+                    component: () =>
+                        import ('@/views/siae/account/register'),
+                },
+                {
+                    path: 'forget-pwd',
+                    name: 'forget-pwd',
+                    component: () =>
+                        import ('@/views/siae/account/forget-pwd'),
+                },
+            ]
 
-        },
-        {
-            path: 'message',
-            name: "message",
-            component: () =>
-                import ('@/views/siae/message'),
         }
     ]
 }

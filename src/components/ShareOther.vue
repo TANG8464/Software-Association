@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="share-other">
     <span style="margin:8px" :style="{'display':size.isSmallSize?'inline':'block'}" @click="copy()">
         <icon name="share" scale="35" width="35"></icon>
     </span>
@@ -20,15 +20,15 @@ export default {
     props: {
         title: {
             type: String,
-            deafult: '软件协会',
+            default: '软件协会',
         },
         pics: {
             type: String,
-            deafult: null,
+            default: null,
         },
         summary: {
             type: String,
-            deafult: '分享给你，戳我看看',
+            default: '分享给你，戳我看看',
         },
     },
     computed: {
@@ -68,8 +68,6 @@ export default {
 &desc=你的分享简述
         */
             const url = window.location.href
-            console.log(url);
-
             const shareMap = [
                 'http://connect.qq.com/widget/shareqq/index.html', //qq好友
                 'https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey', //qq空间
@@ -80,7 +78,7 @@ export default {
             // } else
             window.open(
                 shareMap[index] +
-                `?url=${url}&title=${this.title}&pics=${this.pics}&summary=${this.summary}`
+                `?url=${encodeURIComponent(url)}&title=${this.title}&pics=${this.pics}&summary=${this.summary}`
             )
         },
     },

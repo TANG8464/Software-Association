@@ -2,15 +2,15 @@
 <div class="personal-center">
     <open-animation :isOpen="isOpenAnimation"></open-animation>
     <div class="main">
-        <div class="person-main">
-            <div class="content" ref="content" :style="{'padding':`0 ${margin}`,'top':top+'px'}">
+        <div class="person-main" ref="content-box">
+            <div class="personal-content" ref="content" :style="{'padding':`0 ${margin}`}">
                 <div class="username-box">
                     <span @click="isOpenAvatarInfo=true">
                         <personal-avatar :avatarSize="avatarSize"></personal-avatar>
                     </span>
                     <span class="username" :style="{'margin-left': (4+size.maxW*0.01)+'px','font-size': (16+size.maxW*0.01)+'px'}">{{activeUser}}</span>
                 </div>
-                <div style="overflow: auto;padding-bottom:50px;box-sizing: border-box;" :style="{height:size.maxH-320+'px'}">
+                <div style="box-sizing: border-box;">
                     <transition name="component">
                         <router-view></router-view>
                     </transition>
@@ -49,15 +49,11 @@ export default {
         size() {
             return this.$store.state.resize
         },
-
-        background() {
-            return require('@/assets/img/personalCenter/back.jpg')
-        },
         margin() {
             return this.size.isSmallSize ? '20px' : `${this.size.maxW * 0.2}px`
         },
         top() {
-            return this.size.isSmallSize ? 200 : 400
+            return this.size.isSmallSize ? 150 : 260
         },
         avatarSize() {
             return this.size.isSmallSize ? 80 : 120
@@ -77,14 +73,11 @@ export default {
             this.isOpenAnimation = false
         }, 1000)
         this.setActiveUser()
-        window.onmousewheel = () => {
-            const el = this.$refs.content
-            const value = this.size.isSmallSize ? 20 : 200
-            if (event.wheelDelta < 0) {
-                el.style.top = this.top - value + 'px'
-                window.onmousewheel = null
-            }
-        }
+        const el = this.$refs.content
+        const elB = this.$refs['content-box']
+        el.style.top = this.top + 'px'
+        el.style.paddingBottom = this.top + 'px'
+        elB.style.paddingBottom = this.top + 'px'
     },
     methods: {
         async setActiveUser() {
@@ -104,23 +97,16 @@ export default {
 
 <style lang="scss">
 .personal-center {
-    .person-main {
-        .back {
-            position: absolute;
-            top: 0;
-            margin: 0;
-            background-position: center bottom;
-            background-repeat: no-repeat;
-            background-size: contain;
-            width: 100%;
-            z-index: -1;
-        }
 
-        .content {
+    //  position: relative;
+    //     min-height: 800px;
+    .person-main {
+
+        // overflow: auto;
+        .personal-content {
             background-color: rgba(255, 255, 255, 0.90);
-            transition: all 0.5s;
-            position: fixed;
-            width: 100%;
+            transition: all 1s;
+            position: relative;
             box-sizing: border-box;
 
             .username-box {

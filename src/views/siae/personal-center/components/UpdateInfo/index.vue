@@ -1,93 +1,89 @@
 <template>
-  <el-dialog
-    class="update-info"
-    title="修改个人资料"
-    :visible.sync="isOpen"
-    width="42%"
-    :fullscreen="size.isSmallSize"
-  >
-    <member-info-form
-      :personalInfo.sync="personalInfo"
-      @submitForm="updateInfo"
-      :col="2"
-      :colW="300"
-      :show="[
-        'memberName','gender','cascadeClass','stu_num','nation','nativePlace','address','education','politicalOutlook','cardID','phoneNum','description'
-      ]"
-    ></member-info-form>
-  </el-dialog>
+<el-dialog class="update-info" title="修改个人资料" :visible.sync="isOpen" width="42%" :fullscreen="size.isSmallSize">
+    <member-info-form :personalInfo.sync="personalInfo" @submitForm="updateInfo" :col="2" :colW="300" :show="[
+        'memberName','gender','cascadeClass','stu_num','nation','nativePlace','address','education','politicalOutlook','cardID','phoneNum','qq','description'
+      ]"></member-info-form>
+</el-dialog>
 </template>
+
 <script>
-import { detailedInformation } from '@/api/active-user'
+import {
+    detailedInformation
+} from '@/api/active-user'
 import MemberInfoForm from '@/components/MemberInfoForm'
 export default {
-  name: 'updateInfo',
-  components: {
-    MemberInfoForm,
-  },
-  props: {
-    isOpenUpdate: {
-      type: Boolean,
-      require: true,
+    name: 'updateInfo',
+    components: {
+        MemberInfoForm,
     },
-  },
-  data() {
-    return {
-      isOpen: null,
-      personalInfo: null,
-    }
-  },
-  watch: {
-    isOpenUpdate(newVal) {
-      this.isOpen = newVal
+    props: {
+        isOpenUpdate: {
+            type: Boolean,
+            require: true,
+        },
     },
-    isOpen(newVal) {
-      this.$emit('update:isOpenUpdate', newVal)
+    data() {
+        return {
+            isOpen: null,
+            personalInfo: null,
+        }
     },
-  },
-  computed: {
-    size() {
-      return this.$store.state.resize
+    watch: {
+        isOpenUpdate(newVal) {
+            this.isOpen = newVal
+        },
+        isOpen(newVal) {
+            this.$emit('update:isOpenUpdate', newVal)
+        },
     },
-  },
-  created() {
-    this.setPersonalInfo()
-  },
-  methods: {
-    setPersonalInfo() {
-      detailedInformation().then((res) => {
-        this.personalInfo = res.data.data
-      })
+    computed: {
+        size() {
+            return this.$store.state.resize
+        },
     },
-    async updateInfo() {
-      const { data } = await this.$axios.put('member/person', this.personalInfo)
-      console.log(data)
-      if (data.code === 200) {
-        this.$message.success('修改成功')
-        this.isOpen = false
+    created() {
         this.setPersonalInfo()
-        this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
-      } else this.$message.error(data.message)
     },
-  },
+    methods: {
+        setPersonalInfo() {
+            detailedInformation().then((res) => {
+                this.personalInfo = res.data.data
+            })
+        },
+        async updateInfo() {
+            const {
+                data
+            } = await this.$axios.put('member/person', this.personalInfo)
+            if (data.code === 200) {
+                this.$message.success('修改成功')
+                this.isOpen = false
+                this.setPersonalInfo()
+                this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
+            } else this.$message.error(data.message)
+        },
+    },
 }
 </script>
+
 <style>
 .update-info .el-select {
-  max-width: 300px;
-  width: 100%;
+    max-width: 300px;
+    width: 100%;
 }
+
 .update-info .el-form-item {
-  max-width: 300px;
-  width: 100%;
-  display: inline-block;
-  margin: 0 5px;
+    max-width: 300px;
+    width: 100%;
+    display: inline-block;
+    margin: 0 5px;
 }
+
 .update-info .el-form--label-top .el-form-item__label {
-  padding: 0;
-  padding-top: 5px;
+    padding: 0;
+    padding-top: 5px;
 }
+
 .update-info .el-form-item__label {
-  color: #909399;
+    color: #909399;
 }
 </style>

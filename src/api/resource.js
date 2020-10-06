@@ -19,7 +19,7 @@ export async function getResourceSort(currPage, limit, resourceCategoryName) {
     return data
 }
 /**
- * 获取所有资源
+ * 前台获取所有资源
  * @param {Number} currPage 当前页
  * @param {Number} limit 每页条数
  * @param {Number} resourceCategoryId 资源id
@@ -32,8 +32,19 @@ export async function getAllResource(currPage, limit, resourceCategoryId, resour
         params: { currPage, limit, resourceCategoryId, resourceName }
     })
     data.data.records.forEach(item => {
-        console.log(item.resourceLogo);
+        if (!item.resourceLogo || item.resourceLogo.indexOf('http') == -1)
+            item.resourceLogo = link
+    })
+    return data
+}
 
+export async function adminGetAllResource({ currPage, limit, resourceCategoryId, resourceName, status, type }) {
+    const { data } = await request({
+        url: 'resources/page',
+        method: 'get',
+        params: { currPage, limit, resourceCategoryId, resourceName, status, type }
+    })
+    data.data.records.forEach(item => {
         if (!item.resourceLogo || item.resourceLogo.indexOf('http') == -1)
             item.resourceLogo = link
     })

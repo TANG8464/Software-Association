@@ -2,20 +2,20 @@
 <div class="background-image">
     <div class="demo-image__placeholder">
         <div class="upload-background">
-            <span style="color:#666666;font-size:14px">共有{{total}}张背景图</span>
-            <el-button style="float:right;position:relative;top:-15px" size="small" @click="isOpenUpload=true">上传背景</el-button>
+            <span style="color: #666666; font-size: 14px">共有{{ total }}张背景图</span>
+            <el-button style="float: right; position: relative; top: -15px" size="small" @click="isOpenUpload = true">上传背景</el-button>
         </div>
         <div class="pictures" ref="pictures">
             <picture-list :pictures="allBackground" :pictureUrlArr="pictureUrlArr" :refresh="refresh" :key="update" v-if="allBackground">
                 <div slot="actions" slot-scope="scope">
                     <div class="actions">
-                        <span style="margin:5%" v-show="!scope.item.status" @click="updateStatus(scope.item.id,true)">
+                        <span style="margin: 5%" v-show="!scope.item.status" @click="updateStatus(scope.item.id, true)">
                             <icon name="disabled" scale="20" width="20"></icon>
                         </span>
-                        <span style="margin:5%" v-show="scope.item.status" @click="updateStatus(scope.item.id,false)">
+                        <span style="margin: 5%" v-show="scope.item.status" @click="updateStatus(scope.item.id, false)">
                             <icon name="confirm" scale="20" width="20"></icon>
                         </span>
-                        <span style="margin:5%" @click="deleteImg(scope.item.name)">
+                        <span style="margin: 5%" @click="deleteImg(scope.item.name)">
                             <icon name="delete" scale="20" width="20"></icon>
                         </span>
                     </div>
@@ -29,13 +29,15 @@
         <div class="tip" v-if="isAllLoading">已全部加载</div>
     </div>
     <el-dialog title="上传背景" :visible.sync="isOpenUpload" width="30%" center>
-        <div style="max-height:400px;overflow: auto;">
+        <div style="max-height: 400px; overflow: auto">
             <el-upload ref="upload" class="upload-demo" action="#" :multiple="true" :auto-upload="false" :on-change="submitUpload" :on-remove="removeFile" list-type="picture" accept=".jpg, .jpeg, .png, .JPG, .JPEG">
                 <el-button size="small">选取背景</el-button>
             </el-upload>
         </div>
         <el-progress v-if="isUploading" :stroke-width="1" :percentage="percentage" :format="format"></el-progress>
-        <div v-if="fileList.length===0" style="width:100%;line-height:300px;text-align:center">尚未选取背景</div>
+        <div v-if="fileList.length === 0" style="width: 100%; line-height: 300px; text-align: center">
+            尚未选取背景
+        </div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="isOpenUpload = false">取 消</el-button>
             <el-button type="primary" @click="uploadBackground">确认上传</el-button>
@@ -135,7 +137,7 @@ export default {
         },
         //懒加载背景图
         async setAllBackground(currPage, limit, refresh) {
-            this.refresh = refresh
+            if (refresh) this.refresh = refresh
             if (!refresh && this.isAllLoading) return
             const res = await getAllBackground(currPage || this.currPage, limit || this.limit)
             if (res.code === 200) {
@@ -151,6 +153,7 @@ export default {
                 this.total = data.total
                 this.update = !this.update
                 if (refresh) this.allBackground = data.records
+                //  this.allBackground = this.allBackground.concat(data.records)
                 else this.allBackground = this.allBackground.concat(data.records)
                 if (this.$refs.upload) this.$refs.upload.clearFiles()
                 this.loading = false
@@ -181,7 +184,6 @@ export default {
                 onUploadProgress: (progressEvent) => {
                     const complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0
                     this.percentage = complete
-                    console.log(complete)
                 },
             }
             const data = await uploadBackground(this.fileList, config)
@@ -203,7 +205,6 @@ export default {
             const data = await updateBackgroundStatus(id, status)
             if (data.code === 200) {
                 this.setAllBackground(1, this.currPage * this.limit, true)
-                console.log(this.setAllBackground(1, this.currPage * this.limit, true))
                 this.$message.success('修改成功')
             } else this.$message.error(data.message)
         },

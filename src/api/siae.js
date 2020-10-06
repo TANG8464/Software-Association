@@ -69,3 +69,12 @@ export async function updateBackgroundStatus(backgroundId, status) {
     })
     return data
 }
+
+export async function getBackgroundById(backgroundId) {
+
+    const { data } = await request({
+        url: `sys/background/info/${backgroundId}`,
+        method: 'get'
+    })
+    return data
+}

@@ -3,9 +3,14 @@ import Main from '@/layouts/Backstage/components/BackMain'
 const backstageRouter = {
     path: '/backstage',
     name: 'backstage',
-    redirect: '/backstage/siae',
+    redirect: '/backstage/data-monitor',
     component: Backstage,
     children: [{
+            path: 'data-monitor',
+            name: 'data-monitor',
+            component: () =>
+                import ('@/views/backstage/data-monitor'),
+        }, {
             path: 'siae',
             name: 'siae',
             redirect: '/backstage/siae/image-carousel',
@@ -173,7 +178,13 @@ const backstageRouter = {
                     name: 'test',
                     component: () =>
                         import ('@/views/backstage/user/test.vue')
-                }
+                },
+                {
+                    path: 'check',
+                    name: 'check',
+                    component: () =>
+                        import ('@/views/backstage/user/check.vue')
+                },
             ]
         }
     ]

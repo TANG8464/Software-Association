@@ -4,10 +4,10 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
+        isExit: false,
         activeUserInfo: null,
         resize: null, //窗口大小属性
         breadcrumb: null, //面包屑导航
-
         avatar: false, //是否修改头像
         changeImg: false, //上传头像后是否更改头像位置大小
         redrawImgFile: {}, //重绘上传的图片文件
@@ -15,6 +15,12 @@ const store = new Vuex.Store({
         isChangeNav: false,
         isChangeBack: false, //是否更换背景
         isOpenMsg: false, //是否打开消息通知
+        isOpenToTop: false, //notice 是否回到顶部
+        isReachBottom: false,
+        noticeTitle: '',
+        isSearchNotice: false,
+        currentTitle: '', //当前查看详情的公告
+        carouselSort:[]
     },
     mutations: { //同步变更
         setActiveUserInfo: (state, userInfo) => {
@@ -46,8 +52,28 @@ const store = new Vuex.Store({
         },
         changeMsg: (state, flag) => {
             state.isOpenMsg = flag
-        }
-
+        },
+        changeOpenToTop: (state, flag) => {
+            state.isOpenToTop = flag
+        },
+        changeReachBottom: (state, flag) => {
+            state.isReachBottom = flag
+        },
+        setNoticeTitle: (state, title) => {
+            state.noticeTitle = title
+        },
+        changeSearchNotice: (state, flag) => {
+            state.isSearchNotice = flag
+        },
+        setCurrentTitle: (state, title) => {
+            state.currentTitle = title
+        },
+        setCarouselSort:(state, arr)=>{
+            state.carouselSort = arr
+        },
+        exit: (state, flag) => {
+            state.isExit = flag
+        },
     },
     actions: { //异步变更
     }

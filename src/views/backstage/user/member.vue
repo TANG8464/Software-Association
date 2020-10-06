@@ -148,7 +148,7 @@ export default {
                 this.pagenum = data.data.current
                 this.total = data.data.total
                 this.pagesize = data.data.size
-
+                this.selectPosition = []
                 this.tableData.forEach((item) => {
                     if (item.position != null) this.selectPosition.push(item.position.id)
                     else this.selectPosition.push('无')
@@ -175,12 +175,11 @@ export default {
         //打开修改
         openEditDialog(row) {
             this.memberInfo = row
-            console.log(row)
-
             this.isOpenUpdateInfo = true
         },
         //全选后
         handleSelectionChange(val) {
+            this.selected = []
             this.checkeds = val.length
             val.forEach((item) => {
                 this.selected.push(item.id)
@@ -208,6 +207,8 @@ export default {
             } else {
                 resData = this.selected
             }
+            console.log(resData);
+
             const confirmresult = await this.$confirm(
                 `此操作将永久删除${id ? '该成员' : '这' + resData.length + '名成员'}`,
                 '删除', {

@@ -59,11 +59,6 @@ export default {
             isFocus: false,
         }
     },
-    watch: {
-        value(newVal) {
-            console.log(newVal)
-        },
-    },
     mounted() {
         this.inputType = this.type
     },
@@ -127,6 +122,7 @@ export default {
     .input {
         display: block;
         height: 100% !important;
+        width: 100%;
         border: none;
         outline: none;
         background: none;

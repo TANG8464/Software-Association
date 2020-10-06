@@ -64,7 +64,7 @@ let b1;
 function html(el) {
     maxW = window.innerWidth; //获取网页外部窗体宽
     maxH = window.innerHeight; //获取网页外部窗体高
-    el.style = " margin: 0;padding: 0;position: fixed;top: 0;bottom: 0;left: 0;right: 0;";
+    el.style = " margin: 0;padding: 0;";
     let sc = document.createElement("canvas");
     sc.id = "star";
     sc.height = maxH;
@@ -74,7 +74,7 @@ function html(el) {
     mc.id = "meteor";
     mc.height = maxH;
     mc.width = maxW;
-    mc.style = "position: fixed;background:rgb(41,42,52);left: 0;";
+    mc.style = "position: fixed;background:rgba(33,34,42,1);left: 0;";
     mc.innerText = "该浏览器不支持canvas，为了更好的使用体验，请您切换为其他浏览器。";
     let img = el.children[0];
     el.insertBefore(mc, img);
@@ -89,7 +89,7 @@ function init() {
         let metCt = met.getContext("2d");
         sCt = stCt;
         mCt = metCt;
-        mCt.fillStyle = "rgba(41,42,52,1)";
+        mCt.fillStyle = "rgba(33,34,42,1)";
         mCt.fillRect(0, 0, maxW, maxH);
         star();
         meteor();
@@ -98,14 +98,14 @@ function init() {
 }
 
 function star() {
-    for (let i = 1; i <= 70; i++) {
+    for (let i = 1; i <= 50; i++) {
         stars[i] = new Star(Math.floor(Math.random() * maxW + 1), Math.floor(Math.random() * maxH + 1), Math.random() * 1 + 0.5, sCt);
         stars[i].draw();
     }
 }
 
 function meteor() {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
         meteors[i] = new Meteor(Math.floor(Math.random() * maxW + 1), 0, Math.random() + 2, mCt);
         meteors[i].draw();
     }
@@ -116,7 +116,7 @@ function move() {
     for (let star in stars) {
         stars[star].move(0.1, maxW);
     }
-    mCt.fillStyle = "rgba(41,42,52,1)";
+    mCt.fillStyle = "rgba(33,34,42,1)";
     mCt.fillRect(0, 0, maxW, maxH);
     for (let meteor in meteors) {
         meteors[meteor].move(20, 20, maxW, maxH);
@@ -134,7 +134,7 @@ window.onresize = function() {
         sc.width = maxW;
         mc.height = maxH;
         mc.width = maxW;
-        mc.style = "position: fixed;background:rgb(41,42,52);left:0;";
+        mc.style = "position: fixed;background:rgba(33,34,42,1);left:0;";
     }
 }
 

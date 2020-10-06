@@ -60,6 +60,8 @@ export default {
                     showClose: true,
                 })
                 this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
+                this.$store.commit('exit', true)
+
             } else this.$message.error(data.message)
         },
     },

@@ -1,4 +1,26 @@
 import request from "@/utils/request"
+import { sendAlEmail } from '@/api/email'
+
+function formatImg(content) {
+    let data
+    content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/, function(match, capture) {
+        data = capture
+    })
+    return data || link
+}
+/**
+ * 根据文章的html内容 获取所有文字
+ * @param {String} content 文章内容
+ */
+
+function formatHtml(content) {
+    return content
+        .replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, '')
+        .replace(/<[^>]+?>/g, '')
+        .replace(/\s+/g, ' ')
+        .replace(/ /g, ' ')
+        .replace(/>/g, ' ')
+}
 /**
  * 查询所有消息
  * @param {String} action 消息类型
@@ -12,8 +34,12 @@ export async function searchAllMessage(action, currPage, limit, title) {
         method: 'get',
         params: { action, currPage, limit, title }
     })
+    data.data.records.forEach(item => {
+        item.text = formatHtml(item.content)
+    })
     return data
 }
+
 
 /**
  * 管理员发送消息
@@ -25,10 +51,14 @@ export async function adminSendMsg({ action, content, title, userIds }) {
         method: 'post',
         data: { action, content, title, userIds }
     })
+    if (data.code === 200) {
+        const data = await sendAlEmail(content, userIds, title)
+        return data
+    }
     return data
 }
 /**
- * 管理员修改消息信息
+ * 管理员修改消息
  * @param {Object} param0 消息参数
  */
 export async function adminUpdateMsg({ id, action, content, title }) {
@@ -52,6 +82,7 @@ export async function adminDeleteMsg(ids) {
     return data
 }
 
+
 /**
  * 查找自己的消息
  * @param {String} action 消息类型
@@ -65,6 +96,9 @@ export async function searchMessage(action, currPage, limit, title) {
         url: `sys/notice/person`,
         method: 'get',
         params: { action, currPage, limit, title }
+    })
+    data.data.records.forEach(item => {
+        item.text = formatHtml(item.content)
     })
     return data
 }

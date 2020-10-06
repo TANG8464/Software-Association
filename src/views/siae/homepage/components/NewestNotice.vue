@@ -1,22 +1,37 @@
 <template>
-<div class="newest-notice">
-    <el-row :gutter="24" v-for="(item,index) in notices" :key="item.id">
-        <el-col :span="6" :class="{right:index%2===1}">
-            <img :src="item.cover" alt style="width:100%" />
-        </el-col>
-        <el-col :span="18">
-            <div>
-                <h2 class="news_title">
-                    <span>{{item.title}}</span>
-                </h2>
-                <p class="news_content" v-html="item.text"></p>
-                <div>
-                    <p style="display:inline-block;width:70%;line-height:30px">
-                        <img :src="item.member.avatarUrl" width="30" height="30" style="border-radius:50%" />
-                        <span>{{item.member.memberName}}</span>
-                    </p>
-                    <p style="display:inline-block;text-align:right;width:30%">{{item.deplDate|dataFormatter}} | {{item.count}}</p>
+<div class="newest-notice" :style="{padding:padding-5+'px'}">
+    <p class="title" :style="{'font-size':+15+size.maxW*0.01+'px',margin:margin+'px'}">
+        <icon name="notice" scale="40" :width="25+size.maxW*0.01"></icon>
+        <span>最新公告</span>
+    </p>
+
+    <el-row v-if="notices" :gutter="24" :style="{margin:margin+'px',padding:padding-5+'px'}">
+        <el-col :span="8" v-for="item in notices" :key="item.id" :style="{padding:padding-5+'px'}">
+            <div class="notice" :style="{'min-height': 100+size.maxW*0.2+'px'}" @click="$router.push({path:'/notice/details',query:{id:item.id,index:0}})">
+                <div class="cover-box" :style="{'height': 200+size.maxW*0.01+'px'}">
+                    <img :src="item.cover" alt style="width:100%;height:100%;object-fit: cover;" />
                 </div>
+                <div class="content-box" :style="{padding:padding+'px'}">
+                    <h1 class="news_title" :style="{'font-size':fontSize+5+'px',margin:margin+'px'}">
+                        <span>{{item.title}}</span>
+                    </h1>
+                    <p class="news_content" v-html="item.text" :style="{'font-size':fontSize+5+'px',margin:margin+'px','min-height':'30px'}"></p>
+                    <div class="footer-box" :style="{'font-size':fontSize+'px',margin:margin+'px'}">
+                        <div style="display:inline-flex;align-items:center;">
+                            <img :src="item.member.avatarUrl" width="35" height="35" style="border-radius:50%;display:inline" />
+                            <span>{{item.member.memberName}}</span>
+                        </div>
+                        <div>
+                            {{item.deplDate|dataFormatter}} | {{item.count|countFormatter}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </el-col>
+    </el-row>
+    <el-row v-else :gutter="24" :style="{margin:margin+'px',padding:padding-5+'px'}">
+        <el-col :span="8" v-for="item in 3" :key="item" :style="{padding:padding-5+'px'}">
+            <div class="notice" :style="{'min-height': 100+size.maxW*0.2+'px'}">
             </div>
         </el-col>
     </el-row>
@@ -28,12 +43,27 @@ import {
     searchNewestNotice
 } from '@/api/notice'
 import {
-    dataFormatter
+    dataFormatter,
+    countFormatter
 } from '@/filters'
 export default {
     data() {
         return {
             notices: [],
+        }
+    },
+    computed: {
+        size() {
+            return this.$store.state.resize
+        },
+        fontSize() {
+            return this.size.isSmallSize ? 6 : 15
+        },
+        margin() {
+            return this.size.isSmallSize ? 5 : 10
+        },
+        padding() {
+            return this.size.isSmallSize ? 5 : 20
         }
     },
     created() {
@@ -42,15 +72,14 @@ export default {
     methods: {
         async setNotices() {
             const data = await searchNewestNotice()
-
             if (data.code === 200) {
                 this.notices = data.data
-                console.log(this.notices)
             } else this.$message.error(data.message)
         },
     },
     filters: {
         dataFormatter,
+        countFormatter
     },
 }
 </script>
@@ -58,15 +87,61 @@ export default {
 <style lang="scss">
 .newest-notice {
     color: #666666;
-    padding: 20px;
+
+    .title {
+        text-align: center;
+        color: white;
+    }
+
+    .icon-notice {
+        animation: waggle 2s infinite;
+    }
+
+    @keyframes waggle {
+        0% {
+            transform: rotate(10deg);
+        }
+
+        50% {
+            transform: rotate(-10deg);
+        }
+
+        100% {
+            transform: rotate(10deg);
+        }
+    }
 
     .el-row {
         margin: 10px;
         padding: 10px;
-        background-color: rgba($color: #ffffff, $alpha: 0.8);
+
+        .el-col {
+            .notice {
+                background-color: rgba($color: #ffffff, $alpha: 0.8);
+                margin: 5px;
+
+                .footer-box {
+                    border-top: 1px solid #aaaaaa;
+                    text-align: center;
+                    padding: 10px;
+                }
+            }
+
+            .notice:hover {
+                transform: scale(1.01);
+            }
+        }
+
+        .news_title {
+            text-overflow: ellipsis;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
 
         .news_title:hover span {
             border-bottom: 1px solid #666666;
+
         }
 
         .news_content {
@@ -77,10 +152,6 @@ export default {
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
         }
-    }
-
-    .right {
-        float: right;
     }
 }
 </style>

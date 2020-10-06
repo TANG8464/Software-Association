@@ -37,7 +37,8 @@ export async function searchAllNotice(currPage, limit, title) {
         method: 'get',
         params: { currPage, limit, title }
     })
-    let moreData = data.data.records
+
+    let moreData = data.data ? data.data.records : []
     const tagStyle = [
         {},
         { tagType: '', tagLabel: '置顶' },
@@ -61,10 +62,27 @@ export async function searchNoticeById(id) {
         method: 'get'
     })
     let notice = data.data
-    notice.label = notice.newsLabel ? notice.newsLabel.split(',') : []
+    notice.cover = formatImg(notice.content)
+    if (notice)
+        notice.label = notice.newsLabel ? notice.newsLabel.split(',') : []
     return data
-
 }
+/**
+ * 前台根据id查找公告
+ * @param {Number} id 
+ */
+export async function receptionSearchNoticeById(id) {
+    let { data } = await request({
+        url: `news/reception/${id}`,
+        method: 'get'
+    })
+    let notice = data.data
+    notice.cover = formatImg(notice.content)
+    if (notice)
+        notice.label = notice.newsLabel ? notice.newsLabel.split(',') : []
+    return data
+}
+
 
 
 export async function searchNewestNotice() {
@@ -73,7 +91,6 @@ export async function searchNewestNotice() {
         method: 'get'
     })
     let notice = data.data
-
     notice.forEach(item => {
         item.cover = formatImg(item.content)
         item.text = formatHtml(item.content)
@@ -81,4 +98,12 @@ export async function searchNewestNotice() {
     })
     return data
 
+}
+export async function noticeMaxId() {
+    let { data } = await request({
+        url: `news/newest`,
+        method: 'get'
+    })
+    let max = data.data[0].id
+    return max
 }

@@ -62,7 +62,6 @@ export default {
             return isExcel
         },
         handldeSuccess(res, file) {
-            console.log(res)
             if (res.code === 200) {
                 this.$message.success('导入成功')
                 this.isSuccess = true
@@ -71,7 +70,6 @@ export default {
                     Object.keys(res.data[0]).forEach((key) => {
                         this.header.push(key)
                     })
-                    console.log(this.header)
                 }
             } else if (res.code === 500) {
                 this.$message.error('糟糕！数据库错误')
