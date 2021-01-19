@@ -162,6 +162,7 @@ export default {
         border-bottom: 1px solid #d2d2d2;
         font-size: 16px;
         padding: 10px 0;
+        z-index: 0;
     }
 }
 </style>

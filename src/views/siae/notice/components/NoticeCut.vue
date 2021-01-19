@@ -18,7 +18,7 @@
                         <span>{{item.member.memberName}}</span>
                         <span>
                             <icon name="time" scale="14" width="14"></icon>
-                            {{item.deplDate|dataFormatter}}
+                            {{item.deplDate|dateFormatter}}
                         </span>
                         <span>
                             <icon name="footer" scale="15" width="15"></icon>
@@ -35,7 +35,7 @@
 
 <script>
 import {
-    dataFormatter
+    dateFormatter
 } from '@/filters'
 export default {
     props: {
@@ -43,10 +43,6 @@ export default {
             type: Array,
             require: true,
         },
-        // otherArr: {
-        //     type: Array,
-        //     require: true,
-        // },
     },
     created() {
 
@@ -55,7 +51,7 @@ export default {
 
     },
     filters: {
-        dataFormatter
+        dateFormatter
     },
 }
 </script>

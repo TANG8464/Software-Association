@@ -6,6 +6,7 @@ const store = new Vuex.Store({
     state: {
         isExit: false,
         activeUserInfo: null,
+        activeUserRole:null,//当前用户角色 router
         resize: null, //窗口大小属性
         breadcrumb: null, //面包屑导航
         avatar: false, //是否修改头像
@@ -25,6 +26,9 @@ const store = new Vuex.Store({
     mutations: { //同步变更
         setActiveUserInfo: (state, userInfo) => {
             state.activeUserInfo = userInfo
+        },
+        setActiveUserRole:(state, userRole)=>{
+            state.activeUserRole = userRole
         },
         setBreadcrumb: (state, arr) => {
             state.breadcrumb = arr

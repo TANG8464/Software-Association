@@ -2,28 +2,33 @@
   <div class="edit-sidebar">
     <el-col :span="24">
       <p class="small-title">置顶</p>
-      <el-switch style="float:right;" v-model="top" active-color="#409EFF" inactive-color="#e0e0e0"></el-switch>
+      <el-switch
+        style="float: right"
+        v-model="top"
+        active-color="#409EFF"
+        inactive-color="#e0e0e0"
+      ></el-switch>
     </el-col>
     <el-col :span="24" v-if="top">
       <p class="small-title">高级置顶</p>
       <el-switch
-        style="float:right;"
+        style="float: right"
         v-model="highTop"
         active-color="#409EFF"
         inactive-color="#e0e0e0"
       ></el-switch>
     </el-col>
-    <el-col :span="24">
+    <el-col :span="24" v-if="!isEdit">
       <div class="block">
         <p class="small-title">定时发布</p>
         <el-switch
-          style="float:right;"
+          style="float: right"
           v-model="operation.isTiming"
           active-color="#409EFF"
           inactive-color="#e0e0e0"
         ></el-switch>
         <div v-if="operation.isTiming">
-          <p class="small-title" style="margin: 10px 0;display:inline-block;">发布时间</p>
+          <p class="small-title" style="margin: 10px 0; display: inline-block">发布时间</p>
           <date-time @setDate="setDate" ref="datetime"></date-time>
         </div>
       </div>
@@ -36,38 +41,43 @@
           :key="item.id"
           v-model="operation.categoryId"
           :label="item.id"
-          style="display:block;"
-        >{{item.newsCategoryName}}</el-radio>
+          style="display: block"
+          >{{ item.newsCategoryName }}</el-radio
+        >
       </div>
     </el-col>
     <el-col :span="24">
-      <p class="small-title" style=" margin: 10px 0;">文章标签</p>
+      <p class="small-title" style="margin: 10px 0">文章标签</p>
       <div class="overflow selectDiv">
         <el-tag
-          style=" margin: 3px;"
+          style="margin: 3px"
           :key="tag"
           v-for="tag in operation.newsLabel"
           closable
           :disable-transitions="false"
           @close="handleClose(tag)"
-        >{{tag}}</el-tag>
+          >{{ tag }}</el-tag
+        >
       </div>
       <el-input
         class="input-new-tag"
-        style="margin:10px 0;width:100%"
+        style="margin: 10px 0; width: 100%"
         v-if="inputVisible"
         v-model="newLabel"
         ref="saveTagInput"
         size="small"
         @keyup.enter.native="handleInputConfirm"
       ></el-input>
-      <el-button style v-else class="button-new-tag" size="small" @click="showInput">添加标签(enter键入)</el-button>
+      <el-button style v-else class="button-new-tag" size="small" @click="showInput"
+        >添加标签(enter键入)</el-button
+      >
     </el-col>
   </div>
 </template>
 
 <script>
 import DateTime from './DateTime'
+import { searchAllNotieCategiry } from '@/api/notice/category'
 export default {
   components: {
     DateTime,
@@ -93,6 +103,7 @@ export default {
       categoryData: [], //分类数据
       inputVisible: false, //是否展示输入标签框
       newLabel: '', //输入的标签
+      isEdit: false,
     }
   },
   watch: {
@@ -124,6 +135,8 @@ export default {
   },
   created() {
     this.setCategoryData()
+    const query = this.$route.query
+    this.isEdit = query && query.id
   },
   methods: {
     setDate(val) {
@@ -140,17 +153,12 @@ export default {
       }
     }, //设置分类数据
     async setCategoryData() {
-      let res = await this.$axios.get('newscategory/', {
-        params: { limit: 1000 },
-        credentials: 'include',
+      const res = await searchAllNotieCategiry({
+        limit: 1000,
       })
-      if (res.data.code === 200) {
-        this.categoryData = res.data.data.records
-      } else {
-        this.$message.error({
-          message: res.data.message,
-        })
-      }
+      if (res.code === 200) {
+        this.categoryData = res.data.records
+      } else this.$message.error(res.message)
     },
     //添加标签
     handleClose(tag) {
@@ -177,8 +185,8 @@ export default {
           newLabel.includes(' ')
         ) {
           this.$message.error(`出错啦，标签不能包含逗号和空格`)
-        } else if (newLabel.length <= 0 || newLabel.length > 6) {
-          this.$message.error('标签必须在1-6个字之间哦~')
+        } else if (newLabel.length <= 0 || newLabel.length > 15) {
+          this.$message.error('标签必须在1-15个字之间哦~')
         } else if (label.indexOf(newLabel) != -1) {
           this.$message.error('标签重复啦!>__<')
         } else {
@@ -197,9 +205,11 @@ export default {
   text-align: left;
   padding: 10px 0;
 }
+
 .edit-sidebar p {
   display: inline;
 }
+
 .edit-sidebar .selectDiv {
   overflow: auto;
   width: 90%;
@@ -233,12 +243,14 @@ export default {
   margin-left: 10px;
   vertical-align: bottom;
 }
+
 .edit-sidebar .el-button {
   margin: 10px 0;
   padding: 0 10px;
   box-sizing: content-box;
   width: 90%;
 }
+
 .edit-sidebar .small-title {
   font-size: 14px;
   color: #999999;

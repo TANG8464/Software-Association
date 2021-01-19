@@ -2,14 +2,19 @@
   <div class="backstage">
     <page-loading :isLoading="isLoading"></page-loading>
     <div class="back-nav-menu-bax" ref="navMenuBox">
-      <back-nav-menu ref="navMenu" :isCollapse="isCollapseAside" :align="align" :maxH="size.maxH"></back-nav-menu>
+      <back-nav-menu
+        ref="navMenu"
+        :isCollapse="isCollapseAside"
+        :align="align"
+        :maxH="size.maxH"
+      ></back-nav-menu>
     </div>
     <div class="back-sidebar-box" ref="sidebarBox">
       <back-sidebar ref="sidebar" :maxH="size.maxH"></back-sidebar>
     </div>
     <div class="main" ref="main">
       <div class="header" ref="header" v-show="isShowHeader">
-        <Back-phone-header v-if="isShowHeader" :maxH="size.maxH" :maxW="size.maxW"></Back-phone-header>
+        <back-phone-header v-if="isShowHeader" :maxH="size.maxH"></back-phone-header>
       </div>
       <div class="outer" ref="outer">
         <div class="within" ref="within">
@@ -27,6 +32,9 @@ import BackSidebar from './components/BackSidebar'
 import BackPhoneHeader from './components/BackPhoneHeader'
 import BreadcrumbNav from '@/components/BreadcrumbNav'
 import PageLoading from '@/components/PageLoading/One'
+import {
+    getActiveUserInfo
+} from '@/api/active-user'
 export default {
   name: 'backstage',
   components: {
@@ -48,6 +56,10 @@ export default {
       out: null,
       header: null,
     }
+  },
+  async beforeCreate() {
+    const { data: infoData } = await getActiveUserInfo()
+    this.$store.commit('setActiveUserInfo', infoData.data)
   },
   created() {
     this.load()
@@ -97,7 +109,6 @@ export default {
       this.header.style.opacity = isSmallSize ? 1 : 0
 
       this.main.style.right = isSmallSize ? 0 : '50px'
-      // this.main.style.backgroundColor = isSmallSize ? 'white' : 'rgb(248, 250, 249)'
 
       this.navMenu.style.width = isSmallSize ? 0 : this.navMenu.style.width
       this.backSidebar.style.width = isSmallSize ? 0 : '50px'
@@ -110,22 +121,22 @@ export default {
   },
 }
 </script>
+
 <style>
 .logo-title {
   color: rgb(64, 171, 234);
   display: inline;
   font-weight: 400;
 }
-</style>
-<style scoped>
+</style><style scoped>
 .back-nav-menu-bax {
   position: fixed;
   background-color: white;
   height: 100%;
   width: 0;
   transition: all 1s;
-  
 }
+
 .header {
   background-color: white;
   box-shadow: 0px 0px 20px 5px #eeeeee;
@@ -136,6 +147,7 @@ export default {
   width: 100%;
   z-index: 2502;
 }
+
 .main {
   color: #333;
   position: fixed;
@@ -152,6 +164,7 @@ export default {
   border-right: 1px solid #e0e0e0;
   border-left: 1px solid #e0e0e0;
 }
+
 .back-sidebar-box {
   position: fixed;
   right: 0;
@@ -177,19 +190,20 @@ export default {
   bottom: 0;
   z-index: 999;
 }
+
 .outer {
   /*
   margin: 30px;
   border-radius: 10px;
   */
 }
+
 .within {
   overflow: hidden !important;
   border-radius: 10px !important;
 }
+
 .el-dialog_wrapper .dialog-fade-leave-active {
   animation-fill-mode: forwards;
 }
 </style>
-
-

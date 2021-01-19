@@ -1,4 +1,4 @@
-const headerToken = 'HEADER-TOKEN'
+export const headerToken = 'HEADER-TOKEN'
 
 const token = {
     getHeaderToken: () => {

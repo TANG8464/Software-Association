@@ -15,12 +15,13 @@
           <el-input v-model="skey.domainOfBucket" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="region" :label-width="formLabelWidth">
-          <el-select v-model="skey.region" placeholder="请选择存储区域" style="width:100%">
-            <el-option label="华东" value="z0"></el-option>
-            <el-option label="华北" value="z1"></el-option>
-            <el-option label="华南" value="z2"></el-option>
-            <el-option label="北美" value="na0"></el-option>
-            <el-option label="东南亚" value="as0"></el-option>
+          <el-select v-model="skey.region" placeholder="请选择存储区域" style="width: 100%">
+            <el-option
+              v-for="item in regionList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="remark" :label-width="formLabelWidth">
@@ -51,6 +52,13 @@ export default {
       formLabelWidth: '120px',
       isOpen: false,
       labelPosition: null,
+      regionList: [
+        { label: '华东', value: 'z0' },
+        { label: '华北', value: 'z1' },
+        { label: '华南', value: 'z2' },
+        { label: '北美', value: 'na0' },
+        { label: '东南亚', value: 'as0' },
+      ],
     }
   },
   watch: {

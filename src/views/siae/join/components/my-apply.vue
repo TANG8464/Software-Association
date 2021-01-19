@@ -18,7 +18,7 @@
 import {
     searchMyApply,
     deleteMyApply
-} from '@/api/join'
+} from '@/api/join-apply'
 import {
     getActiveUserInfo
 } from '@/api/active-user'

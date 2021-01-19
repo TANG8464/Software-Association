@@ -1,9 +1,11 @@
 <template>
 <div class="sort-list">
     <div>
-        <list-data ref="sortData" @setAllSort="setAllSort" :allSort="allSort.records" @update="update" @delSort="delSort"></list-data>
+        <list-data ref="sortData" @setAllSort="setAllSort" :allSort="allSort.records?allSort.records:sortList" @update="update" @delSort="delSort"></list-data>
         <div style="text-align:right;padding:0 15px;">
-            <el-pagination :hide-on-single-page="true" @current-change="setAllSort" :current-page.sync="allSort.current" :page-size="allSort.size" :total="allSort.total" layout="total, prev, pager, next"></el-pagination>
+            <span v-if="allSort.records">
+                <el-pagination :hide-on-single-page="true" @current-change="setAllSort" :current-page.sync="allSort.current" :page-size="allSort.size" :total="allSort.total" layout="total, prev, pager, next"></el-pagination>
+            </span>
             <add-sort @addSort="addSort"></add-sort>
         </div>
     </div>
@@ -20,23 +22,28 @@ export default {
         AddSort
     },
     props: {
-        allSort: {
+        allSort: { //适应后端写的分页，后端接口无分页是传入{}
             type: Object,
             required: true
+        },
+        sortList: { //适应后端写的无分页
+            type: Array,
+            default: () => {
+                return []
+            }
         }
     },
     methods: {
-        async setAllSort(pageNo) {
+        setAllSort(pageNo) { //查
             this.$emit('setAllSort', pageNo)
         },
-        addSort(sort) {
+        addSort(sort) { //增
             this.$emit('addSort', sort)
         },
-        update(sort) {
-
+        update(sort) { //改
             this.$emit('updateSort', sort)
         },
-        delSort(ids) {
+        delSort(ids) { //删
             this.$emit('delSort', ids)
         }
     }

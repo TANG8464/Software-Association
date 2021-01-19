@@ -19,7 +19,6 @@
                 </el-col>
                 <el-col :xs="24" :sm="24" :lg="9">
                     <el-form-item label="分类号" prop="bookCategoryID">
-                        <!-- <el-input v-model="form.bookCategoryID" autocomplete="off"></el-input> -->
                         <el-cascader :props="props" :show-all-levels="false" v-model="form.bookCategoryID"></el-cascader>
                     </el-form-item>
                     <el-form-item label="ISBN" prop="isbn">
@@ -32,7 +31,7 @@
                 <el-col :xs="24" :sm="24" :lg="6">
                     <el-form :model="form" :label-width="formLabelWidth" label-position="top" :rules="rules">
                         <el-form-item label="书籍封面" ref="uploadElement" prop="img">
-                            <el-upload ref="upload" action="http://120.26.177.203/news/picturesUpload" accept="image/png, image/gif, image/jpg, image/jpeg" list-type="picture-card" :limit="limitNum" :auto-upload="true" :on-exceed="handleExceed" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-change="imgChange" :class="{hide:hideUpload}" :headers="token" :on-success="handleAvatarSuccess">
+                            <el-upload ref="upload" :action="uploadUrl+'news/picturesUpload'" accept="image/png, image/gif, image/jpg, image/jpeg" list-type="picture-card" :limit="limitNum" :auto-upload="true" :on-exceed="handleExceed" :before-upload="handleBeforeUpload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-change="imgChange" :class="{hide:hideUpload}" :headers="token" :on-success="handleAvatarSuccess">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             <el-dialog :visible.sync="dialogVisible">
@@ -54,17 +53,21 @@
 <script>
 import token from '@/utils/token'
 import imgVerity from '@/utils/verify'
+import entryRules from '@/utils/rules'
+import {
+    getBaseURL
+} from '@/utils/url'
+import {
+
+    addBook
+} from '@/api/book'
+import {
+    getAllCategory
+} from '@/api/book/category'
 export default {
     data() {
-        let _this = this
-        var checkNum = (rule, value, callback) => {
-            if (value <= 0) {
-                callback(new Error('必须大于0'))
-            } else {
-                callback()
-            }
-        }
         return {
+            uploadUrl: '',
             token: {},
             isImg: false,
             isSuccess: false,
@@ -80,76 +83,22 @@ export default {
             },
             props: {
                 lazy: true,
-                lazyLoad(node, resolve) {
-                    let resdata = {}
+                async lazyLoad(node, resolve) {
                     const id = node.root ? null : node.value
-                    if (id != null) {
-                        resdata = {
-                            categoryId: id
-                        }
+                    const data = await getAllCategory(id)
+                    if (data.data.length === 0) {
+                        node.data = {}
+                        node.data.leaf = true
                     }
-                    _this.$axios
-                        .get('book/categorise', {
-                            params: resdata,
-                        })
-                        .then((res) => {
-                            if (res.data.data.length == 0) {
-                                node.data.leaf = true
-                            }
-                            const nodes = Array.from(res.data.data).map((item) => ({
-                                value: item.id,
-                                label: item.bookCategoryName,
-                                leaf: false,
-                            }))
-                            resolve(nodes)
-                        })
-                        .catch((error) => {})
+                    const nodes = Array.from(data.data).map((item) => ({
+                        value: item.id,
+                        label: item.bookCategoryName,
+                        leaf: false,
+                    }))
+                    resolve(nodes)
                 },
             },
-            rules: {
-                bookName: [{
-                    required: true,
-                    message: '书名不能为空'
-                }],
-                author: [{
-                    required: true,
-                    message: '作者不能为空'
-                }],
-                isbn: [{
-                    required: true,
-                    message: 'ISBN号不能为空'
-                }],
-                price: [{
-                        required: true,
-                        message: '价格不能为空'
-                    },
-                    {
-                        validator: checkNum,
-                        trigger: 'blur'
-                    },
-                ],
-                bookCategoryID: [{
-                    required: true,
-                    message: '分类号不能为空'
-                }],
-                count: [{
-                        required: true,
-                        message: '数量不能为空'
-                    },
-                    {
-                        type: 'number',
-                        message: '数量必须为数字值'
-                    },
-                    {
-                        validator: checkNum,
-                        trigger: 'blur'
-                    },
-                ],
-                img: [{
-                    required: true,
-                    message: '请选择封面'
-                }],
-            },
+            rules: entryRules,
             hideUpload: false,
             dialogImageUrl: '',
             dialogVisible: false, //图片预览弹窗
@@ -159,6 +108,7 @@ export default {
     },
     created() {
         this.getToken()
+        this.uploadUrl = getBaseURL()
     },
     methods: {
         getToken: function () {
@@ -205,15 +155,11 @@ export default {
             }
             this.$refs[formName].validate(async (valid) => {
                 if (valid) {
-                    if (this.form.remark == '') {
+                    if (this.form.remark === '') {
                         this.form.remark = null
                     }
-                    const {
-                        data: res
-                    } = await this.$http.post('book/', this.form)
-                    if (res.code != 200) {
-                        this.$message.error('提交失败')
-                    }
+                    const data = await addBook(this.form)
+                    if (data.code !== 200) this.$message.error('提交失败')
                     this.$message.success('提交成功')
                     this.resetForm(formName)
                 } else {
@@ -234,14 +180,6 @@ export default {
 <style>
 .form .el-input {
     width: 350px;
-}
-
-.form1 {
-    /*
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
- */
 }
 
 .hide .el-upload--picture-card {

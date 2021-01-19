@@ -1,0 +1,39 @@
+.pop-up-box {
+  .info {
+    margin: auto;
+    max-width: 400px;
+    width: 100%;
+    height: 200px;
+    background: white;
+    padding: 30px;
+    box-sizing: content-box;
+
+    p {
+      color: #999999;
+    }
+  }
+
+  .bottom {
+    position: absolute;
+    width: 100%;
+    background: white;
+    bottom: 0;
+    height: 0;
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .fade-out {
+    height: 0;
+    opacity: 0;
+  }
+
+  .fade-in {
+    min-height: 220px;
+    opacity: 1;
+  }
+
+  .submitted-header {
+    text-align: right;
+  }
+}

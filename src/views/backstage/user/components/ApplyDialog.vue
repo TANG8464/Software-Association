@@ -6,9 +6,10 @@
         </el-switch>
         <el-form v-if="isOpenApply" :inline="true">
             <el-form-item label="设置开启时长：">
-                <el-select size="mini" style="width:100px" v-model="OpenTime">
+                <el-select size="mini" style="width:60px" v-model="OpenTime">
                     <el-option v-for="item in 30" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
+                <span style="padding-left:5px">天</span>
             </el-form-item>
         </el-form>
         <p class="template-title">当前申请书模板</p>
@@ -47,7 +48,7 @@ import {
     downloadApplyTemplate,
     uploadApplyTemplate,
     delApplyTemplate
-} from '@/api/join'
+} from '@/api/join-apply'
 import {
     wordVerify
 } from '@/utils/verify'

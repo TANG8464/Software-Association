@@ -49,10 +49,10 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgb(47, 55, 91);
-    z-index: 9999;
     opacity: 0;
     height: 100%;
+    background-color: rgb(47, 55, 91);
+    z-index: 99999;
 }
 
 .personal-open-animation .content {

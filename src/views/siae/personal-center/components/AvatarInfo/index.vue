@@ -18,6 +18,7 @@
 </template>
 <script>
 import UploadAvatar from './UploadAvatar'
+import { avatarUpload } from '@/api/member'
 export default {
   name: 'avatarInfo',
   props: {
@@ -56,13 +57,12 @@ export default {
     },
     async uploadAvatar() {
       this.isOpen = false
-      let formData = new FormData()
-      formData.append('file', this.$store.state.redrawImgFile)
-      const { data } = await this.$axios.post('member/avatarUpload', formData)
-      const url = data.data
-      if (data.code === 200) {
+      const res = await avatarUpload(this.$store.state.redrawImgFile)
+      const url = res.data
+      if (res.code === 200) {
         this.$message.success('修改成功')
         this.$store.commit('changeAvatar', !this.$store.state.avatar)
+        this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
       }
     },
   },

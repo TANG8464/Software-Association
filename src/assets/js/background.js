@@ -62,23 +62,27 @@ let sCt, mCt, bCt1;
 let b1;
 
 function html(el) {
-    maxW = window.innerWidth; //获取网页外部窗体宽
-    maxH = window.innerHeight; //获取网页外部窗体高
-    el.style = " margin: 0;padding: 0;";
-    let sc = document.createElement("canvas");
-    sc.id = "star";
-    sc.height = maxH;
-    sc.width = maxW;
-    sc.style = "position: fixed;background: none;left: 0;";
-    let mc = document.createElement("canvas");
-    mc.id = "meteor";
-    mc.height = maxH;
-    mc.width = maxW;
-    mc.style = "position: fixed;background:rgba(33,34,42,1);left: 0;";
-    mc.innerText = "该浏览器不支持canvas，为了更好的使用体验，请您切换为其他浏览器。";
-    let img = el.children[0];
-    el.insertBefore(mc, img);
-    el.insertBefore(sc, img);
+    const star = document.getElementById('star');
+    const meteor = document.getElementById('meteor')
+    if (!star && !meteor) {
+        maxW = window.innerWidth; //获取网页外部窗体宽
+        maxH = window.innerHeight; //获取网页外部窗体高
+        el.style = " margin: 0;padding: 0;";
+        let sc = document.createElement("canvas");
+        sc.id = "star";
+        sc.height = maxH;
+        sc.width = maxW;
+        sc.style = "position: fixed;background: none;left: 0;";
+        let mc = document.createElement("canvas");
+        mc.id = "meteor";
+        mc.height = maxH;
+        mc.width = maxW;
+        mc.style = "position: fixed;background:rgba(33,34,42,1);left: 0;";
+        mc.innerText = "该浏览器不支持canvas，为了更好的使用体验，请您切换为其他浏览器。";
+        let img = el.children[0];
+        el.insertBefore(mc, img);
+        el.insertBefore(sc, img);
+    }
 }
 
 function init() {
@@ -124,7 +128,7 @@ function move() {
     requestAnimationFrame(move); //不断重新请求
 }
 
-window.onresize = function() {
+window.onresize = function () {
     maxW = window.innerWidth; //获取网页外部窗体宽
     maxH = window.innerHeight; //获取网页外部窗体高
     let sc = document.getElementById("star");
@@ -146,8 +150,8 @@ function back(el) {
 function close(el) {
     const star = document.getElementById('star');
     const meteor = document.getElementById('meteor')
-    if (star) el.removeChild(star)
-    if (meteor) el.removeChild(meteor)
+    if (star !== null) el.removeChild(star)
+    if (meteor !== null) el.removeChild(meteor)
 }
 export {
     back,

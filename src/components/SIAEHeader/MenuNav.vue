@@ -13,10 +13,10 @@
 <script>
 export default {
     props: {
-        menu: {
+        menu: { //菜单项
             type: Array,
         },
-        parent: {
+        parent: { //父级url
             type: String,
         },
     },

@@ -1,19 +1,20 @@
 <template>
   <div class="user-college">
-    <div style="margin:30px 0;">
+    <div style="margin: 30px 0">
       <!-- 面包屑导航 -->
-      <el-breadcrumb separator="/" style="display:inline;">
+      <el-breadcrumb separator="/" style="display: inline">
         <el-breadcrumb-item
           v-for="item in breadcrumb"
           :key="item.id"
           to="/backstage/user/college"
           @click.native="breadcrumbClick(item)"
-        >{{item.name}}</el-breadcrumb-item>
+          >{{ item.name }}</el-breadcrumb-item
+        >
       </el-breadcrumb>
     </div>
     <el-table
       :data="collegeTree"
-      style="width: 100%;overflow: auto;"
+      style="width: 100%; overflow: auto"
       class="not-choose-text"
       height="450"
       :cell-class-name="cellClassName"
@@ -23,7 +24,7 @@
     >
       <el-table-column width="30" align="right">
         <template slot-scope="scope">
-          <span v-if="scope.row.child&&scope.row.child.length">
+          <span v-if="scope.row.child && scope.row.child.length">
             <icon name="multistage" scale="16" width="16"></icon>
           </span>
         </template>
@@ -32,27 +33,29 @@
         <template slot-scope="scope">
           <div v-if="scope.row.isEdit">
             <el-input
-              style="width:70%"
-              @keypress.enter.native="updateName(scope.row,scope.$index)"
+              style="width: 70%"
+              @keypress.enter.native="updateName(scope.row, scope.$index)"
               v-model="scope.row.name"
               placeholder="请输入内容"
             ></el-input>
             <div
-              style="display:inline-block;color:#33ce33;"
-              @click="updateName(scope.row,scope.$index)"
+              style="display: inline-block; color: #33ce33"
+              @click="updateName(scope.row, scope.$index)"
             >
               <icon name="confirm" scale="23" width="23"></icon>
             </div>
-            <div style="display:inline-block;color:#f56666;" @click="scope.row.isEdit=false">
+            <div style="display: inline-block; color: #f56666" @click="scope.row.isEdit = false">
               <icon name="close" scale="20" width="20"></icon>
             </div>
           </div>
           <div v-else>
-            <span v-if="scope.row.type!==0">
-              <el-tag :type="scope.row.tagType" size="mini" effect="plain">{{scope.row.parentName}}</el-tag>
+            <span v-if="scope.row.type !== 0">
+              <el-tag :type="scope.row.tagType" size="mini" effect="plain">{{
+                scope.row.parentName
+              }}</el-tag>
             </span>
-            <span>{{scope.row.name}}</span>
-            <span v-show="scope.row.isHover" @click="scope.row.isEdit=true" style="margin:0 5px;">
+            <span>{{ scope.row.name }}</span>
+            <span v-show="scope.row.isHover" @click="scope.row.isEdit = true" style="margin: 0 5px">
               <icon name="edit" scale="20" width="20"></icon>
             </span>
           </div>
@@ -60,30 +63,45 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot-scope="scope">
-          <span v-if="scope.row.child">共有{{scope.row.child.length}}个{{typeMap[currentData.type+1]}}</span>
+          <span v-if="scope.row.child"
+            >共有{{ scope.row.child.length }}个{{ typeMap[currentData.type + 1] }}</span
+          >
         </template>
       </el-table-column>
       <el-table-column width="110" align="right">
         <template slot="header">
-          <el-button size="mini" @click="add(currentData)">{{currentData.type|addBtnText}}</el-button>
+          <el-button size="mini" @click="add(currentData)">{{
+            currentData.type | addBtnText
+          }}</el-button>
         </template>
         <template slot-scope="scope">
           <el-button size="mini" @click="removeTip(scope.row)" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <footer>共{{ collegeTree.length}}个{{typeMap[currentData.type]}}</footer>
+    <footer>共{{ collegeTree.length }}个{{ typeMap[currentData.type] }}</footer>
   </div>
 </template>
+
 <script>
-import { searchCollegeTree } from '@/api/institutes'
+import { searchCollegeTree } from '@/api/member/institutes'
 export default {
   data() {
     return {
       collegeTree: [],
       typeMap: ['院系', '专业', '班级'],
-      breadcrumb: [{ id: 0, name: '所有院系', type: 0, parentId: 0 }],
-      currentData: { type: 0, parentId: 0 },
+      breadcrumb: [
+        {
+          id: 0,
+          name: '所有院系',
+          type: 0,
+          parentId: 0,
+        },
+      ],
+      currentData: {
+        type: 0,
+        parentId: 0,
+      },
     }
   },
   created() {
@@ -149,7 +167,7 @@ export default {
         { instituteID: parentId, specialty_name: '新的专业' },
         { specialtyID: parentId, class_name: '新的班级' },
       ]
-      const urlMap = ['college/institute', 'college/specialty', 'college/class']
+      const urlMap = ['college/institute', 'college/specialty', 'college/class'] //学院，专业，班级
       const addData = addDataMap[type]
 
       const { data } = await this.$axios.post(`${urlMap[type]}`, addData)
@@ -163,8 +181,8 @@ export default {
     async updateName({ type, id, name, parentId }, index) {
       const updateMap = [
         { institute_name: name, id },
-        { specialty_name: name, id,instituteID:parentId },
-        { class_name: name, id ,specialtyID:parentId},
+        { specialty_name: name, id, instituteID: parentId },
+        { class_name: name, id, specialtyID: parentId },
       ]
       const urlMap = ['college/institute', 'college/specialty', 'college/class']
       const updateData = updateMap[type]
@@ -173,9 +191,7 @@ export default {
         this.$message.success('修改成功')
         this.collegeTree[index].isEdit = false
         this.setCollegeTree()
-      } else {
-        this.$message.error(data.message)
-      }
+      } else this.$message.error(data.message)
     },
     removeTip({ type, id, child }) {
       const typeMap = this.typeMap
@@ -215,6 +231,7 @@ export default {
   },
 }
 </script>
+
 <style>
 footer {
   text-align: center;

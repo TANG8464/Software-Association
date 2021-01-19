@@ -22,7 +22,7 @@ import {
 import {
     setUploadLink,
     uploadScore
-} from '@/api/user'
+} from '@/api/member/score'
 export default {
     data() {
         return {

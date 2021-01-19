@@ -1,7 +1,7 @@
 <template>
-<div class="back-sidebar" style="padding:20px 0;">
+<div class="back-sidebar" style="padding:20px 0;" v-if="activeUserInfo">
     <div style="font-size:18px;">
-        <personal-avatar></personal-avatar>
+        <person-avatar :avatar="activeUserInfo.avatarUrl"></person-avatar>
     </div>
     <el-tooltip class="item" effect="dark" content="返回首页" placement="left-end">
         <router-link to="/" tag="div" style="font-size:18px;">
@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import PersonalAvatar from '@/components/PersonalAvatar'
+import PersonAvatar from '@/components/PersonAvatar'
 import token from '@/utils/token'
 export default {
     name: 'backSidebar',
     components: {
-        PersonalAvatar,
+        PersonAvatar,
     },
     props: {
         maxH: {
@@ -42,6 +42,11 @@ export default {
     created() {
         this.Index = this.$router.currentRoute.path
     },
+    computed: {
+        activeUserInfo() {
+            return this.$store.state.activeUserInfo
+        },
+    },
     methods: {
         exit() {
             this.$axios('member/logout', {
@@ -49,7 +54,6 @@ export default {
                 })
                 .then((res) => {
                     this.$cookies.remove('activeUser')
-
                     token.removeHeaderToken()
                     this.$notify({
                         title: '退出登录',

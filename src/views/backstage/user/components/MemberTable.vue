@@ -23,7 +23,7 @@
     </el-table-column>
     <el-table-column v-if="!size.isSmallSize" prop="position.positionName" label="职位" width="150">
         <template slot-scope="scope">
-            <el-select v-model="selectPosition[scope.$index]" placeholder="请选择" @change="changePosition(scope.row,scope.$index)" size="small">
+            <el-select v-model="currentPosition[scope.$index]" placeholder="请选择" @change="changePosition(scope.row,scope.$index)" size="small">
                 <el-option v-for="item in position" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
         </template>
@@ -54,8 +54,8 @@
 <script>
 import MemberInfo from './MemberInfo'
 import {
-    getPosition
-} from '@/api/user'
+    getAllPosition
+} from '@/api/member/position'
 export default {
     components: {
         MemberInfo,
@@ -65,7 +65,7 @@ export default {
             type: Array,
             require: true,
         },
-        selectPosition: {
+        currentPosition: {
             type: Array,
             require: true,
         },
@@ -91,7 +91,7 @@ export default {
     methods: {
         //设置当前有的职位
         async setPosition() {
-            const data = await getPosition(1, 1000)
+            const data = await getAllPosition(1, 1000)
             if (data.code === 200) {
                 this.position = data.data.records
             } else this.$message.error(data.message)

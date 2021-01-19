@@ -1,24 +1,42 @@
 import request from '@/utils/request'
-import store from '@/store'
+/**
+ * 获取当前登录账号的基本个人信息
+ */
 export function getActiveUserInfo() {
     return request({
         url: 'member/info',
         method: 'get'
     })
 }
+/**
+ * 获取当前登录账号的详细个人信息
+ */
 export function detailedInformation() {
     return request({
         url: 'member/person',
         method: 'get'
     })
 }
-
+/**
+ * 获取当前用户权限
+ */
+export async function getActiveUserRole() {
+    const { data } = await detailedInformation()
+    return data.data ? data.data.roles : []
+}
+/**
+ * 退出登录
+ */
 export function logout() {
     return request({
         url: 'member/logout',
         method: 'put'
     })
 }
+/**
+ * 忘记密码
+ * @param {String} email 
+ */
 export async function forgetPassword(email) {
     const { data } = await request({
         url: `/forgetPassword`,
@@ -29,7 +47,7 @@ export async function forgetPassword(email) {
 }
 
 
-export async function updatePassword({ email, newPassword, verify }) {
+export async function updatePassword({ email, newPassword, verify } = {}) {
     const { data } = await request({
         url: `/updatePassword`,
         method: 'post',
@@ -37,23 +55,27 @@ export async function updatePassword({ email, newPassword, verify }) {
     })
     return data
 }
+/**
+ * 个人中心修改密码
+ * @param {Object} param0 
+ */
+export async function updateMemberPassword({ newPassword, oldPassword } = {}) {
+    const { data } = await request({
+        url: `/member/password`,
+        method: 'put',
+        data: { newPassword, oldPassword }
+    })
+    return data
+}
+/**
+ * 个人中心修改自己的信息
+ * @param {Object} personInfo 
+ */
 export async function updatePersonInfo(personInfo) {
     const { data } = await request({
         url: `member/person`,
         method: 'put',
         data: personInfo
-    })
-    return data
-}
-/**
- * 注册邮箱验证
- * @param {String} email 
- */
-export async function verifyEmail(email) {
-    const { data } = await request({
-        url: `verifyEmail`,
-        method: 'get',
-        params: { email }
     })
     return data
 }

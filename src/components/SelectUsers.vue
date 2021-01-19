@@ -44,7 +44,8 @@ import {
     updateMemberInfo,
     conditionSearch,
     downloadMemberInfo
-} from '@/api/user'
+} from '@/api/member'
+import info from '@/utils/info'
 export default {
     props: {
         userIds: {
@@ -67,7 +68,11 @@ export default {
                 startYear: 2019,
             },
             selectIds: [],
-            startYearList: [],
+        }
+    },
+    computed: {
+        startYearList() {
+            return info.startYear()
         }
     },
     watch: {
@@ -76,16 +81,9 @@ export default {
         },
     },
     created() {
-        this.initStartYear()
         this.setAllMember()
     },
     methods: {
-        initStartYear() {
-            const currentYear = new Date().getFullYear()
-            for (let i = currentYear; i >= 2010; i--) {
-                this.startYearList.push(i)
-            }
-        },
         async setAllMember() {
             const data = await conditionSearch(this.condition)
             if (data.code === 200) {

@@ -125,7 +125,7 @@ export default {
     }
 
     .book-cover_box:hover .page {
-        transform: rotateY(-180deg);
+        transform: rotateY(-180deg) translateZ(10px);
     }
 
     .page-back {
@@ -157,7 +157,7 @@ export default {
         background-color: white;
         transition: all 0.5s;
         position: absolute;
-        transform: rotateY(-180deg);
+        transform: rotateY(-180deg) translateZ(10px);
         display: flex;
         align-items: center;
     }

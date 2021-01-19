@@ -4,19 +4,19 @@
         <icon name="skin-peeler" scale="20" width="20"></icon>
     </div>
     <el-dialog title="设置背景" v-dialogDrag :visible.sync="centerDialogVisible" :fullscreen="size.isSmallSize">
-        <div style="margin:10px 0">
-            <span style="padding-right:20px">是否开启背景</span>
+        <div style="margin: 10px 0">
+            <span style="padding-right: 20px">是否开启背景</span>
             <el-switch v-model="isOpenBack" :active-value="true" :inactive-value="false"></el-switch>
         </div>
-        <div style="overflow:auto;" :style="{height:size.isSmallSize?size.maxH-200+'px':'350px'}">
-            <div class="backSmall" v-for="item in backs" :key="item.id" style="width:320px;height:180px;float:left;" @click="select=item.id">
-                <img :src="item.url" alt style="width:100%;height:100%;" />
-                <div style="float:right; position: relative;top:-180px;" v-if="select===item.id">
+        <div style="overflow: auto" :style="{ height: size.isSmallSize ? size.maxH - 200 + 'px' : '350px' }">
+            <div class="backSmall" v-for="item in backs" :key="item.id" style="width: 320px; height: 180px; float: left" @click="select = item.id">
+                <img :src="item.url" alt style="width: 100%; height: 100%" />
+                <div style="float: right; position: relative; top: -180px" v-if="select === item.id">
                     <icon name="pitch-on" scale="25" width="25"></icon>
                 </div>
             </div>
         </div>
-        <span slot="footer" class="dialog-footer" style="text-align:right!important;">
+        <span slot="footer" class="dialog-footer" style="text-align: right !important">
             <el-button @click="setBack(false)">取 消</el-button>
             <el-button type="primary" @click="setBack(true)">确 定</el-button>
         </span>
@@ -27,7 +27,7 @@
 <script>
 import {
     getAllBackgroundFrontDesk
-} from '@/api/siae'
+} from '@/api/background'
 import {
     detailedInformation,
     updatePersonInfo
@@ -46,7 +46,11 @@ export default {
         size() {
             return this.$store.state.resize
         },
-
+    },
+    watch: {
+        isOpenBack(newVal) {
+            if (newVal) this.select = null
+        },
     },
     created() {
         this.init()
@@ -69,7 +73,7 @@ export default {
             if (isSet) {
                 this.select = this.isOpenBack ? this.select : null
                 const data = await updatePersonInfo({
-                    customBackground: this.select
+                    customBackground: this.select ? this.select : 0,
                 })
                 if (data.code === 200) {
                     this.$store.commit('changeBack', !this.$store.state.isChangeBack)

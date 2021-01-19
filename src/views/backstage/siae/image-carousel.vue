@@ -88,7 +88,6 @@ export default {
             isOpenRecycle: false,
             model: 'carousel',
             loading: false,
-            // carouselSort: []
         }
     },
     computed: {

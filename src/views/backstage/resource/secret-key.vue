@@ -2,20 +2,20 @@
   <div class="resource-secretKey">
     <!--文字提示-->
     <p class="intro">
-      用于后端访问七牛云使用的密钥（可以设置多对密钥(Access/Secret Key)，但只能运行一个密钥；出于安全考虑，建议周期性地更换密钥。
-      您可以查看更多）
-      <el-link type="primary" href="https://developer.qiniu.com/af/kb/1334">安全使用密钥建议</el-link>。
+      用于后端访问七牛云使用的密钥（可以设置多对密钥(Access/Secret
+      Key)，但只能运行一个密钥；出于安全考虑，建议周期性地更换密钥。 您可以查看更多）
+      <el-link type="primary" :href="secureUsekey">安全使用密钥建议</el-link>。
     </p>
     <!--密钥数据-->
     <key-from-data
-      v-show="size.isSmallSize||size.isMediumSize"
+      v-show="size.isSmallSize || size.isMediumSize"
       :keys="keys"
       @setKeys="setKeys"
       @delKey="delKey"
       @updateStatus="updateStatus"
     ></key-from-data>
     <key-table-data
-      v-show="!(size.isSmallSize||size.isMediumSize)"
+      v-show="!(size.isSmallSize || size.isMediumSize)"
       :keys="keys"
       @setKeys="setKeys"
       @delKey="delKey"
@@ -26,9 +26,10 @@
       size="small"
       type="primary"
       ref="addKeys"
-      style="float:right;margin:5px 0;"
+      style="float: right; margin: 5px 0"
       @click="isOpenCreate = true"
-    >创建密钥</el-button>
+      >创建密钥</el-button
+    >
     <create-key :skey="key" @createKey="createKey" :isOpenCreate.sync="isOpenCreate"></create-key>
   </div>
 </template>
@@ -36,6 +37,8 @@
 import KeyFromData from './components/KeyData/FromData'
 import KeyTableData from './components/KeyData/TableData'
 import CreateKey from './components/CreateKey'
+import { addQiNiuYun, deleteQiNiuYun, searchAllQiNiuYun,updateQiNiuYunStatus } from '@/api/resource/qiniuyun'
+import { deleteNotice } from '@/api/notice'
 export default {
   components: {
     KeyFromData,
@@ -55,6 +58,7 @@ export default {
         region: '',
         remark: '',
       },
+      secureUsekey: 'https://developer.qiniu.com/af/kb/1334',
     }
   },
   computed: {
@@ -68,65 +72,43 @@ export default {
   methods: {
     async setKeys() {
       //设置所有key值
-      let { data } = await this.$axios.get('/config/qiniu/list')
-      if (data.code === 200) {
-        this.keys = data.data
+      const res = await searchAllQiNiuYun()
+      if (res.code === 200) {
+        this.keys = res.data
         this.keys.forEach((item) => {
           item.state = {}
           item.state.title = item.configStatus ? '使用中' : '已停用'
           item.state.style = item.configStatus ? 'run' : 'over'
         })
-      } else {
-        this.$message.error({
-          message: data.message,
-        })
-      }
+      } else this.$message.error(res.message)
     },
     async createKey() {
       //上传创建密钥数据
-      let { data } = await this.$axios.post('config/qiniu/', this.key)
-      if (data.code === 200) {
-        this.$message.success({
-          message: '创建成功',
-        })
+      const res = await addQiNiuYun(this.key)
+      if (res.code === 200) {
+        this.$message.success('创建成功')
         this.setKeys()
         this.isOpenCreate = false
-      } else {
-        this.$message.error({
-          message: data.message,
-        })
-      }
+      } else this.$message.error(res.message)
     },
     async delKey(id, password) {
       //删除密钥
-      let res = await this.$axios.delete('config/qiniu/', {
-        data: { id, password },
-      })
-      if (res.data.code === 200) {
-        this.$message.success({
-          message: '删除成功',
-        })
+      const res =await deleteQiNiuYun({ id, password })
+      if (res.code === 200) {
+        this.$message.success('删除成功')
         this.setKeys()
-      } else {
-        this.$message.error({
-          message: res.data.message,
-        })
-      }
+      } else this.$message.error(res.message)
     },
     async updateStatus(id, status) {
       //修改状态
-      let res = await this.$axios.put(`config/qiniu/${id}/info?status=${status}`)
-      if (res.data.code === 200) {
+      const res =await updateQiNiuYunStatus(id,status)
+      if (res.code === 200) {
         this.$message.success({
           message: status ? '已启用' : '已停用',
           customClass: 'update-status',
         })
         this.setKeys()
-      } else {
-        this.$message.error({
-          message: res.data.message,
-        })
-      }
+      } else this.$message.error(res.message)
     },
   },
 }

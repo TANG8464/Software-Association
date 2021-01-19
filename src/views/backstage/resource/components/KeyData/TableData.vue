@@ -1,15 +1,19 @@
 <template>
   <div class="secretKey_tabledata">
     <el-table :data="showKeys" style="width: 100%" :key="skStatus">
-      <el-table-column prop="configValue.bucketName" label="bucketName" width="110"></el-table-column>
+      <el-table-column
+        prop="configValue.bucketName"
+        label="bucketName"
+        width="110"
+      ></el-table-column>
       <el-table-column label="AccessKey/SecretKey">
         <!--ak/sk-->
         <template slot-scope="scope">
-          <div style="display: flex;align-items: center;width:100%;">
-            <div style="width:100%;">
-              <label style="margin:0 5px;">AK:</label>
+          <div style="display: flex; align-items: center; width: 100%">
+            <div style="width: 100%">
+              <label style="margin: 0 5px">AK:</label>
               <el-input v-model="scope.row.configValue.accessKey" readonly></el-input>
-              <label style="margin:0 5px;">SK:</label>
+              <label style="margin: 0 5px">SK:</label>
               <el-input
                 v-model="scope.row.configValue.securityKey"
                 :type="scope.row.skStatus"
@@ -20,16 +24,18 @@
                 type="info"
                 size="mini"
                 class="pwd-show"
-                @click="changeType(scope.$index,'text')"
-                v-if="scope.row.skStatus==='password'"
-              >显示</el-button>
+                @click="changeType(scope.$index, 'text')"
+                v-if="scope.row.skStatus === 'password'"
+                >显示</el-button
+              >
               <el-button
                 type="info"
                 size="mini"
                 class="pwd-show"
-                @click="changeType(scope.$index,'password')"
+                @click="changeType(scope.$index, 'password')"
                 v-else
-              >隐藏</el-button>
+                >隐藏</el-button
+              >
             </div>
           </div>
         </template>
@@ -42,21 +48,21 @@
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <div v-if="scope.row.configStatus">
-            <el-button size="mini" type="danger" @click="blockUp(scope.$index, scope.row)">停用</el-button>
+            <el-button size="mini" type="danger" @click="blockUp(scope.$index, scope.row)"
+              >停用</el-button
+            >
           </div>
           <div v-else>
-            <el-button
-              size="mini"
-              type="warning"
-              plain
-              @click="startUsing(scope.$index, scope.row)"
-            >启用</el-button>
+            <el-button size="mini" type="warning" plain @click="startUsing(scope.$index, scope.row)"
+              >启用</el-button
+            >
             <el-button
               size="mini"
               type="danger"
               plain
               @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button>
+              >删除</el-button
+            >
           </div>
         </template>
       </el-table-column>
@@ -68,22 +74,22 @@ export default {
   data() {
     return {
       skStatus: 0,
-      showKeys: []
+      showKeys: [],
     }
   },
   props: {
     keys: {
       type: Array,
-      deafults: []
-    }
+      deafults: [],
+    },
   },
   watch: {
     keys(newVal) {
       this.showKeys = newVal
-      this.showKeys.forEach(item => {
+      this.showKeys.forEach((item) => {
         item.skStatus = 'password'
       })
-    }
+    },
   },
   methods: {
     changeType(index, type) {
@@ -94,7 +100,7 @@ export default {
       //禁用密钥
       this.$confirm('您确定禁用此密钥吗？禁用前请确认该密钥没有被使用。', ' ', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
       }).then(() => {
         this.$emit('updateStatus', row.id, !row.configStatus)
       })
@@ -109,12 +115,12 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputType: 'password',
-        customClass: 'fullScreen'
+        customClass: 'fullScreen',
       }).then(({ value }) => {
         this.$emit('delKey', row.id, value)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

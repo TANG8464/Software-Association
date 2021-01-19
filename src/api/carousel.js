@@ -13,6 +13,7 @@ export async function adminSearchCarousel(curPage, limit, status) {
         params: { curPage, limit, status }
     })
     return data
+    
 }
 /**
  * 分页查找轮播图

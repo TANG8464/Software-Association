@@ -1,6 +1,6 @@
 <template>
 <div :class="{'isfocus':value||isFocus}" class="siae-input" :style="{'width':width+'%','height':height+'px'}">
-    <input class="input" :type="inputType" :value="value" @change="$emit('change', $event.target.value)" @focus="isFocus=true" @blur="isFocus=false" />
+    <input :disabled="disabled" class="input" :type="inputType" :value="value" @change="$emit('change', $event.target.value)" @focus="isFocus=true" @blur="isFocus=false" />
     <label :class="{'input_label_up':value||isFocus}" class="input_label" @click="labelClick($event)">
         <span>{{label}}</span>
     </label>
@@ -52,6 +52,10 @@ export default {
             type: Number,
             default: 40,
         },
+        disabled: {
+            type: Boolean,
+            default: false,
+        }
     },
     data() {
         return {

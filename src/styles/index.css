@@ -1,96 +1,64 @@
 * {
-    outline: none;
+  outline: none;
 }
 
 img {
-    user-select: none;
+  user-select: none;
 }
 
 *::selection {
-    background-color: rgb(190, 232, 255);
+  background-color: rgb(190, 232, 255);
 }
-
 
 /* 槽 */
 
- ::-webkit-scrollbar {
-    width: 0px;
-    height: 8px;
+::-webkit-scrollbar {
+  width: 0px;
+  height: 8px;
 }
 
- ::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.8);
-    /* -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08); */
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.8);
+  /* -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08); */
 }
-
 
 /* 滚动条滑块 */
 
- ::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.08);
-    /* background-color: rgba(255, 255, 255, 1); */
-    /* -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); */
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  /* background-color: rgba(255, 255, 255, 1); */
+  /* -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); */
 }
 
 .siae {
-    font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
-    color: #666666;
+  font-family: miranafont, 'Hiragino Sans GB', STXihei, 'Microsoft YaHei', SimSun, sans-serif;
+  color: #666666;
 }
 
 .backstage {
-    color: #475F7B;
+  color: #475f7b;
 }
 
 .siae-msg {
-    background-color: white!important;
-    color: #666666!important;
+  background-color: white !important;
+  color: #666666 !important;
 }
 
 .noChecked {
-    background-color: white!important;
-    color: #666666!important;
+  background-color: white !important;
+  color: #666666 !important;
 }
 
 .v-modal {
-    height: 0 !important;
+  height: 0 !important;
 }
 
 .el-dialog {
-    min-width: 300px;
-    transition: all 1s;
+  min-width: 300px;
+  transition: all 1s;
 }
-
-
-/*
-右击弹出框
-*/
-
-.right-click-box {
-    list-style: none;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    display: inline-block;
-    box-shadow: 0px 0px 10px 1px #e0e0e0;
-    position: fixed;
-    z-index: 100;
-    transition: all 0.3s;
-    padding: 10px 0;
-}
-
-.right-click-box_item {
-    padding: 10px 15px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.right-click-box_item:hover {
-    background-color: rgb(221, 243, 255);
-    color: rgb(81, 193, 253);
-}
-
 
 /*
 需要删除项的checkbox样式
@@ -98,46 +66,80 @@ img {
 
 .remove .el-checkbox__input.is-checked .el-checkbox__inner,
 .remove .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-    background-color: #f56c6c;
-    border-color: #f56c6c;
+  background-color: #f56c6c;
+  border-color: #f56c6c;
 }
 
-.remove .el-checkbox__input.is-checked+.el-checkbox__label {
-    color: #f56c6c;
+.remove .el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #f56c6c;
 }
 
 .remove .el-checkbox__inner:hover {
-    border-color: #f56c6c;
+  border-color: #f56c6c;
 }
 
 .not-choose-text {
-    user-select: none;
+  user-select: none;
 }
 
 .absolute-center-v {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 }
 
 .el-input {
-    background: none;
+  background: none;
 }
 
 .error-tip {
-    color: #ed5a5a;
-    font-size: 13px;
+  color: #ed5a5a;
+  font-size: 13px;
+}
+/*
+弹出框
+*/
+.pop-up-box {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+}
+.pop-up-box .verify-code {
+  margin: auto;
+  width: 300px;
+  height: 200px;
+}
+/*
+文字类
+*/
+.color-gray {
+  color: #999999;
+}
+.text-ellipsis {
+  text-overflow: ellipsis;
+  /* white-space: nowrap; */
+  overflow: hidden;
+}
+.text-ellipsis2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
-.pop-up-box {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 200;
-    display: flex;
-    align-items: center;
+.line-clamp2 {
+  -webkit-line-clamp: 2;
+}
+.line-clamp3 {
+  -webkit-line-clamp: 3;
+}
+.el-input,.el-select {
+  margin: 5px!important;
 }

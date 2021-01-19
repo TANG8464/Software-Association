@@ -8,7 +8,8 @@
 
 <script>
 import {
-    detailedInformation
+    detailedInformation,
+    updatePersonInfo
 } from '@/api/active-user'
 import MemberInfoForm from '@/components/MemberInfoForm'
 export default {
@@ -51,15 +52,13 @@ export default {
             })
         },
         async updateInfo() {
-            const {
-                data
-            } = await this.$axios.put('member/person', this.personalInfo)
-            if (data.code === 200) {
+            const res =await updatePersonInfo(this.personalInfo)
+            if (res.code === 200) {
                 this.$message.success('修改成功')
                 this.isOpen = false
                 this.setPersonalInfo()
                 this.$store.commit('changeMyInfo', !this.$store.state.myInfo)
-            } else this.$message.error(data.message)
+            } else this.$message.error(res.message)
         },
     },
 }

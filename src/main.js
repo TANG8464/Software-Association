@@ -1,4 +1,5 @@
 import '@/styles/index.css';
+import '@/styles/index.scss';
 import http from '@/utils/request'; //此处问http文件的路径
 import 'echarts/lib/chart/bar';
 import ElementUI from 'element-ui';
@@ -22,7 +23,6 @@ import router from './router';
 import store from './store';
 import './directive/dialogDrag.js';
 import SiaeInput from '@/components/SiaeInput'
-
 
 Vue.use(SlideVerify);
 Vue.component('icon', Icon);

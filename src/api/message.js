@@ -1,13 +1,6 @@
 import request from "@/utils/request"
 import { sendAlEmail } from '@/api/email'
 
-function formatImg(content) {
-    let data
-    content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/, function(match, capture) {
-        data = capture
-    })
-    return data || link
-}
 /**
  * 根据文章的html内容 获取所有文字
  * @param {String} content 文章内容
@@ -45,7 +38,7 @@ export async function searchAllMessage(action, currPage, limit, title) {
  * 管理员发送消息
  * @param {Object} param0 
  */
-export async function adminSendMsg({ action, content, title, userIds }) {
+export async function adminSendMsg({ action, content, title, userIds } = {}) {
     const { data } = await request({
         url: `sys/notice/sender`,
         method: 'post',
@@ -61,7 +54,7 @@ export async function adminSendMsg({ action, content, title, userIds }) {
  * 管理员修改消息
  * @param {Object} param0 消息参数
  */
-export async function adminUpdateMsg({ id, action, content, title }) {
+export async function adminUpdateMsg({ id, action, content, title } = {}) {
     const { data } = await request({
         url: `sys/notice/info/${id}`,
         method: 'put',
@@ -97,9 +90,10 @@ export async function searchMessage(action, currPage, limit, title) {
         method: 'get',
         params: { action, currPage, limit, title }
     })
-    data.data.records.forEach(item => {
-        item.text = formatHtml(item.content)
-    })
+    if (data.data)
+        data.data.records.forEach(item => {
+            item.text = formatHtml(item.content)
+        })
     return data
 }
 

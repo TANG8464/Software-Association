@@ -65,11 +65,14 @@ export default {
         object-fit: cover;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
+         border: 1px solid #eeeeee;
+         box-sizing: border-box;
     }
 
     .item-content {
         width: 99%;
         height: 99%;
+       
     }
 
     .item-content:hover {

@@ -170,6 +170,7 @@ div[data-normalSize] {
     top: 10%;
     left: 0;
     right: 0;
+    bottom: 10%;
     margin: auto;
     transform: scale(1);
     min-width: 800px;

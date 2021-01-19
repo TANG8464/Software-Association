@@ -57,7 +57,6 @@ export default {
             const actions = {
                 'HEADER-TOKEN': token.getHeaderToken(),
             }
-
             this.websocketsend(JSON.stringify(actions))
         },
         websocketonerror() {
@@ -70,7 +69,6 @@ export default {
             this.getUnreadCount()
         },
         websocketsend(Data) {
-
             //数据发送
             this.websock.send(Data)
         },

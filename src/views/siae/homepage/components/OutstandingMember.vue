@@ -111,8 +111,8 @@ export default {
             return this.size.isSmallSize ? null : 300 + this.size.maxH * 0.15
         },
         width() {
-            return this.size.isSmallSize ? 47.1 : 24.2
-        },
+            return this.size.isSmallSize ? 48 : 24.2
+        }
     },
     mounted() {
         //设置translate3d的x偏移量最小值
@@ -157,7 +157,7 @@ export default {
             .carousel-item {
                 position: relative;
                 display: inline-block;
-                background-color: rgba($color: #ffffff, $alpha: 0.85);
+                background-color: rgba($color: #ffffff, $alpha: 0.95);
                 border: 1px solid #999999;
                 // border-radius: 10px;
                 margin: 0.3%;

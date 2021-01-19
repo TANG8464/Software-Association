@@ -1,24 +1,24 @@
-import Vue from 'vue'
 import axios from 'axios';
 import router from '@/router';
 import ElementUI from 'element-ui';
-import cookies from 'vue-cookies'
 import token from '@/utils/token'
+import { getBaseURL } from '@/utils/url'
+import store from '@/store'
 // axios 配置
 const request = axios.create({
-    baseURL: 'http://120.26.177.203/',
+    baseURL: getBaseURL(),
     timeout: 100000
 })
 
 // http request 拦截器
 request.interceptors.request.use(config => {
-        const headerToken = token.getHeaderToken()
-        if (headerToken) { //判断token是否存在
-            config.headers['HEADER-TOKEN'] = headerToken; //将token设置成请求头
-            // config.headers.X_XSRF_TOKEN = this.$cookies.get('XSRF-TOKEN'); //将token设置成请求头
-        }
-        return config;
-    },
+    const headerToken = token.getHeaderToken()
+    if (headerToken) { //判断token是否存在
+        config.headers['HEADER-TOKEN'] = headerToken; //将token设置成请求头
+        // config.headers.X_XSRF_TOKEN = this.$cookies.get('XSRF-TOKEN'); //将token设置成请求头
+    }
+    return config;
+},
     err => {
         return Promise.reject(err);
     }
@@ -50,7 +50,8 @@ request.interceptors.response.use(
     error => {
         if (i < 1) {
             let status = null;
-            let message = null
+            let message = null;
+            let flag = false
             if (!window.navigator.onLine) {
                 message = "服务器连接失败，请检查网络设置"
             } else if (error.response != undefined) {
@@ -68,23 +69,26 @@ request.interceptors.response.use(
                 }
             } else {
                 message = "服务器访问错误，请稍后...";
+                flag = true
             }
-            ElementUI.Notification({
-                title: "错误",
-                message,
-                type: "error",
-                duration: 1000,
-                showClose: false
-            });
-            if (status === 5011) {
-                console.log(5011);
-                token.removeHeaderToken()
-                setTimeout(() => {
-                    router.replace({
-                        path: '/account/login',
-                        query: { redirect: router.currentRoute.fullPath }
-                    })
-                }, 1000)
+            if (!flag) {
+                ElementUI.Notification({
+                    title: "错误",
+                    message,
+                    type: "error",
+                    duration: 1000,
+                    showClose: false
+                });
+                if (status === 5011) {
+                    store.commit('changeMyInfo', !store.state.myInfo)
+                    token.removeHeaderToken()
+                    setTimeout(() => {
+                        router.replace({
+                            path: '/account/login',
+                            query: { redirect: router.currentRoute.fullPath }
+                        })
+                    }, 1000)
+                }
             }
             i++;
             return Promise.reject(error);

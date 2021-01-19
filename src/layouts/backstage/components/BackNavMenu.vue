@@ -15,19 +15,19 @@
             </template>
         </el-menu-item>
         <!--菜单-->
-        <el-submenu v-for="item in nav" :key="item.menuId" :index="'/Backstage/'+item.url" :style="{'text-align':align}" ref="submenu" v-show="item.url!=='-'">
+        <el-submenu v-show="item.url!=='-'" v-for="item in nav" :key="item.menuId" :index="'/Backstage/'+item.url" :style="{'text-align':align}" ref="submenu">
             <template slot="title">
                 <i class="menu_icon" v-html="item.icon"></i>
                 <span class="menu_text">{{item.name}}</span>
             </template>
             <!--子菜单-->
-            <el-menu-item v-for="children in item.menuNodeList" :key="children.menuId" :index="'/backstage/'+children.url" @click="setActiveIndex(item,children)">
+            <el-menu-item v-show="children.url!=='-'" v-for="children in item.menuNodeList" :key="children.menuId" :index="'/backstage/'+children.url" @click="setActiveIndex(item,children)">
                 <span class="menu_icon" v-html="children.icon" style="position:relative;top:-3px;margin:0 2px;"></span>&nbsp;
                 <span class="menu_text">{{children.name}}</span>
             </el-menu-item>
         </el-submenu>
     </el-menu>
-    <div>
+    <div v-else>
         <span class="rotate">
             <icon name='loading' scale='30' width='30'></icon>
         </span>

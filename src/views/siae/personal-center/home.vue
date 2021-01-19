@@ -1,13 +1,13 @@
 <template>
 <div class="home">
-    <router-link to="/personal-center/my-info" tag="div" style="font-size:14px">
-        <i>
-            <icon name="personal-info" scale="23" width="23"></icon>
-        </i>
-        我的信息
-        <i class="el-icon-arrow-right right"></i>
-    </router-link>
     <el-collapse accordion>
+        <router-link to="/personal-center/my-info" tag="div" class="my-info">
+            <span>
+                <icon name="personal-info" scale="22" width="22"></icon>
+                我的信息
+            </span>
+            <span> <i class="el-icon-arrow-right"></i></span>
+        </router-link>
         <el-collapse-item>
             <template slot="title">
                 <i>
@@ -69,13 +69,41 @@ export default {
         top: 8px;
     }
 
-    .el-collapse-item__header,
-    .el-collapse-item__wrap {
-        background: none !important;
+    .my-info {
+        border-bottom: 1px solid #d2d2d2 !important;
+        font-size: 13px;
+        cursor: pointer;
+        line-height: 48px;
+        margin: 0;
+        color: #303133;
+        padding-left: 5px;
+    }
+
+    .my-info span:first-child {
+        width: 90%;
+        display: inline-block;
+    }
+
+    .my-info span:last-child {
+        width: 10%;
+        text-align: right;
+        display: inline-block;
+        padding-right: 8px;
+        box-sizing: border-box;
+
+    }
+
+    .el-collapse-item {
+        padding: 0 5px;
     }
 
     .el-collapse-item__header {
         border-bottom: 1px solid #d2d2d2 !important;
+    }
+
+    .el-collapse-item__header,
+    .el-collapse-item__wrap {
+        background: none !important;
     }
 
     .el-collapse {

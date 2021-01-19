@@ -11,7 +11,7 @@
         <p class="tip">
             <span>
                 <icon name="time" scale="14" width="14"></icon>
-                {{notice.deplDate|dataFormatter}}
+                {{notice.deplDate|dateFormatter}}
             </span>
             <span>
                 <icon name="footer" scale="15" width="15"></icon>
@@ -32,7 +32,7 @@
 
 <script>
 import {
-    dataFormatter
+    dateFormatter
 } from '@/filters'
 import {
     receptionSearchNoticeById,
@@ -87,7 +87,7 @@ export default {
         },
     },
     filters: {
-        dataFormatter,
+        dateFormatter,
     },
 }
 </script>
